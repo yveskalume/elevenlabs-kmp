@@ -17,4 +17,4 @@ captures
 !*.xcworkspace/contents.xcworkspacedata
 **/xcshareddata/WorkspaceSettings.xcsettings
 node_modules/
-iosApp/Configuration/Secrets.xcconfig
+/iosApp/Configuration/Secrets.xcconfig

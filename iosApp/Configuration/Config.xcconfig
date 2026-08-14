@@ -1,0 +1,11 @@
+TEAM_ID=
+
+PRODUCT_NAME=Elevenlabskmp
+PRODUCT_BUNDLE_IDENTIFIER=dev.yveskalume.elevenlabs.Elevenlabskmp$(TEAM_ID)
+
+CURRENT_PROJECT_VERSION=1
+MARKETING_VERSION=1.0
+
+// Create an ignored Secrets.xcconfig next to this file for local development.
+ELEVENLABS_API_KEY=
+#include? "Secrets.xcconfig"
