@@ -6,6 +6,7 @@ import dev.yveskalume.elevenlabs.ElevenLabsError
 import dev.yveskalume.elevenlabs.ElevenLabsException
 import io.ktor.client.HttpClient
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.websocket.WebSockets
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.header
 import io.ktor.client.statement.HttpResponse
@@ -21,7 +22,7 @@ import kotlinx.serialization.json.contentOrNull
 
 internal class ElevenLabsHttpClient(
     val baseUrl: String,
-    private val apiKeyProvider: ApiKeyProvider,
+    private val apiKeyProvider: ApiKeyProvider?,
     val client: HttpClient,
     private val ownsClient: Boolean,
 ) {
@@ -33,9 +34,16 @@ internal class ElevenLabsHttpClient(
 
     context(builder: HttpRequestBuilder)
     suspend fun authenticate() {
-        val apiKey = apiKeyProvider.getApiKey()
+        builder.header(API_KEY_HEADER, resolveApiKey())
+    }
+
+    suspend fun resolveApiKey(): String {
+        val provider = checkNotNull(apiKeyProvider) {
+            "No ElevenLabs API key is configured. Configure one on the client or use a single-use token for realtime TTS."
+        }
+        val apiKey = provider.getApiKey()
         require(apiKey.isNotBlank()) { "The ElevenLabs API key provider returned a blank key." }
-        builder.header(API_KEY_HEADER, apiKey)
+        return apiKey
     }
 
     suspend fun validate(response: HttpResponse) {
@@ -75,10 +83,7 @@ internal class ElevenLabsHttpClient(
         const val API_KEY_HEADER = "xi-api-key"
         const val REQUEST_ID_HEADER = "request-id"
 
-        val JSON = Json {
-            ignoreUnknownKeys = true
-            explicitNulls = false
-        }
+
 
 
         fun create(configuration: ElevenLabsConfiguration): ElevenLabsHttpClient {
@@ -86,10 +91,11 @@ internal class ElevenLabsHttpClient(
                 install(ContentNegotiation) {
                     json(JSON)
                 }
+                install(WebSockets)
             }
             return ElevenLabsHttpClient(
                 configuration.baseUrl,
-                requireNotNull(configuration.apiKeyProvider),
+                configuration.apiKeyProvider,
                 client,
                 ownsClient = true
             )

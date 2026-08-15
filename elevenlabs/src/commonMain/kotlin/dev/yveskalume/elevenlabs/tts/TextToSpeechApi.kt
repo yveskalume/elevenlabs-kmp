@@ -10,4 +10,22 @@ interface TextToSpeechApi {
      * Cancelling collection closes the underlying response.
      */
     fun stream(request: TextToSpeechRequest): Flow<AudioChunk>
+
+    /**
+     * Streams partial text input to ElevenLabs and emits audio as it becomes available.
+     * The returned flow is cold and opens a new realtime session for each collection.
+     */
+    fun realtime(
+        voiceId: String,
+        text: Flow<String>,
+        options: RealtimeTtsOptions = RealtimeTtsOptions(),
+        authorization: RealtimeTtsAuthorization = RealtimeTtsAuthorization.ConfiguredApiKey,
+    ): Flow<AudioChunk>
+
+    /** Opens a controllable realtime text-to-speech session. */
+    suspend fun openRealtimeSession(
+        voiceId: String,
+        options: RealtimeTtsOptions = RealtimeTtsOptions(),
+        authorization: RealtimeTtsAuthorization = RealtimeTtsAuthorization.ConfiguredApiKey,
+    ): RealtimeTtsSession
 }

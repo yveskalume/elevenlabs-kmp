@@ -1,4 +1,4 @@
-package dev.yveskalume.elevenlabs.internal.tts
+package dev.yveskalume.elevenlabs.internal.tts.dtos
 
 import dev.yveskalume.elevenlabs.tts.TextToSpeechRequest
 import kotlinx.serialization.SerialName

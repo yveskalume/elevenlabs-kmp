@@ -1,4 +1,4 @@
-package dev.yveskalume.elevenlabs.internal.tts
+package dev.yveskalume.elevenlabs.internal.tts.dtos
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

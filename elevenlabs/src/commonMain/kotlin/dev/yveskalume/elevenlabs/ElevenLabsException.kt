@@ -17,8 +17,14 @@ sealed class ElevenLabsException(
         cause: Throwable,
     ) : ElevenLabsException(error.message, cause)
 
-    class UnexpectedResponse(
+    class UnexpectedResponse internal constructor(
         error: ElevenLabsError,
     ) : ElevenLabsException(error.message)
-}
 
+    class Realtime internal constructor(
+        message: String,
+        val closeCode: Short? = null,
+        val responseBody: String? = null,
+        cause: Throwable? = null,
+    ) : ElevenLabsException(message, cause)
+}
