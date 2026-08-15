@@ -28,4 +28,11 @@ interface TextToSpeechApi {
         options: RealtimeTtsOptions = RealtimeTtsOptions(),
         authorization: RealtimeTtsAuthorization = RealtimeTtsAuthorization.ConfiguredApiKey,
     ): RealtimeTtsSession
+
+    /** Opens one WebSocket that can host up to five independent TTS contexts. */
+    suspend fun openMultiContextSession(
+        voiceId: String,
+        options: MultiContextTtsOptions = MultiContextTtsOptions(),
+        authorization: RealtimeTtsAuthorization = RealtimeTtsAuthorization.ConfiguredApiKey,
+    ): MultiContextTtsSession
 }

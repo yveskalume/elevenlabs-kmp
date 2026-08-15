@@ -173,6 +173,52 @@ val options = RealtimeTtsOptions(
 
 Each connection attempt resolves fresh credentials. Once audio has been emitted, the SDK reports a connection failure instead of reconnecting because replaying text could produce duplicate audio.
 
+For conversational applications that need interruptions or several independent generation streams, open one multi-context WebSocket:
+
+```kotlin
+val session = elevenLabs.textToSpeech.openMultiContextSession(
+    voiceId = "JBFqnCBsd6RMkjVDRZzb",
+    options = MultiContextTtsOptions(
+        modelId = "eleven_flash_v2_5",
+        outputFormat = OutputFormat.Pcm_24000,
+        syncAlignment = true,
+    ),
+)
+
+coroutineScope {
+    val eventsJob = launch {
+        session.events.collect { event ->
+            when (event) {
+                is MultiContextTtsEvent.Audio -> {
+                    audioPipeline.write(event.contextId, event.bytes)
+                    updateCaptions(event.contextId, event.normalizedAlignment)
+                }
+                is MultiContextTtsEvent.ContextFinished -> {
+                    audioPipeline.finish(event.contextId)
+                }
+                is MultiContextTtsEvent.ContextError -> {
+                    showContextError(event.contextId, event.message)
+                }
+            }
+        }
+    }
+
+    val answer = session.openContext("answer-1")
+    answer.sendText("I can help with that.", flush = true)
+
+    // If the user interrupts, close only the old context and start a replacement.
+    answer.close()
+    val replacement = session.openContext("answer-2")
+    replacement.sendText("Let me answer the new question.", flush = true)
+
+    replacement.close()
+    session.close()
+    eventsJob.join()
+}
+```
+
+A multi-context session supports at most five active contexts. Context IDs must be unique for the lifetime of the socket. Active contexts receive independent empty-text keepalives by default. Closing a context does not close the other contexts; closing the session sends `close_socket` and terminates the WebSocket. Automatic reconnection is intentionally not performed for multi-context sessions because safely replaying several independently consumed audio streams requires application-level coordination.
+
 When all input text is already available, prefer HTTP `stream()`. Realtime TTS is intended for partial input and can add buffering overhead for complete text.
 
 Transcribe a complete audio or video file with Scribe:
