@@ -14,10 +14,7 @@ if (localPropertiesFile.isFile) {
 
 val elevenLabsApiKey = providers.gradleProperty("ELEVENLABS_API_KEY").orNull
     ?: localProperties.getProperty("ELEVENLABS_API_KEY")
-
-require(!elevenLabsApiKey.isNullOrBlank()) {
-    "ELEVENLABS_API_KEY must be provided in local.properties."
-}
+    ?: ""
 
 fun String.asBuildConfigString(): String =
     "\"${replace("\\", "\\\\").replace("\"", "\\\"")}\""
