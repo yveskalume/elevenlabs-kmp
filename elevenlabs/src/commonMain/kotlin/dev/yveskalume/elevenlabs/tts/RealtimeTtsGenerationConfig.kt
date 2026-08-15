@@ -1,6 +1,8 @@
 package dev.yveskalume.elevenlabs.tts
 
-data class RealtimeTtsGenerationConfig(
+/** Controls how much text ElevenLabs buffers before realtime audio generation. */
+public data class RealtimeTtsGenerationConfig(
+    /** Positive character-count thresholds applied successively by the service. */
     val chunkLengthSchedule: List<Int>,
 ) {
     init {

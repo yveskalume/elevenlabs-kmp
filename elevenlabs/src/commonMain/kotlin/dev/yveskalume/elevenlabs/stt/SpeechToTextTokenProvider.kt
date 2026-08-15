@@ -1,6 +1,7 @@
 package dev.yveskalume.elevenlabs.stt
 
-fun interface SpeechToTextTokenProvider {
+/** Supplies single-use credentials for speech-to-text operations. */
+public fun interface SpeechToTextTokenProvider {
     /** Returns a fresh endpoint-appropriate single-use token. */
-    suspend fun getToken(): String
+    public suspend fun getToken(): String
 }
