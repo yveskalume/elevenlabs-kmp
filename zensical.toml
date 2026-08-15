@@ -1,0 +1,41 @@
+[project]
+site_name = "ElevenLabs KMP"
+site_url = "https://yveskalume.github.io/elevenlabs-kmp/"
+site_description = "A Kotlin-first Multiplatform SDK for the ElevenLabs API."
+repo_url = "https://github.com/yveskalume/elevenlabs-kmp"
+repo_name = "yveskalume/elevenlabs-kmp"
+copyright = "Copyright &copy; 2026 Yves Kalume"
+nav = [
+    { "Home" = "index.md" },
+    { "Getting started" = "getting-started.md" },
+    { "Guides" = [
+        { "Authentication" = "authentication.md" },
+        { "Text to speech" = "text-to-speech.md" },
+        { "Speech to text" = "speech-to-text.md" },
+    ] },
+    { "API reference" = "https://yveskalume.github.io/elevenlabs-kmp/api/" },
+]
+
+[project.theme]
+language = "en"
+features = [
+    "navigation.instant",
+    "navigation.instant.progress",
+    "navigation.tracking",
+    "navigation.tabs",
+    "navigation.sections",
+    "navigation.top",
+    "navigation.footer",
+    "toc.follow",
+    "content.action.edit",
+    "content.action.view",
+    "content.code.copy",
+]
+
+[project.theme.icon]
+logo = "fontawesome/solid/wave-square"
+repo = "fontawesome/brands/github"
+
+[[project.extra.social]]
+icon = "fontawesome/brands/github"
+link = "https://github.com/yveskalume/elevenlabs-kmp"
