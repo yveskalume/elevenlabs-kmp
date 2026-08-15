@@ -2,12 +2,14 @@
 
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.abi.ExperimentalAbiValidation
+import java.net.URI
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidMultiplatformLibrary)
     alias(libs.plugins.kotlinSerialization)
     alias(libs.plugins.mavenPublish)
+    alias(libs.plugins.dokka)
 }
 
 kotlin {
@@ -65,6 +67,30 @@ kotlin {
             implementation(libs.ktor.client.mock)
         }
     }
+}
+
+dokka {
+    dokkaPublications.html {
+        moduleName.set("ElevenLabs KMP")
+        moduleVersion.set(project.version.toString())
+        includes.from("${project.projectDir}/docs/module.md")
+        failOnWarning.set(true)
+        suppressObviousFunctions.set(true)
+    }
+
+    dokkaSourceSets.configureEach {
+        sourceLink {
+            localDirectory.set(project.projectDir)
+            remoteUrl.set(
+                URI("https://github.com/yveskalume/elevenlabs-kmp/blob/main/elevenlabs"),
+            )
+            remoteLineSuffix.set("#L")
+        }
+    }
+}
+
+tasks.named("check") {
+    dependsOn("dokkaGeneratePublicationHtml")
 }
 
 mavenPublishing {
