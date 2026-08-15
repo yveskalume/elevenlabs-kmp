@@ -63,6 +63,10 @@ internal class RealtimeTtsConnectionFactoryImpl(
         parameters.append("enable_logging", options.enableLogging.toString())
         parameters.append("sync_alignment", options.syncAlignment.toString())
         parameters.append("enable_ssml_parsing", options.enableSsmlParsing.toString())
+        parameters.append(
+            "inactivity_timeout",
+            options.timeouts.inactivityTimeoutSeconds.toString(),
+        )
         options.modelId?.let { parameters.append("model_id", it) }
         options.languageCode?.let { parameters.append("language_code", it) }
         singleUseToken?.let { parameters.append("single_use_token", it) }

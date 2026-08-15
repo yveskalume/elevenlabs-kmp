@@ -129,6 +129,37 @@ coroutineScope {
 
 `finish()` gracefully signals that no more text is coming; the events flow completes after ElevenLabs sends its final response. `close()` cancels immediately. A session's `events` flow supports one collector.
 
+Realtime sessions send a single-space keepalive every 15 seconds by default and configure the server for 60 seconds of inactivity. Timeouts and keepalive behavior can be customized:
+
+```kotlin
+val options = RealtimeTtsOptions(
+    timeouts = RealtimeTtsTimeouts(
+        connectTimeoutMillis = 10_000,
+        sendTimeoutMillis = 10_000,
+        finishTimeoutMillis = 30_000,
+        inactivityTimeoutSeconds = 60,
+    ),
+    keepAlive = RealtimeTtsKeepAlive(
+        enabled = true,
+        intervalMillis = 15_000,
+    ),
+)
+```
+
+Automatic reconnection is disabled by default. It can be enabled conservatively for failures that happen before the first audio chunk:
+
+```kotlin
+val options = RealtimeTtsOptions(
+    reconnectPolicy = RealtimeTtsReconnectPolicy.BeforeFirstAudio(
+        maxAttempts = 3,
+        initialDelayMillis = 500,
+        maxDelayMillis = 5_000,
+    ),
+)
+```
+
+Each connection attempt resolves fresh credentials. Once audio has been emitted, the SDK reports a connection failure instead of reconnecting because replaying text could produce duplicate audio.
+
 When all input text is already available, prefer HTTP `stream()`. Realtime TTS is intended for partial input and can add buffering overhead for complete text.
 
 Transcribe a complete audio or video file with Scribe:

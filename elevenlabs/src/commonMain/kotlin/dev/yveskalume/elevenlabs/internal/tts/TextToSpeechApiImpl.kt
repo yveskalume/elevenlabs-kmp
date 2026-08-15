@@ -106,8 +106,12 @@ internal class TextToSpeechApiImpl(
     ): RealtimeTtsSession {
         require(voiceId.isNotBlank()) { "voiceId cannot be blank." }
         return try {
-            val connection = realtimeConnectionFactory.open(voiceId, options, authorization)
-            RealtimeTtsSessionImpl.open(connection, options)
+            RealtimeTtsSessionImpl.open(
+                openConnection = {
+                    realtimeConnectionFactory.open(voiceId, options, authorization)
+                },
+                options = options,
+            )
         } catch (cancellation: CancellationException) {
             throw cancellation
         } catch (exception: ElevenLabsException) {

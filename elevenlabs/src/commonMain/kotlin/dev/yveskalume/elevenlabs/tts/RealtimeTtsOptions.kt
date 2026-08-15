@@ -9,9 +9,18 @@ data class RealtimeTtsOptions(
     val enableLogging: Boolean = true,
     val syncAlignment: Boolean = false,
     val enableSsmlParsing: Boolean = false,
+    val timeouts: RealtimeTtsTimeouts = RealtimeTtsTimeouts(),
+    val keepAlive: RealtimeTtsKeepAlive = RealtimeTtsKeepAlive(),
+    val reconnectPolicy: RealtimeTtsReconnectPolicy = RealtimeTtsReconnectPolicy.Never,
 ) {
     init {
         require(modelId == null || modelId.isNotBlank()) { "modelId cannot be blank." }
         require(languageCode == null || languageCode.isNotBlank()) { "languageCode cannot be blank." }
+        require(
+            !keepAlive.enabled ||
+                keepAlive.intervalMillis < timeouts.inactivityTimeoutSeconds * 1_000L,
+        ) {
+            "The keepalive interval must be shorter than the ElevenLabs inactivity timeout."
+        }
     }
 }
