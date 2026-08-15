@@ -7,6 +7,8 @@ import dev.yveskalume.elevenlabs.internal.models.ModelsApiImpl
 import dev.yveskalume.elevenlabs.internal.tts.TextToSpeechApiImpl
 import dev.yveskalume.elevenlabs.internal.voices.VoicesApiImpl
 import dev.yveskalume.elevenlabs.internal.http.ElevenLabsHttpClient
+import dev.yveskalume.elevenlabs.internal.stt.SpeechToTextApiImpl
+import dev.yveskalume.elevenlabs.stt.SpeechToTextApi
 
 class ElevenLabs private constructor(
     private val http: ElevenLabsHttpClient,
@@ -19,6 +21,7 @@ class ElevenLabs private constructor(
     val models: ModelsApi = ModelsApiImpl(http)
 
     val textToSpeech: TextToSpeechApi = TextToSpeechApiImpl(http)
+    val speechToText: SpeechToTextApi = SpeechToTextApiImpl(http)
 
     /** Releases network resources owned by this client. */
     fun close() {
