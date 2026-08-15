@@ -2,25 +2,47 @@
 
 ## Installation
 
-Add the SDK to the shared source set of your Kotlin Multiplatform project:
+ElevenLabs KMP is available from
+[Maven Central](https://central.sonatype.com/artifact/io.github.yveskalume/elevenlabs-kmp/0.1.0).
+Then add the SDK to the shared source
+set of your Kotlin Multiplatform project:
 
 ```kotlin
-commonMain.dependencies {
-    implementation("io.github.yveskalume:elevenlabs-kmp:0.1.0")
+// settings.gradle.kts
+dependencyResolutionManagement {
+    repositories {
+        mavenCentral()
+    }
 }
 ```
 
-For the current development snapshot, add the Central Portal snapshots repository:
-
 ```kotlin
-repositories {
-    maven {
-        url = uri("https://central.sonatype.com/repository/maven-snapshots/")
-        content {
-            includeModule("io.github.yveskalume", "elevenlabs-kmp")
+// Shared module's build.gradle.kts
+kotlin {
+    sourceSets {
+        commonMain.dependencies {
+            implementation("io.github.yveskalume:elevenlabs-kmp:0.1.0")
         }
     }
-    mavenCentral()
+}
+```
+
+### Snapshots
+
+Development snapshots are also published to the Central Portal snapshots repository:
+
+```kotlin
+// settings.gradle.kts
+dependencyResolutionManagement {
+    repositories {
+        maven {
+            url = uri("https://central.sonatype.com/repository/maven-snapshots/")
+            content {
+                includeModule("io.github.yveskalume", "elevenlabs-kmp")
+            }
+        }
+        mavenCentral()
+    }
 }
 ```
 

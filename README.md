@@ -1,35 +1,56 @@
 # ElevenLabs KMP
 
-A Kotlin-first Multiplatform SDK for the ElevenLabs API, with coroutine and `Flow`-based APIs for Android, iOS (`iosArm64` and `iosSimulatorArm64`), and JVM.
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.yveskalume/elevenlabs-kmp?label=Maven%20Central)](https://central.sonatype.com/artifact/io.github.yveskalume/elevenlabs-kmp/0.1.0)
+
+A Kotlin-first Multiplatform SDK for the ElevenLabs API, with coroutine and `Flow`-based APIs for Android, iOS and JVM.
 
 > [!IMPORTANT]
 > This is an unofficial community SDK. It is not affiliated with or endorsed by ElevenLabs.
 
 ## Installation
 
+ElevenLabs KMP is available from Maven Central.
+
 ```kotlin
-commonMain.dependencies {
-    implementation("io.github.yveskalume:elevenlabs-kmp:0.1.0")
+// settings.gradle.kts
+dependencyResolutionManagement {
+    repositories {
+        mavenCentral()
+    }
 }
 ```
 
-To try the current development build, use `0.1.0-SNAPSHOT` from the Central Portal snapshots repository:
-
 ```kotlin
-repositories {
-    maven {
-        url = uri("https://central.sonatype.com/repository/maven-snapshots/")
-        content {
-            includeModule("io.github.yveskalume", "elevenlabs-kmp")
+// Shared module's build.gradle.kts
+kotlin {
+    sourceSets {
+        commonMain.dependencies {
+            implementation("io.github.yveskalume:elevenlabs-kmp:0.1.0")
         }
     }
-    mavenCentral()
-}
-
-commonMain.dependencies {
-    implementation("io.github.yveskalume:elevenlabs-kmp:0.1.0-SNAPSHOT")
 }
 ```
+
+### Snapshots
+
+Development snapshots are also published to the Central Portal snapshots repository:
+
+```kotlin
+// settings.gradle.kts
+dependencyResolutionManagement {
+    repositories {
+        maven {
+            url = uri("https://central.sonatype.com/repository/maven-snapshots/")
+            content {
+                includeModule("io.github.yveskalume", "elevenlabs-kmp")
+            }
+        }
+        mavenCentral()
+    }
+}
+```
+
+Then replace `0.1.0` with `0.1.0-SNAPSHOT` in the dependency declaration.
 
 ## Quick start
 
