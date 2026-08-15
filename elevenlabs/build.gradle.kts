@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidMultiplatformLibrary)
     alias(libs.plugins.kotlinSerialization)
+    alias(libs.plugins.mavenPublish)
 }
 
 kotlin {
@@ -37,7 +38,7 @@ kotlin {
     
     sourceSets {
         commonMain.dependencies {
-            implementation(libs.kotlinx.coroutines.core)
+            api(libs.kotlinx.coroutines.core)
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.client.serialization.json)
@@ -56,6 +57,42 @@ kotlin {
             implementation(libs.kotlin.test)
             implementation(libs.kotlinx.coroutines.test)
             implementation(libs.ktor.client.mock)
+        }
+    }
+}
+
+mavenPublishing {
+    publishToMavenCentral()
+    if (!version.toString().endsWith("-SNAPSHOT")) {
+        signAllPublications()
+    }
+
+    pom {
+        name.set("ElevenLabs KMP")
+        description.set("A Kotlin Multiplatform SDK for the ElevenLabs API.")
+        inceptionYear.set("2026")
+        url.set("https://github.com/yveskalume/elevenlabs-kmp")
+
+        licenses {
+            license {
+                name.set("The Apache License, Version 2.0")
+                url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
+                distribution.set("repo")
+            }
+        }
+
+        developers {
+            developer {
+                id.set("yveskalume")
+                name.set("Yves Kalume")
+                url.set("https://github.com/yveskalume")
+            }
+        }
+
+        scm {
+            url.set("https://github.com/yveskalume/elevenlabs-kmp")
+            connection.set("scm:git:git://github.com/yveskalume/elevenlabs-kmp.git")
+            developerConnection.set("scm:git:ssh://git@github.com/yveskalume/elevenlabs-kmp.git")
         }
     }
 }
