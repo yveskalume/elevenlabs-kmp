@@ -2,7 +2,20 @@
 
 A Kotlin-first Multiplatform SDK for the ElevenLabs API.
 
+> [!IMPORTANT]
+> This is an unofficial community SDK. It is not affiliated with or endorsed by ElevenLabs.
+
 The project currently targets Android, iOS (`iosArm64` and `iosSimulatorArm64`), and JVM. Its public API uses coroutines and `Flow`.
+
+## Installation
+
+```kotlin
+commonMain.dependencies {
+    implementation("io.github.yveskalume:elevenlabs-kmp:0.1.0")
+}
+```
+
+Until `0.1.0` is published, use the project dependency from this repository or a `0.1.0-SNAPSHOT` deployment.
 
 ## Current scope
 

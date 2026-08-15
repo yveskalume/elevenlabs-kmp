@@ -18,7 +18,7 @@ sealed class ElevenLabsException(
     ) : ElevenLabsException(error.message, cause)
 
     class UnexpectedResponse internal constructor(
-        error: ElevenLabsError,
+        val error: ElevenLabsError,
     ) : ElevenLabsException(error.message)
 
     class Realtime internal constructor(
