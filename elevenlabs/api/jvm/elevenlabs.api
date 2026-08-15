@@ -1,0 +1,733 @@
+public abstract interface class dev/yveskalume/elevenlabs/ApiKeyProvider {
+	public abstract fun getApiKey (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class dev/yveskalume/elevenlabs/ElevenLabs {
+	public fun <init> (Lkotlin/jvm/functions/Function1;)V
+	public final fun close ()V
+	public final fun getModels ()Ldev/yveskalume/elevenlabs/models/ModelsApi;
+	public final fun getSpeechToText ()Ldev/yveskalume/elevenlabs/stt/SpeechToTextApi;
+	public final fun getTextToSpeech ()Ldev/yveskalume/elevenlabs/tts/TextToSpeechApi;
+	public final fun getVoices ()Ldev/yveskalume/elevenlabs/voices/VoicesApi;
+}
+
+public final class dev/yveskalume/elevenlabs/ElevenLabsConfiguration {
+	public fun <init> ()V
+	public final fun apiKey (Ldev/yveskalume/elevenlabs/ApiKeyProvider;)V
+	public final fun apiKey (Ljava/lang/String;)V
+	public final fun getBaseUrl ()Ljava/lang/String;
+	public final fun setBaseUrl (Ljava/lang/String;)V
+}
+
+public final class dev/yveskalume/elevenlabs/ElevenLabsError {
+	public fun <init> (Ljava/lang/Integer;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+	public synthetic fun <init> (Ljava/lang/Integer;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/lang/Integer;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/Integer;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Ldev/yveskalume/elevenlabs/ElevenLabsError;
+	public static synthetic fun copy$default (Ldev/yveskalume/elevenlabs/ElevenLabsError;Ljava/lang/Integer;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Ldev/yveskalume/elevenlabs/ElevenLabsError;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getMessage ()Ljava/lang/String;
+	public final fun getRequestId ()Ljava/lang/String;
+	public final fun getResponseBody ()Ljava/lang/String;
+	public final fun getStatusCode ()Ljava/lang/Integer;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract class dev/yveskalume/elevenlabs/ElevenLabsException : java/lang/Exception {
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/Throwable;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+}
+
+public final class dev/yveskalume/elevenlabs/ElevenLabsException$Realtime : dev/yveskalume/elevenlabs/ElevenLabsException {
+	public final fun getCloseCode ()Ljava/lang/Short;
+	public final fun getResponseBody ()Ljava/lang/String;
+}
+
+public final class dev/yveskalume/elevenlabs/ElevenLabsException$Serialization : dev/yveskalume/elevenlabs/ElevenLabsException {
+	public final fun getError ()Ldev/yveskalume/elevenlabs/ElevenLabsError;
+}
+
+public final class dev/yveskalume/elevenlabs/ElevenLabsException$UnexpectedResponse : dev/yveskalume/elevenlabs/ElevenLabsException {
+	public final fun getError ()Ldev/yveskalume/elevenlabs/ElevenLabsError;
+}
+
+public final class dev/yveskalume/elevenlabs/models/Model {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ZZZZLjava/lang/Integer;Ljava/util/List;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ZZZZLjava/lang/Integer;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Z
+	public final fun component5 ()Z
+	public final fun component6 ()Z
+	public final fun component7 ()Z
+	public final fun component8 ()Ljava/lang/Integer;
+	public final fun component9 ()Ljava/util/List;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ZZZZLjava/lang/Integer;Ljava/util/List;)Ldev/yveskalume/elevenlabs/models/Model;
+	public static synthetic fun copy$default (Ldev/yveskalume/elevenlabs/models/Model;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ZZZZLjava/lang/Integer;Ljava/util/List;ILjava/lang/Object;)Ldev/yveskalume/elevenlabs/models/Model;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getCanDoTextToSpeech ()Z
+	public final fun getCanDoVoiceConversion ()Z
+	public final fun getCanUseSpeakerBoost ()Z
+	public final fun getCanUseStyle ()Z
+	public final fun getDescription ()Ljava/lang/String;
+	public final fun getId ()Ljava/lang/String;
+	public final fun getLanguages ()Ljava/util/List;
+	public final fun getMaximumTextLengthPerRequest ()Ljava/lang/Integer;
+	public final fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/yveskalume/elevenlabs/models/ModelLanguage {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;)Ldev/yveskalume/elevenlabs/models/ModelLanguage;
+	public static synthetic fun copy$default (Ldev/yveskalume/elevenlabs/models/ModelLanguage;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Ldev/yveskalume/elevenlabs/models/ModelLanguage;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getId ()Ljava/lang/String;
+	public final fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class dev/yveskalume/elevenlabs/models/ModelsApi {
+	public abstract fun list (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class dev/yveskalume/elevenlabs/stt/RealtimeSttAudioFormat : java/lang/Enum {
+	public static final field Pcm16000 Ldev/yveskalume/elevenlabs/stt/RealtimeSttAudioFormat;
+	public static final field Pcm22050 Ldev/yveskalume/elevenlabs/stt/RealtimeSttAudioFormat;
+	public static final field Pcm24000 Ldev/yveskalume/elevenlabs/stt/RealtimeSttAudioFormat;
+	public static final field Pcm44100 Ldev/yveskalume/elevenlabs/stt/RealtimeSttAudioFormat;
+	public static final field Pcm48000 Ldev/yveskalume/elevenlabs/stt/RealtimeSttAudioFormat;
+	public static final field Pcm8000 Ldev/yveskalume/elevenlabs/stt/RealtimeSttAudioFormat;
+	public static final field Ulaw8000 Ldev/yveskalume/elevenlabs/stt/RealtimeSttAudioFormat;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Ldev/yveskalume/elevenlabs/stt/RealtimeSttAudioFormat;
+	public static fun values ()[Ldev/yveskalume/elevenlabs/stt/RealtimeSttAudioFormat;
+}
+
+public final class dev/yveskalume/elevenlabs/stt/RealtimeSttCommitStrategy : java/lang/Enum {
+	public static final field Manual Ldev/yveskalume/elevenlabs/stt/RealtimeSttCommitStrategy;
+	public static final field VoiceActivityDetection Ldev/yveskalume/elevenlabs/stt/RealtimeSttCommitStrategy;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Ldev/yveskalume/elevenlabs/stt/RealtimeSttCommitStrategy;
+	public static fun values ()[Ldev/yveskalume/elevenlabs/stt/RealtimeSttCommitStrategy;
+}
+
+public abstract interface class dev/yveskalume/elevenlabs/stt/RealtimeSttEvent {
+}
+
+public final class dev/yveskalume/elevenlabs/stt/RealtimeSttEvent$CommittedTranscript : dev/yveskalume/elevenlabs/stt/RealtimeSttEvent {
+	public fun <init> (Ljava/lang/String;Ljava/util/List;Ljava/lang/String;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/util/List;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/util/List;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/util/List;Ljava/lang/String;)Ldev/yveskalume/elevenlabs/stt/RealtimeSttEvent$CommittedTranscript;
+	public static synthetic fun copy$default (Ldev/yveskalume/elevenlabs/stt/RealtimeSttEvent$CommittedTranscript;Ljava/lang/String;Ljava/util/List;Ljava/lang/String;ILjava/lang/Object;)Ldev/yveskalume/elevenlabs/stt/RealtimeSttEvent$CommittedTranscript;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getLanguageCode ()Ljava/lang/String;
+	public final fun getText ()Ljava/lang/String;
+	public final fun getWords ()Ljava/util/List;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/yveskalume/elevenlabs/stt/RealtimeSttEvent$FinalTranscript : dev/yveskalume/elevenlabs/stt/RealtimeSttEvent {
+	public fun <init> (Ljava/lang/String;Ljava/util/List;Ljava/lang/String;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/util/List;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/util/List;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/util/List;Ljava/lang/String;)Ldev/yveskalume/elevenlabs/stt/RealtimeSttEvent$FinalTranscript;
+	public static synthetic fun copy$default (Ldev/yveskalume/elevenlabs/stt/RealtimeSttEvent$FinalTranscript;Ljava/lang/String;Ljava/util/List;Ljava/lang/String;ILjava/lang/Object;)Ldev/yveskalume/elevenlabs/stt/RealtimeSttEvent$FinalTranscript;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getLanguageCode ()Ljava/lang/String;
+	public final fun getText ()Ljava/lang/String;
+	public final fun getWords ()Ljava/util/List;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/yveskalume/elevenlabs/stt/RealtimeSttEvent$PartialTranscript : dev/yveskalume/elevenlabs/stt/RealtimeSttEvent {
+	public fun <init> (Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;)Ldev/yveskalume/elevenlabs/stt/RealtimeSttEvent$PartialTranscript;
+	public static synthetic fun copy$default (Ldev/yveskalume/elevenlabs/stt/RealtimeSttEvent$PartialTranscript;Ljava/lang/String;ILjava/lang/Object;)Ldev/yveskalume/elevenlabs/stt/RealtimeSttEvent$PartialTranscript;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getText ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/yveskalume/elevenlabs/stt/RealtimeSttEvent$SessionStarted : dev/yveskalume/elevenlabs/stt/RealtimeSttEvent {
+	public fun <init> (Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;)Ldev/yveskalume/elevenlabs/stt/RealtimeSttEvent$SessionStarted;
+	public static synthetic fun copy$default (Ldev/yveskalume/elevenlabs/stt/RealtimeSttEvent$SessionStarted;Ljava/lang/String;ILjava/lang/Object;)Ldev/yveskalume/elevenlabs/stt/RealtimeSttEvent$SessionStarted;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getSessionId ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/yveskalume/elevenlabs/stt/RealtimeSttEvent$Unknown : dev/yveskalume/elevenlabs/stt/RealtimeSttEvent {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;)Ldev/yveskalume/elevenlabs/stt/RealtimeSttEvent$Unknown;
+	public static synthetic fun copy$default (Ldev/yveskalume/elevenlabs/stt/RealtimeSttEvent$Unknown;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Ldev/yveskalume/elevenlabs/stt/RealtimeSttEvent$Unknown;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getMessageType ()Ljava/lang/String;
+	public final fun getRawMessage ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/yveskalume/elevenlabs/stt/RealtimeSttOptions {
+	public fun <init> ()V
+	public fun <init> (Ljava/lang/String;Ldev/yveskalume/elevenlabs/stt/RealtimeSttAudioFormat;Ljava/lang/String;Ljava/util/List;Ldev/yveskalume/elevenlabs/stt/RealtimeSttCommitStrategy;ZZLjava/util/List;ZZ)V
+	public synthetic fun <init> (Ljava/lang/String;Ldev/yveskalume/elevenlabs/stt/RealtimeSttAudioFormat;Ljava/lang/String;Ljava/util/List;Ldev/yveskalume/elevenlabs/stt/RealtimeSttCommitStrategy;ZZLjava/util/List;ZZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component10 ()Z
+	public final fun component2 ()Ldev/yveskalume/elevenlabs/stt/RealtimeSttAudioFormat;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/util/List;
+	public final fun component5 ()Ldev/yveskalume/elevenlabs/stt/RealtimeSttCommitStrategy;
+	public final fun component6 ()Z
+	public final fun component7 ()Z
+	public final fun component8 ()Ljava/util/List;
+	public final fun component9 ()Z
+	public final fun copy (Ljava/lang/String;Ldev/yveskalume/elevenlabs/stt/RealtimeSttAudioFormat;Ljava/lang/String;Ljava/util/List;Ldev/yveskalume/elevenlabs/stt/RealtimeSttCommitStrategy;ZZLjava/util/List;ZZ)Ldev/yveskalume/elevenlabs/stt/RealtimeSttOptions;
+	public static synthetic fun copy$default (Ldev/yveskalume/elevenlabs/stt/RealtimeSttOptions;Ljava/lang/String;Ldev/yveskalume/elevenlabs/stt/RealtimeSttAudioFormat;Ljava/lang/String;Ljava/util/List;Ldev/yveskalume/elevenlabs/stt/RealtimeSttCommitStrategy;ZZLjava/util/List;ZZILjava/lang/Object;)Ldev/yveskalume/elevenlabs/stt/RealtimeSttOptions;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAudioFormat ()Ldev/yveskalume/elevenlabs/stt/RealtimeSttAudioFormat;
+	public final fun getCommitStrategy ()Ldev/yveskalume/elevenlabs/stt/RealtimeSttCommitStrategy;
+	public final fun getEnableLogging ()Z
+	public final fun getIncludeLanguageDetection ()Z
+	public final fun getIncludeTimestamps ()Z
+	public final fun getKeyterms ()Ljava/util/List;
+	public final fun getLanguageCode ()Ljava/lang/String;
+	public final fun getModelId ()Ljava/lang/String;
+	public final fun getNoVerbatim ()Z
+	public final fun getSecondaryLanguages ()Ljava/util/List;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class dev/yveskalume/elevenlabs/stt/RealtimeSttSession {
+	public abstract fun close (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun commit (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun getEvents ()Lkotlinx/coroutines/flow/Flow;
+	public abstract fun sendAudio ([BZLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun sendAudio$default (Ldev/yveskalume/elevenlabs/stt/RealtimeSttSession;[BZLkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+}
+
+public final class dev/yveskalume/elevenlabs/stt/RealtimeSttSession$DefaultImpls {
+	public static synthetic fun sendAudio$default (Ldev/yveskalume/elevenlabs/stt/RealtimeSttSession;[BZLkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+}
+
+public abstract interface class dev/yveskalume/elevenlabs/stt/SpeechToTextApi {
+	public abstract fun openRealtimeSession (Ldev/yveskalume/elevenlabs/stt/RealtimeSttOptions;Ldev/yveskalume/elevenlabs/stt/SpeechToTextAuthorization;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun openRealtimeSession$default (Ldev/yveskalume/elevenlabs/stt/SpeechToTextApi;Ldev/yveskalume/elevenlabs/stt/RealtimeSttOptions;Ldev/yveskalume/elevenlabs/stt/SpeechToTextAuthorization;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public abstract fun transcribe (Ldev/yveskalume/elevenlabs/stt/SpeechToTextRequest;Ldev/yveskalume/elevenlabs/stt/SpeechToTextAuthorization;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun transcribe$default (Ldev/yveskalume/elevenlabs/stt/SpeechToTextApi;Ldev/yveskalume/elevenlabs/stt/SpeechToTextRequest;Ldev/yveskalume/elevenlabs/stt/SpeechToTextAuthorization;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+}
+
+public final class dev/yveskalume/elevenlabs/stt/SpeechToTextApi$DefaultImpls {
+	public static synthetic fun openRealtimeSession$default (Ldev/yveskalume/elevenlabs/stt/SpeechToTextApi;Ldev/yveskalume/elevenlabs/stt/RealtimeSttOptions;Ldev/yveskalume/elevenlabs/stt/SpeechToTextAuthorization;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun transcribe$default (Ldev/yveskalume/elevenlabs/stt/SpeechToTextApi;Ldev/yveskalume/elevenlabs/stt/SpeechToTextRequest;Ldev/yveskalume/elevenlabs/stt/SpeechToTextAuthorization;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+}
+
+public abstract interface class dev/yveskalume/elevenlabs/stt/SpeechToTextAuthorization {
+}
+
+public final class dev/yveskalume/elevenlabs/stt/SpeechToTextAuthorization$ConfiguredApiKey : dev/yveskalume/elevenlabs/stt/SpeechToTextAuthorization {
+	public static final field INSTANCE Ldev/yveskalume/elevenlabs/stt/SpeechToTextAuthorization$ConfiguredApiKey;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/yveskalume/elevenlabs/stt/SpeechToTextAuthorization$SingleUseToken : dev/yveskalume/elevenlabs/stt/SpeechToTextAuthorization {
+	public fun <init> (Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;)Ldev/yveskalume/elevenlabs/stt/SpeechToTextAuthorization$SingleUseToken;
+	public static synthetic fun copy$default (Ldev/yveskalume/elevenlabs/stt/SpeechToTextAuthorization$SingleUseToken;Ljava/lang/String;ILjava/lang/Object;)Ldev/yveskalume/elevenlabs/stt/SpeechToTextAuthorization$SingleUseToken;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getToken ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/yveskalume/elevenlabs/stt/SpeechToTextAuthorization$TokenProvider : dev/yveskalume/elevenlabs/stt/SpeechToTextAuthorization {
+	public fun <init> (Ldev/yveskalume/elevenlabs/stt/SpeechToTextTokenProvider;)V
+	public final fun component1 ()Ldev/yveskalume/elevenlabs/stt/SpeechToTextTokenProvider;
+	public final fun copy (Ldev/yveskalume/elevenlabs/stt/SpeechToTextTokenProvider;)Ldev/yveskalume/elevenlabs/stt/SpeechToTextAuthorization$TokenProvider;
+	public static synthetic fun copy$default (Ldev/yveskalume/elevenlabs/stt/SpeechToTextAuthorization$TokenProvider;Ldev/yveskalume/elevenlabs/stt/SpeechToTextTokenProvider;ILjava/lang/Object;)Ldev/yveskalume/elevenlabs/stt/SpeechToTextAuthorization$TokenProvider;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getProvider ()Ldev/yveskalume/elevenlabs/stt/SpeechToTextTokenProvider;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/yveskalume/elevenlabs/stt/SpeechToTextFileFormat : java/lang/Enum {
+	public static final field Other Ldev/yveskalume/elevenlabs/stt/SpeechToTextFileFormat;
+	public static final field PcmS16Le16 Ldev/yveskalume/elevenlabs/stt/SpeechToTextFileFormat;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Ldev/yveskalume/elevenlabs/stt/SpeechToTextFileFormat;
+	public static fun values ()[Ldev/yveskalume/elevenlabs/stt/SpeechToTextFileFormat;
+}
+
+public final class dev/yveskalume/elevenlabs/stt/SpeechToTextRequest {
+	public fun <init> ([BLjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ZLjava/lang/Integer;Ldev/yveskalume/elevenlabs/stt/TimestampsGranularity;ZLdev/yveskalume/elevenlabs/stt/SpeechToTextFileFormat;Z)V
+	public synthetic fun <init> ([BLjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ZLjava/lang/Integer;Ldev/yveskalume/elevenlabs/stt/TimestampsGranularity;ZLdev/yveskalume/elevenlabs/stt/SpeechToTextFileFormat;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()[B
+	public final fun component10 ()Ldev/yveskalume/elevenlabs/stt/SpeechToTextFileFormat;
+	public final fun component11 ()Z
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Ljava/lang/String;
+	public final fun component6 ()Z
+	public final fun component7 ()Ljava/lang/Integer;
+	public final fun component8 ()Ldev/yveskalume/elevenlabs/stt/TimestampsGranularity;
+	public final fun component9 ()Z
+	public final fun copy ([BLjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ZLjava/lang/Integer;Ldev/yveskalume/elevenlabs/stt/TimestampsGranularity;ZLdev/yveskalume/elevenlabs/stt/SpeechToTextFileFormat;Z)Ldev/yveskalume/elevenlabs/stt/SpeechToTextRequest;
+	public static synthetic fun copy$default (Ldev/yveskalume/elevenlabs/stt/SpeechToTextRequest;[BLjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ZLjava/lang/Integer;Ldev/yveskalume/elevenlabs/stt/TimestampsGranularity;ZLdev/yveskalume/elevenlabs/stt/SpeechToTextFileFormat;ZILjava/lang/Object;)Ldev/yveskalume/elevenlabs/stt/SpeechToTextRequest;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAudio ()[B
+	public final fun getContentType ()Ljava/lang/String;
+	public final fun getDiarize ()Z
+	public final fun getEnableLogging ()Z
+	public final fun getFileFormat ()Ldev/yveskalume/elevenlabs/stt/SpeechToTextFileFormat;
+	public final fun getFileName ()Ljava/lang/String;
+	public final fun getLanguageCode ()Ljava/lang/String;
+	public final fun getModelId ()Ljava/lang/String;
+	public final fun getNumberOfSpeakers ()Ljava/lang/Integer;
+	public final fun getTagAudioEvents ()Z
+	public final fun getTimestampsGranularity ()Ldev/yveskalume/elevenlabs/stt/TimestampsGranularity;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class dev/yveskalume/elevenlabs/stt/SpeechToTextTokenProvider {
+	public abstract fun getToken (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class dev/yveskalume/elevenlabs/stt/TimestampsGranularity : java/lang/Enum {
+	public static final field Character Ldev/yveskalume/elevenlabs/stt/TimestampsGranularity;
+	public static final field None Ldev/yveskalume/elevenlabs/stt/TimestampsGranularity;
+	public static final field Word Ldev/yveskalume/elevenlabs/stt/TimestampsGranularity;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Ldev/yveskalume/elevenlabs/stt/TimestampsGranularity;
+	public static fun values ()[Ldev/yveskalume/elevenlabs/stt/TimestampsGranularity;
+}
+
+public final class dev/yveskalume/elevenlabs/stt/Transcription {
+	public fun <init> (Ljava/lang/String;Ljava/lang/Double;Ljava/lang/String;Ljava/util/List;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/Double;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/util/List;
+	public final fun copy (Ljava/lang/String;Ljava/lang/Double;Ljava/lang/String;Ljava/util/List;)Ldev/yveskalume/elevenlabs/stt/Transcription;
+	public static synthetic fun copy$default (Ldev/yveskalume/elevenlabs/stt/Transcription;Ljava/lang/String;Ljava/lang/Double;Ljava/lang/String;Ljava/util/List;ILjava/lang/Object;)Ldev/yveskalume/elevenlabs/stt/Transcription;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getLanguageCode ()Ljava/lang/String;
+	public final fun getLanguageProbability ()Ljava/lang/Double;
+	public final fun getText ()Ljava/lang/String;
+	public final fun getWords ()Ljava/util/List;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/yveskalume/elevenlabs/stt/TranscriptionWord {
+	public fun <init> (Ljava/lang/String;Ljava/lang/Double;Ljava/lang/Double;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Double;Ljava/lang/Integer;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/Double;
+	public final fun component3 ()Ljava/lang/Double;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Ljava/lang/String;
+	public final fun component6 ()Ljava/lang/Double;
+	public final fun component7 ()Ljava/lang/Integer;
+	public final fun copy (Ljava/lang/String;Ljava/lang/Double;Ljava/lang/Double;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Double;Ljava/lang/Integer;)Ldev/yveskalume/elevenlabs/stt/TranscriptionWord;
+	public static synthetic fun copy$default (Ldev/yveskalume/elevenlabs/stt/TranscriptionWord;Ljava/lang/String;Ljava/lang/Double;Ljava/lang/Double;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Double;Ljava/lang/Integer;ILjava/lang/Object;)Ldev/yveskalume/elevenlabs/stt/TranscriptionWord;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getChannelIndex ()Ljava/lang/Integer;
+	public final fun getEndSeconds ()Ljava/lang/Double;
+	public final fun getLogProbability ()Ljava/lang/Double;
+	public final fun getSpeakerId ()Ljava/lang/String;
+	public final fun getStartSeconds ()Ljava/lang/Double;
+	public final fun getText ()Ljava/lang/String;
+	public final fun getType ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/yveskalume/elevenlabs/tts/Audio {
+	public final fun getBytes ()[B
+	public final fun getContentType ()Ljava/lang/String;
+	public final fun getRequestId ()Ljava/lang/String;
+}
+
+public final class dev/yveskalume/elevenlabs/tts/AudioChunk {
+	public final fun getBytes ()[B
+}
+
+public final class dev/yveskalume/elevenlabs/tts/OutputFormat {
+	public static final field Companion Ldev/yveskalume/elevenlabs/tts/OutputFormat$Companion;
+	public fun <init> (Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;)Ldev/yveskalume/elevenlabs/tts/OutputFormat;
+	public static synthetic fun copy$default (Ldev/yveskalume/elevenlabs/tts/OutputFormat;Ljava/lang/String;ILjava/lang/Object;)Ldev/yveskalume/elevenlabs/tts/OutputFormat;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getValue ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/yveskalume/elevenlabs/tts/OutputFormat$Companion {
+	public final fun getMp3_44100_128 ()Ldev/yveskalume/elevenlabs/tts/OutputFormat;
+	public final fun getMp3_44100_192 ()Ldev/yveskalume/elevenlabs/tts/OutputFormat;
+	public final fun getPcm_16000 ()Ldev/yveskalume/elevenlabs/tts/OutputFormat;
+	public final fun getPcm_24000 ()Ldev/yveskalume/elevenlabs/tts/OutputFormat;
+	public final fun getPcm_44100 ()Ldev/yveskalume/elevenlabs/tts/OutputFormat;
+	public final fun getUlaw_8000 ()Ldev/yveskalume/elevenlabs/tts/OutputFormat;
+	public final fun getWav_44100 ()Ldev/yveskalume/elevenlabs/tts/OutputFormat;
+}
+
+public abstract interface class dev/yveskalume/elevenlabs/tts/RealtimeTokenProvider {
+	public abstract fun getToken (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class dev/yveskalume/elevenlabs/tts/RealtimeTtsAlignment {
+	public fun <init> (Ljava/util/List;Ljava/util/List;Ljava/util/List;)V
+	public final fun component1 ()Ljava/util/List;
+	public final fun component2 ()Ljava/util/List;
+	public final fun component3 ()Ljava/util/List;
+	public final fun copy (Ljava/util/List;Ljava/util/List;Ljava/util/List;)Ldev/yveskalume/elevenlabs/tts/RealtimeTtsAlignment;
+	public static synthetic fun copy$default (Ldev/yveskalume/elevenlabs/tts/RealtimeTtsAlignment;Ljava/util/List;Ljava/util/List;Ljava/util/List;ILjava/lang/Object;)Ldev/yveskalume/elevenlabs/tts/RealtimeTtsAlignment;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getCharacterDurationsMs ()Ljava/util/List;
+	public final fun getCharacterStartTimesMs ()Ljava/util/List;
+	public final fun getCharacters ()Ljava/util/List;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class dev/yveskalume/elevenlabs/tts/RealtimeTtsAuthorization {
+}
+
+public final class dev/yveskalume/elevenlabs/tts/RealtimeTtsAuthorization$ConfiguredApiKey : dev/yveskalume/elevenlabs/tts/RealtimeTtsAuthorization {
+	public static final field INSTANCE Ldev/yveskalume/elevenlabs/tts/RealtimeTtsAuthorization$ConfiguredApiKey;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/yveskalume/elevenlabs/tts/RealtimeTtsAuthorization$SingleUseToken : dev/yveskalume/elevenlabs/tts/RealtimeTtsAuthorization {
+	public fun <init> (Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;)Ldev/yveskalume/elevenlabs/tts/RealtimeTtsAuthorization$SingleUseToken;
+	public static synthetic fun copy$default (Ldev/yveskalume/elevenlabs/tts/RealtimeTtsAuthorization$SingleUseToken;Ljava/lang/String;ILjava/lang/Object;)Ldev/yveskalume/elevenlabs/tts/RealtimeTtsAuthorization$SingleUseToken;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getToken ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/yveskalume/elevenlabs/tts/RealtimeTtsAuthorization$TokenProvider : dev/yveskalume/elevenlabs/tts/RealtimeTtsAuthorization {
+	public fun <init> (Ldev/yveskalume/elevenlabs/tts/RealtimeTokenProvider;)V
+	public final fun component1 ()Ldev/yveskalume/elevenlabs/tts/RealtimeTokenProvider;
+	public final fun copy (Ldev/yveskalume/elevenlabs/tts/RealtimeTokenProvider;)Ldev/yveskalume/elevenlabs/tts/RealtimeTtsAuthorization$TokenProvider;
+	public static synthetic fun copy$default (Ldev/yveskalume/elevenlabs/tts/RealtimeTtsAuthorization$TokenProvider;Ldev/yveskalume/elevenlabs/tts/RealtimeTokenProvider;ILjava/lang/Object;)Ldev/yveskalume/elevenlabs/tts/RealtimeTtsAuthorization$TokenProvider;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getProvider ()Ldev/yveskalume/elevenlabs/tts/RealtimeTokenProvider;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class dev/yveskalume/elevenlabs/tts/RealtimeTtsEvent {
+}
+
+public final class dev/yveskalume/elevenlabs/tts/RealtimeTtsEvent$Audio : dev/yveskalume/elevenlabs/tts/RealtimeTtsEvent {
+	public fun <init> ([BLdev/yveskalume/elevenlabs/tts/RealtimeTtsAlignment;Ldev/yveskalume/elevenlabs/tts/RealtimeTtsAlignment;)V
+	public synthetic fun <init> ([BLdev/yveskalume/elevenlabs/tts/RealtimeTtsAlignment;Ldev/yveskalume/elevenlabs/tts/RealtimeTtsAlignment;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()[B
+	public final fun component2 ()Ldev/yveskalume/elevenlabs/tts/RealtimeTtsAlignment;
+	public final fun component3 ()Ldev/yveskalume/elevenlabs/tts/RealtimeTtsAlignment;
+	public final fun copy ([BLdev/yveskalume/elevenlabs/tts/RealtimeTtsAlignment;Ldev/yveskalume/elevenlabs/tts/RealtimeTtsAlignment;)Ldev/yveskalume/elevenlabs/tts/RealtimeTtsEvent$Audio;
+	public static synthetic fun copy$default (Ldev/yveskalume/elevenlabs/tts/RealtimeTtsEvent$Audio;[BLdev/yveskalume/elevenlabs/tts/RealtimeTtsAlignment;Ldev/yveskalume/elevenlabs/tts/RealtimeTtsAlignment;ILjava/lang/Object;)Ldev/yveskalume/elevenlabs/tts/RealtimeTtsEvent$Audio;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAlignment ()Ldev/yveskalume/elevenlabs/tts/RealtimeTtsAlignment;
+	public final fun getBytes ()[B
+	public final fun getNormalizedAlignment ()Ldev/yveskalume/elevenlabs/tts/RealtimeTtsAlignment;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/yveskalume/elevenlabs/tts/RealtimeTtsEvent$Finished : dev/yveskalume/elevenlabs/tts/RealtimeTtsEvent {
+	public static final field INSTANCE Ldev/yveskalume/elevenlabs/tts/RealtimeTtsEvent$Finished;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/yveskalume/elevenlabs/tts/RealtimeTtsGenerationConfig {
+	public fun <init> (Ljava/util/List;)V
+	public final fun component1 ()Ljava/util/List;
+	public final fun copy (Ljava/util/List;)Ldev/yveskalume/elevenlabs/tts/RealtimeTtsGenerationConfig;
+	public static synthetic fun copy$default (Ldev/yveskalume/elevenlabs/tts/RealtimeTtsGenerationConfig;Ljava/util/List;ILjava/lang/Object;)Ldev/yveskalume/elevenlabs/tts/RealtimeTtsGenerationConfig;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getChunkLengthSchedule ()Ljava/util/List;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/yveskalume/elevenlabs/tts/RealtimeTtsKeepAlive {
+	public fun <init> ()V
+	public fun <init> (ZJ)V
+	public synthetic fun <init> (ZJILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Z
+	public final fun component2 ()J
+	public final fun copy (ZJ)Ldev/yveskalume/elevenlabs/tts/RealtimeTtsKeepAlive;
+	public static synthetic fun copy$default (Ldev/yveskalume/elevenlabs/tts/RealtimeTtsKeepAlive;ZJILjava/lang/Object;)Ldev/yveskalume/elevenlabs/tts/RealtimeTtsKeepAlive;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getEnabled ()Z
+	public final fun getIntervalMillis ()J
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/yveskalume/elevenlabs/tts/RealtimeTtsOptions {
+	public fun <init> ()V
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ldev/yveskalume/elevenlabs/tts/OutputFormat;Ldev/yveskalume/elevenlabs/tts/VoiceSettings;Ldev/yveskalume/elevenlabs/tts/RealtimeTtsGenerationConfig;ZZZLdev/yveskalume/elevenlabs/tts/RealtimeTtsTimeouts;Ldev/yveskalume/elevenlabs/tts/RealtimeTtsKeepAlive;Ldev/yveskalume/elevenlabs/tts/RealtimeTtsReconnectPolicy;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ldev/yveskalume/elevenlabs/tts/OutputFormat;Ldev/yveskalume/elevenlabs/tts/VoiceSettings;Ldev/yveskalume/elevenlabs/tts/RealtimeTtsGenerationConfig;ZZZLdev/yveskalume/elevenlabs/tts/RealtimeTtsTimeouts;Ldev/yveskalume/elevenlabs/tts/RealtimeTtsKeepAlive;Ldev/yveskalume/elevenlabs/tts/RealtimeTtsReconnectPolicy;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component10 ()Ldev/yveskalume/elevenlabs/tts/RealtimeTtsKeepAlive;
+	public final fun component11 ()Ldev/yveskalume/elevenlabs/tts/RealtimeTtsReconnectPolicy;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ldev/yveskalume/elevenlabs/tts/OutputFormat;
+	public final fun component4 ()Ldev/yveskalume/elevenlabs/tts/VoiceSettings;
+	public final fun component5 ()Ldev/yveskalume/elevenlabs/tts/RealtimeTtsGenerationConfig;
+	public final fun component6 ()Z
+	public final fun component7 ()Z
+	public final fun component8 ()Z
+	public final fun component9 ()Ldev/yveskalume/elevenlabs/tts/RealtimeTtsTimeouts;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ldev/yveskalume/elevenlabs/tts/OutputFormat;Ldev/yveskalume/elevenlabs/tts/VoiceSettings;Ldev/yveskalume/elevenlabs/tts/RealtimeTtsGenerationConfig;ZZZLdev/yveskalume/elevenlabs/tts/RealtimeTtsTimeouts;Ldev/yveskalume/elevenlabs/tts/RealtimeTtsKeepAlive;Ldev/yveskalume/elevenlabs/tts/RealtimeTtsReconnectPolicy;)Ldev/yveskalume/elevenlabs/tts/RealtimeTtsOptions;
+	public static synthetic fun copy$default (Ldev/yveskalume/elevenlabs/tts/RealtimeTtsOptions;Ljava/lang/String;Ljava/lang/String;Ldev/yveskalume/elevenlabs/tts/OutputFormat;Ldev/yveskalume/elevenlabs/tts/VoiceSettings;Ldev/yveskalume/elevenlabs/tts/RealtimeTtsGenerationConfig;ZZZLdev/yveskalume/elevenlabs/tts/RealtimeTtsTimeouts;Ldev/yveskalume/elevenlabs/tts/RealtimeTtsKeepAlive;Ldev/yveskalume/elevenlabs/tts/RealtimeTtsReconnectPolicy;ILjava/lang/Object;)Ldev/yveskalume/elevenlabs/tts/RealtimeTtsOptions;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getEnableLogging ()Z
+	public final fun getEnableSsmlParsing ()Z
+	public final fun getGenerationConfig ()Ldev/yveskalume/elevenlabs/tts/RealtimeTtsGenerationConfig;
+	public final fun getKeepAlive ()Ldev/yveskalume/elevenlabs/tts/RealtimeTtsKeepAlive;
+	public final fun getLanguageCode ()Ljava/lang/String;
+	public final fun getModelId ()Ljava/lang/String;
+	public final fun getOutputFormat ()Ldev/yveskalume/elevenlabs/tts/OutputFormat;
+	public final fun getReconnectPolicy ()Ldev/yveskalume/elevenlabs/tts/RealtimeTtsReconnectPolicy;
+	public final fun getSyncAlignment ()Z
+	public final fun getTimeouts ()Ldev/yveskalume/elevenlabs/tts/RealtimeTtsTimeouts;
+	public final fun getVoiceSettings ()Ldev/yveskalume/elevenlabs/tts/VoiceSettings;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class dev/yveskalume/elevenlabs/tts/RealtimeTtsReconnectPolicy {
+}
+
+public final class dev/yveskalume/elevenlabs/tts/RealtimeTtsReconnectPolicy$BeforeFirstAudio : dev/yveskalume/elevenlabs/tts/RealtimeTtsReconnectPolicy {
+	public fun <init> ()V
+	public fun <init> (IJJD)V
+	public synthetic fun <init> (IJJDILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()I
+	public final fun component2 ()J
+	public final fun component3 ()J
+	public final fun component4 ()D
+	public final fun copy (IJJD)Ldev/yveskalume/elevenlabs/tts/RealtimeTtsReconnectPolicy$BeforeFirstAudio;
+	public static synthetic fun copy$default (Ldev/yveskalume/elevenlabs/tts/RealtimeTtsReconnectPolicy$BeforeFirstAudio;IJJDILjava/lang/Object;)Ldev/yveskalume/elevenlabs/tts/RealtimeTtsReconnectPolicy$BeforeFirstAudio;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getInitialDelayMillis ()J
+	public final fun getJitterFactor ()D
+	public final fun getMaxAttempts ()I
+	public final fun getMaxDelayMillis ()J
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/yveskalume/elevenlabs/tts/RealtimeTtsReconnectPolicy$Never : dev/yveskalume/elevenlabs/tts/RealtimeTtsReconnectPolicy {
+	public static final field INSTANCE Ldev/yveskalume/elevenlabs/tts/RealtimeTtsReconnectPolicy$Never;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class dev/yveskalume/elevenlabs/tts/RealtimeTtsSession {
+	public abstract fun close (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun finish (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun flush (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun getEvents ()Lkotlinx/coroutines/flow/Flow;
+	public abstract fun sendText (Ljava/lang/String;ZLkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun sendText$default (Ldev/yveskalume/elevenlabs/tts/RealtimeTtsSession;Ljava/lang/String;ZLkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+}
+
+public final class dev/yveskalume/elevenlabs/tts/RealtimeTtsSession$DefaultImpls {
+	public static synthetic fun sendText$default (Ldev/yveskalume/elevenlabs/tts/RealtimeTtsSession;Ljava/lang/String;ZLkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+}
+
+public final class dev/yveskalume/elevenlabs/tts/RealtimeTtsTimeouts {
+	public fun <init> ()V
+	public fun <init> (JJJI)V
+	public synthetic fun <init> (JJJIILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()J
+	public final fun component2 ()J
+	public final fun component3 ()J
+	public final fun component4 ()I
+	public final fun copy (JJJI)Ldev/yveskalume/elevenlabs/tts/RealtimeTtsTimeouts;
+	public static synthetic fun copy$default (Ldev/yveskalume/elevenlabs/tts/RealtimeTtsTimeouts;JJJIILjava/lang/Object;)Ldev/yveskalume/elevenlabs/tts/RealtimeTtsTimeouts;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getConnectTimeoutMillis ()J
+	public final fun getFinishTimeoutMillis ()J
+	public final fun getInactivityTimeoutSeconds ()I
+	public final fun getSendTimeoutMillis ()J
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class dev/yveskalume/elevenlabs/tts/TextToSpeechApi {
+	public abstract fun generate (Ldev/yveskalume/elevenlabs/tts/TextToSpeechRequest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun openRealtimeSession (Ljava/lang/String;Ldev/yveskalume/elevenlabs/tts/RealtimeTtsOptions;Ldev/yveskalume/elevenlabs/tts/RealtimeTtsAuthorization;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun openRealtimeSession$default (Ldev/yveskalume/elevenlabs/tts/TextToSpeechApi;Ljava/lang/String;Ldev/yveskalume/elevenlabs/tts/RealtimeTtsOptions;Ldev/yveskalume/elevenlabs/tts/RealtimeTtsAuthorization;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public abstract fun realtime (Ljava/lang/String;Lkotlinx/coroutines/flow/Flow;Ldev/yveskalume/elevenlabs/tts/RealtimeTtsOptions;Ldev/yveskalume/elevenlabs/tts/RealtimeTtsAuthorization;)Lkotlinx/coroutines/flow/Flow;
+	public static synthetic fun realtime$default (Ldev/yveskalume/elevenlabs/tts/TextToSpeechApi;Ljava/lang/String;Lkotlinx/coroutines/flow/Flow;Ldev/yveskalume/elevenlabs/tts/RealtimeTtsOptions;Ldev/yveskalume/elevenlabs/tts/RealtimeTtsAuthorization;ILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
+	public abstract fun stream (Ldev/yveskalume/elevenlabs/tts/TextToSpeechRequest;)Lkotlinx/coroutines/flow/Flow;
+}
+
+public final class dev/yveskalume/elevenlabs/tts/TextToSpeechApi$DefaultImpls {
+	public static synthetic fun openRealtimeSession$default (Ldev/yveskalume/elevenlabs/tts/TextToSpeechApi;Ljava/lang/String;Ldev/yveskalume/elevenlabs/tts/RealtimeTtsOptions;Ldev/yveskalume/elevenlabs/tts/RealtimeTtsAuthorization;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun realtime$default (Ldev/yveskalume/elevenlabs/tts/TextToSpeechApi;Ljava/lang/String;Lkotlinx/coroutines/flow/Flow;Ldev/yveskalume/elevenlabs/tts/RealtimeTtsOptions;Ldev/yveskalume/elevenlabs/tts/RealtimeTtsAuthorization;ILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
+}
+
+public final class dev/yveskalume/elevenlabs/tts/TextToSpeechRequest {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ldev/yveskalume/elevenlabs/tts/VoiceSettings;Ldev/yveskalume/elevenlabs/tts/OutputFormat;Z)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ldev/yveskalume/elevenlabs/tts/VoiceSettings;Ldev/yveskalume/elevenlabs/tts/OutputFormat;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Ldev/yveskalume/elevenlabs/tts/VoiceSettings;
+	public final fun component6 ()Ldev/yveskalume/elevenlabs/tts/OutputFormat;
+	public final fun component7 ()Z
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ldev/yveskalume/elevenlabs/tts/VoiceSettings;Ldev/yveskalume/elevenlabs/tts/OutputFormat;Z)Ldev/yveskalume/elevenlabs/tts/TextToSpeechRequest;
+	public static synthetic fun copy$default (Ldev/yveskalume/elevenlabs/tts/TextToSpeechRequest;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ldev/yveskalume/elevenlabs/tts/VoiceSettings;Ldev/yveskalume/elevenlabs/tts/OutputFormat;ZILjava/lang/Object;)Ldev/yveskalume/elevenlabs/tts/TextToSpeechRequest;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getEnableLogging ()Z
+	public final fun getLanguageCode ()Ljava/lang/String;
+	public final fun getModelId ()Ljava/lang/String;
+	public final fun getOutputFormat ()Ldev/yveskalume/elevenlabs/tts/OutputFormat;
+	public final fun getText ()Ljava/lang/String;
+	public final fun getVoiceId ()Ljava/lang/String;
+	public final fun getVoiceSettings ()Ldev/yveskalume/elevenlabs/tts/VoiceSettings;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/yveskalume/elevenlabs/tts/VoiceSettings {
+	public fun <init> ()V
+	public fun <init> (Ljava/lang/Double;Ljava/lang/Double;Ljava/lang/Double;Ljava/lang/Boolean;Ljava/lang/Double;)V
+	public synthetic fun <init> (Ljava/lang/Double;Ljava/lang/Double;Ljava/lang/Double;Ljava/lang/Boolean;Ljava/lang/Double;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/lang/Double;
+	public final fun component2 ()Ljava/lang/Double;
+	public final fun component3 ()Ljava/lang/Double;
+	public final fun component4 ()Ljava/lang/Boolean;
+	public final fun component5 ()Ljava/lang/Double;
+	public final fun copy (Ljava/lang/Double;Ljava/lang/Double;Ljava/lang/Double;Ljava/lang/Boolean;Ljava/lang/Double;)Ldev/yveskalume/elevenlabs/tts/VoiceSettings;
+	public static synthetic fun copy$default (Ldev/yveskalume/elevenlabs/tts/VoiceSettings;Ljava/lang/Double;Ljava/lang/Double;Ljava/lang/Double;Ljava/lang/Boolean;Ljava/lang/Double;ILjava/lang/Object;)Ldev/yveskalume/elevenlabs/tts/VoiceSettings;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getSimilarityBoost ()Ljava/lang/Double;
+	public final fun getSpeed ()Ljava/lang/Double;
+	public final fun getStability ()Ljava/lang/Double;
+	public final fun getStyle ()Ljava/lang/Double;
+	public final fun getUseSpeakerBoost ()Ljava/lang/Boolean;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/yveskalume/elevenlabs/voices/ListVoicesRequest {
+	public fun <init> ()V
+	public fun <init> (ILjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Z)V
+	public synthetic fun <init> (ILjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()I
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Ljava/lang/String;
+	public final fun component6 ()Z
+	public final fun copy (ILjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Z)Ldev/yveskalume/elevenlabs/voices/ListVoicesRequest;
+	public static synthetic fun copy$default (Ldev/yveskalume/elevenlabs/voices/ListVoicesRequest;ILjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ZILjava/lang/Object;)Ldev/yveskalume/elevenlabs/voices/ListVoicesRequest;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getCategory ()Ljava/lang/String;
+	public final fun getIncludeTotalCount ()Z
+	public final fun getNextPageToken ()Ljava/lang/String;
+	public final fun getPageSize ()I
+	public final fun getSearch ()Ljava/lang/String;
+	public final fun getVoiceType ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/yveskalume/elevenlabs/voices/Voice {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/lang/String;
+	public final fun component5 ()Ljava/lang/String;
+	public final fun component6 ()Ljava/util/Map;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;)Ldev/yveskalume/elevenlabs/voices/Voice;
+	public static synthetic fun copy$default (Ldev/yveskalume/elevenlabs/voices/Voice;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;ILjava/lang/Object;)Ldev/yveskalume/elevenlabs/voices/Voice;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getCategory ()Ljava/lang/String;
+	public final fun getDescription ()Ljava/lang/String;
+	public final fun getId ()Ljava/lang/String;
+	public final fun getLabels ()Ljava/util/Map;
+	public final fun getName ()Ljava/lang/String;
+	public final fun getPreviewUrl ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/yveskalume/elevenlabs/voices/VoicePage {
+	public fun <init> (Ljava/util/List;ZLjava/lang/String;Ljava/lang/Integer;)V
+	public synthetic fun <init> (Ljava/util/List;ZLjava/lang/String;Ljava/lang/Integer;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/util/List;
+	public final fun component2 ()Z
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Ljava/lang/Integer;
+	public final fun copy (Ljava/util/List;ZLjava/lang/String;Ljava/lang/Integer;)Ldev/yveskalume/elevenlabs/voices/VoicePage;
+	public static synthetic fun copy$default (Ldev/yveskalume/elevenlabs/voices/VoicePage;Ljava/util/List;ZLjava/lang/String;Ljava/lang/Integer;ILjava/lang/Object;)Ldev/yveskalume/elevenlabs/voices/VoicePage;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getHasMore ()Z
+	public final fun getNextPageToken ()Ljava/lang/String;
+	public final fun getTotalCount ()Ljava/lang/Integer;
+	public final fun getVoices ()Ljava/util/List;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class dev/yveskalume/elevenlabs/voices/VoicesApi {
+	public abstract fun get (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun list (Ldev/yveskalume/elevenlabs/voices/ListVoicesRequest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun list$default (Ldev/yveskalume/elevenlabs/voices/VoicesApi;Ldev/yveskalume/elevenlabs/voices/ListVoicesRequest;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+}
+
+public final class dev/yveskalume/elevenlabs/voices/VoicesApi$DefaultImpls {
+	public static synthetic fun list$default (Ldev/yveskalume/elevenlabs/voices/VoicesApi;Ldev/yveskalume/elevenlabs/voices/ListVoicesRequest;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+}
+
