@@ -1,10 +1,16 @@
 package dev.yveskalume.elevenlabs.tts
 
-data class VoiceSettings(
+/** Optional controls that tune the generated voice. */
+public data class VoiceSettings(
+    /** Voice consistency from 0 to 1, or `null` to use the service default. */
     val stability: Double? = null,
+    /** Similarity to the source voice from 0 to 1. */
     val similarityBoost: Double? = null,
+    /** Style exaggeration accepted by the selected model; must not be negative. */
     val style: Double? = null,
+    /** Whether to enable speaker similarity boost. */
     val useSpeakerBoost: Boolean? = null,
+    /** Speech-speed multiplier; must be greater than zero. */
     val speed: Double? = null,
 ) {
     init {

@@ -1,30 +1,36 @@
 package dev.yveskalume.elevenlabs
 
-data class ElevenLabsError(
+/** Details associated with a failed ElevenLabs operation. */
+public data class ElevenLabsError(
     val statusCode: Int?,
     val message: String,
     val requestId: String? = null,
+    /** Raw response body, when one was received. It may contain sensitive information. */
     val responseBody: String? = null,
 )
 
-sealed class ElevenLabsException(
+
+public sealed class ElevenLabsException(
     message: String,
     cause: Throwable? = null,
 ) : Exception(message, cause) {
 
-    class Serialization internal constructor(
-        val error: ElevenLabsError,
+    /** The server response could not be decoded into the expected response type. */
+    public class Serialization internal constructor(
+        public val error: ElevenLabsError,
         cause: Throwable,
     ) : ElevenLabsException(error.message, cause)
 
-    class UnexpectedResponse internal constructor(
-        val error: ElevenLabsError,
+    /** ElevenLabs returned a non-successful HTTP response. */
+    public class UnexpectedResponse internal constructor(
+        public val error: ElevenLabsError,
     ) : ElevenLabsException(error.message)
 
-    class Realtime internal constructor(
+    /** A realtime WebSocket connection or session operation failed. */
+    public class Realtime internal constructor(
         message: String,
-        val closeCode: Short? = null,
-        val responseBody: String? = null,
+        public val closeCode: Short? = null,
+        public val responseBody: String? = null,
         cause: Throwable? = null,
     ) : ElevenLabsException(message, cause)
 }
