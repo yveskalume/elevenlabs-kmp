@@ -1,34 +1,60 @@
 # ElevenLabs KMP
 
-A Kotlin-first Multiplatform SDK for the ElevenLabs API.
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.yveskalume/elevenlabs-kmp?label=Maven%20Central)](https://central.sonatype.com/artifact/io.github.yveskalume/elevenlabs-kmp/0.1.0)
+[![CI](https://github.com/yveskalume/elevenlabs-kmp/actions/workflows/ci.yml/badge.svg)](https://github.com/yveskalume/elevenlabs-kmp/actions/workflows/ci.yml)
+[![Documentation](https://github.com/yveskalume/elevenlabs-kmp/actions/workflows/docs.yml/badge.svg)](https://github.com/yveskalume/elevenlabs-kmp/actions/workflows/docs.yml)
+
+A Kotlin-first Multiplatform SDK for the ElevenLabs API, with coroutine and `Flow`-based APIs for Android, iOS and JVM.
 
 > [!IMPORTANT]
 > This is an unofficial community SDK. It is not affiliated with or endorsed by ElevenLabs.
 
-The project currently targets Android, iOS (`iosArm64` and `iosSimulatorArm64`), and JVM. Its public API uses coroutines and `Flow`.
-
 ## Installation
 
+ElevenLabs KMP is available from Maven Central.
+
 ```kotlin
-commonMain.dependencies {
-    implementation("io.github.yveskalume:elevenlabs-kmp:0.1.0")
+// settings.gradle.kts
+dependencyResolutionManagement {
+    repositories {
+        mavenCentral()
+    }
 }
 ```
 
-Until `0.1.0` is published, use the project dependency from this repository or a `0.1.0-SNAPSHOT` deployment.
+```kotlin
+// Shared module's build.gradle.kts
+kotlin {
+    sourceSets {
+        commonMain.dependencies {
+            implementation("io.github.yveskalume:elevenlabs-kmp:0.1.0")
+        }
+    }
+}
+```
 
-## Current scope
+### Snapshots
 
-- API-key authentication with a suspendable provider
-- Paginated voice listing and voice retrieval
-- Model listing
-- Complete text-to-speech generation
-- HTTP audio streaming
-- Realtime text-input streaming over WebSockets
-- Batch speech-to-text transcription
-- Realtime speech-to-text over WebSockets
+Development snapshots are also published to the Central Portal snapshots repository:
 
-## Usage
+```kotlin
+// settings.gradle.kts
+dependencyResolutionManagement {
+    repositories {
+        maven {
+            url = uri("https://central.sonatype.com/repository/maven-snapshots/")
+            content {
+                includeModule("io.github.yveskalume", "elevenlabs-kmp")
+            }
+        }
+        mavenCentral()
+    }
+}
+```
+
+Then replace `0.1.0` with `0.1.0-SNAPSHOT` in the dependency declaration.
+
+## Quick start
 
 Create a client in a trusted environment:
 
@@ -38,19 +64,9 @@ val elevenLabs = ElevenLabs {
 }
 ```
 
-Credentials can be resolved immediately before each request:
+The configured key is used automatically by every service.
 
-```kotlin
-val elevenLabs = ElevenLabs {
-    apiKey(
-        ApiKeyProvider {
-            credentialsStore.currentElevenLabsKey()
-        },
-    )
-}
-```
-
-List voices:
+List available voices:
 
 ```kotlin
 val page = elevenLabs.voices.list(
@@ -61,7 +77,7 @@ val page = elevenLabs.voices.list(
 )
 ```
 
-Generate complete audio:
+Generate speech:
 
 ```kotlin
 val audio = elevenLabs.textToSpeech.generate(
@@ -75,7 +91,20 @@ val audio = elevenLabs.textToSpeech.generate(
 saveAudio(audio.bytes)
 ```
 
-Stream audio over HTTP when the complete input text is already available:
+Call `elevenLabs.close()` when the client is no longer needed.
+
+## Text to speech
+
+Choose the API based on how text becomes available:
+
+| API | Use it when |
+| --- | --- |
+| `generate()` | You need the complete audio as one result. |
+| `stream()` | The complete text is available, but audio should arrive incrementally over HTTP. |
+| `realtime()` | Text arrives incrementally, such as tokens from an LLM. |
+| `openRealtimeSession()` | You need explicit control over sending, flushing, or alignment events. |
+
+Stream audio over HTTP:
 
 ```kotlin
 elevenLabs.textToSpeech.stream(
@@ -88,9 +117,9 @@ elevenLabs.textToSpeech.stream(
 }
 ```
 
-`AudioChunk` represents an arbitrary transport chunk. Its bytes are not guaranteed to contain a complete MP3, PCM, or other codec frame.
+An `AudioChunk` is an arbitrary transport chunk and may not contain a complete codec frame.
 
-Use realtime TTS when text arrives incrementally, such as tokens produced by an LLM:
+Stream text and audio in realtime:
 
 ```kotlin
 val llmText: Flow<String> = languageModel.responses()
@@ -107,18 +136,12 @@ elevenLabs.textToSpeech.realtime(
 }
 ```
 
-The convenience flow opens a WebSocket when collected, sends each non-empty text value in order, finishes after the input flow completes, and closes on cancellation or failure.
-
-Use a session when you need explicit flush control or character alignment:
+For explicit control, open a session:
 
 ```kotlin
 val session = elevenLabs.textToSpeech.openRealtimeSession(
     voiceId = "JBFqnCBsd6RMkjVDRZzb",
-    options = RealtimeTtsOptions(
-        modelId = "eleven_flash_v2_5",
-        outputFormat = OutputFormat.Pcm_24000,
-        syncAlignment = true,
-    ),
+    options = RealtimeTtsOptions(syncAlignment = true),
 )
 
 coroutineScope {
@@ -140,86 +163,9 @@ coroutineScope {
 }
 ```
 
-`finish()` gracefully signals that no more text is coming; the events flow completes after ElevenLabs sends its final response. `close()` cancels immediately. A session's `events` flow supports one collector.
+Use `finish()` to complete a session gracefully or `close()` to cancel it immediately.
 
-Realtime sessions send a single-space keepalive every 15 seconds by default and configure the server for 60 seconds of inactivity. Timeouts and keepalive behavior can be customized:
-
-```kotlin
-val options = RealtimeTtsOptions(
-    timeouts = RealtimeTtsTimeouts(
-        connectTimeoutMillis = 10_000,
-        sendTimeoutMillis = 10_000,
-        finishTimeoutMillis = 30_000,
-        inactivityTimeoutSeconds = 60,
-    ),
-    keepAlive = RealtimeTtsKeepAlive(
-        enabled = true,
-        intervalMillis = 15_000,
-    ),
-)
-```
-
-Automatic reconnection is disabled by default. It can be enabled conservatively for failures that happen before the first audio chunk:
-
-```kotlin
-val options = RealtimeTtsOptions(
-    reconnectPolicy = RealtimeTtsReconnectPolicy.BeforeFirstAudio(
-        maxAttempts = 3,
-        initialDelayMillis = 500,
-        maxDelayMillis = 5_000,
-    ),
-)
-```
-
-Each connection attempt resolves fresh credentials. Once audio has been emitted, the SDK reports a connection failure instead of reconnecting because replaying text could produce duplicate audio.
-
-For conversational applications that need interruptions or several independent generation streams, open one multi-context WebSocket:
-
-```kotlin
-val session = elevenLabs.textToSpeech.openMultiContextSession(
-    voiceId = "JBFqnCBsd6RMkjVDRZzb",
-    options = MultiContextTtsOptions(
-        modelId = "eleven_flash_v2_5",
-        outputFormat = OutputFormat.Pcm_24000,
-        syncAlignment = true,
-    ),
-)
-
-coroutineScope {
-    val eventsJob = launch {
-        session.events.collect { event ->
-            when (event) {
-                is MultiContextTtsEvent.Audio -> {
-                    audioPipeline.write(event.contextId, event.bytes)
-                    updateCaptions(event.contextId, event.normalizedAlignment)
-                }
-                is MultiContextTtsEvent.ContextFinished -> {
-                    audioPipeline.finish(event.contextId)
-                }
-                is MultiContextTtsEvent.ContextError -> {
-                    showContextError(event.contextId, event.message)
-                }
-            }
-        }
-    }
-
-    val answer = session.openContext("answer-1")
-    answer.sendText("I can help with that.", flush = true)
-
-    // If the user interrupts, close only the old context and start a replacement.
-    answer.close()
-    val replacement = session.openContext("answer-2")
-    replacement.sendText("Let me answer the new question.", flush = true)
-
-    replacement.close()
-    session.close()
-    eventsJob.join()
-}
-```
-
-A multi-context session supports at most five active contexts. Context IDs must be unique for the lifetime of the socket. Active contexts receive independent empty-text keepalives by default. Closing a context does not close the other contexts; closing the session sends `close_socket` and terminates the WebSocket. Automatic reconnection is intentionally not performed for multi-context sessions because safely replaying several independently consumed audio streams requires application-level coordination.
-
-When all input text is already available, prefer HTTP `stream()`. Realtime TTS is intended for partial input and can add buffering overhead for complete text.
+## Speech to text
 
 Transcribe a complete audio or video file with Scribe:
 
@@ -235,12 +181,9 @@ val transcript = elevenLabs.speechToText.transcribe(
 )
 
 println(transcript.text)
-transcript.words.forEach { word ->
-    println("${word.startSeconds}: ${word.text} (${word.speakerId})")
-}
 ```
 
-For live microphone transcription, open a realtime session and send PCM chunks in the format declared by the options:
+For live microphone transcription, open a realtime session and send audio in the format declared by its options:
 
 ```kotlin
 val session = elevenLabs.speechToText.openRealtimeSession(
@@ -269,76 +212,48 @@ coroutineScope {
 }
 ```
 
-`RealtimeSttSession` supports manual commits and VAD-based commits. Always call `close()` when microphone capture ends or the screen owning the session is disposed.
+Close the session when microphone capture ends.
 
-The included Android and iOS sample apps expose a **Speech to text** mode. They request microphone permission, capture 16 kHz mono PCM16 audio, show partial transcripts while recording, and commit the final transcript when **Stop and transcribe** is pressed.
+## Authentication and security
 
-Release resources when the client is no longer needed:
-
-```kotlin
-elevenLabs.close()
-```
-
-## API KEY
-
-Never ship an ElevenLabs API key inside an Android or iOS application. It can be extracted from the app. Production mobile applications should call a trusted backend or use an endpoint-specific short-lived credential supported by ElevenLabs.
-
-Realtime TTS accepts a single-use token obtained from a trusted backend, allowing the SDK client itself to be created without an embedded API key:
+For rotating credentials, configure a provider instead of a static key:
 
 ```kotlin
-val elevenLabs = ElevenLabs { }
-val authorization = RealtimeTtsAuthorization.TokenProvider(
-    RealtimeTokenProvider {
-        // Your authenticated backend obtains the token from ElevenLabs.
-        backend.fetchRealtimeTtsToken()
-    },
-)
-
-elevenLabs.textToSpeech.realtime(
-    voiceId = voiceId,
-    text = llmText,
-    authorization = authorization,
-).collect { chunk ->
-    audioPipeline.write(chunk.bytes)
+val elevenLabs = ElevenLabs {
+    apiKey(
+        ApiKeyProvider {
+            credentialsStore.currentElevenLabsKey()
+        },
+    )
 }
 ```
 
-The provider is called once immediately before each WebSocket connection opens. This includes every collection of the cold `realtime()` flow, so a single-use token is never reused or cached by the SDK. If your application has already fetched a token, pass it directly with `RealtimeTtsAuthorization.SingleUseToken(token)`.
+Never embed an ElevenLabs API key in a production Android or iOS application. Use short-lived
+credentials issued by a trusted backend instead. See the [authentication guide](https://yveskalume.github.io/elevenlabs-kmp/authentication/).
 
-Single-use tokens are sent only through the WebSocket query parameter required by ElevenLabs. Configured API keys are sent only through the `xi-api-key` header. Fetch tokens through your own authenticated backend; never put the ElevenLabs API key in the provider or mobile application.
+## Supported features
 
-Speech-to-text supports the same mobile-safe pattern for both batch and realtime requests:
+- Paginated voice listing and voice retrieval
+- Model listing
+- Complete and HTTP-streamed text-to-speech generation
+- Realtime text-to-speech over WebSockets
+- Batch speech-to-text transcription
+- Realtime speech-to-text over WebSockets
+- API-key and endpoint-specific token authentication
 
-```kotlin
-val sttAuthorization = SpeechToTextAuthorization.TokenProvider(
-    SpeechToTextTokenProvider {
-        backend.fetchSpeechToTextToken()
-    },
-)
+## Running the samples
 
-val session = elevenLabs.speechToText.openRealtimeSession(
-    authorization = sttAuthorization,
-)
-```
+The Android and iOS sample apps demonstrate text-to-speech and live microphone transcription. Development keys configured for these samples are embedded in the resulting app and must not be used for production builds.
 
-The STT provider is evaluated once per batch request or realtime connection. The backend must return the correct endpoint-specific single-use token; the SDK never caches it.
-
-The Android sample requires an ElevenLabs API key at build time. Add it to the
-ignored `local.properties` file:
+For Android, add the following to the ignored `local.properties` file:
 
 ```properties
 ELEVENLABS_API_KEY=your-development-key
 ```
 
-Build the iOS sample for the simulator with:
+For iOS, create the ignored secrets configuration and replace its placeholder value:
 
 ```shell
 cp iosApp/Configuration/Secrets.xcconfig.example \
   iosApp/Configuration/Secrets.xcconfig
 ```
-
-Then replace the placeholder in the ignored `Secrets.xcconfig` with a
-development API key and build:
-
-Like Android's `local.properties` setup, this embeds the development key in the
-sample app. It is not appropriate for a production application.

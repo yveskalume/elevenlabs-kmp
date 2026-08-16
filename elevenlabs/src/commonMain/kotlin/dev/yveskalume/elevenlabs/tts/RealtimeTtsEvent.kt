@@ -1,10 +1,15 @@
 package dev.yveskalume.elevenlabs.tts
 
-sealed interface RealtimeTtsEvent {
-    data class Audio(
-        val bytes: ByteArray,
-        val alignment: RealtimeTtsAlignment? = null,
-        val normalizedAlignment: RealtimeTtsAlignment? = null,
+/** Event emitted by a [RealtimeTtsSession]. */
+public sealed interface RealtimeTtsEvent {
+    /** A generated audio chunk */
+    public data class Audio(
+        /** Generated audio bytes owned by this event */
+        public val bytes: ByteArray,
+        /** Timing for the submitted text, when requested and available. */
+        public val alignment: RealtimeTtsAlignment? = null,
+        /** Timing for the normalized spoken text, when requested and available. */
+        public val normalizedAlignment: RealtimeTtsAlignment? = null,
     ) : RealtimeTtsEvent {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
@@ -27,5 +32,6 @@ sealed interface RealtimeTtsEvent {
         }
     }
 
-    data object Finished : RealtimeTtsEvent
+    /** The server has completed generation and no more events will be emitted. */
+    public data object Finished : RealtimeTtsEvent
 }

@@ -2,7 +2,7 @@ package dev.yveskalume.elevenlabs.internal.http
 
 import kotlinx.serialization.json.Json
 
-val JSON = Json {
+internal val JSON = Json {
     ignoreUnknownKeys = true
     explicitNulls = false
 }

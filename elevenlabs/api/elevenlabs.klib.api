@@ -1,0 +1,863 @@
+// Klib ABI Dump
+// Targets: [iosArm64, iosSimulatorArm64]
+// Rendering settings:
+// - Signature version: 2
+// - Show manifest properties: true
+// - Show declarations: true
+
+// Library unique name: <Elevenlabskmp:elevenlabs>
+final enum class dev.yveskalume.elevenlabs.stt/RealtimeSttAudioFormat : kotlin/Enum<dev.yveskalume.elevenlabs.stt/RealtimeSttAudioFormat> { // dev.yveskalume.elevenlabs.stt/RealtimeSttAudioFormat|null[0]
+    enum entry Pcm16000 // dev.yveskalume.elevenlabs.stt/RealtimeSttAudioFormat.Pcm16000|null[0]
+    enum entry Pcm22050 // dev.yveskalume.elevenlabs.stt/RealtimeSttAudioFormat.Pcm22050|null[0]
+    enum entry Pcm24000 // dev.yveskalume.elevenlabs.stt/RealtimeSttAudioFormat.Pcm24000|null[0]
+    enum entry Pcm44100 // dev.yveskalume.elevenlabs.stt/RealtimeSttAudioFormat.Pcm44100|null[0]
+    enum entry Pcm48000 // dev.yveskalume.elevenlabs.stt/RealtimeSttAudioFormat.Pcm48000|null[0]
+    enum entry Pcm8000 // dev.yveskalume.elevenlabs.stt/RealtimeSttAudioFormat.Pcm8000|null[0]
+    enum entry Ulaw8000 // dev.yveskalume.elevenlabs.stt/RealtimeSttAudioFormat.Ulaw8000|null[0]
+
+    final val entries // dev.yveskalume.elevenlabs.stt/RealtimeSttAudioFormat.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<dev.yveskalume.elevenlabs.stt/RealtimeSttAudioFormat> // dev.yveskalume.elevenlabs.stt/RealtimeSttAudioFormat.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): dev.yveskalume.elevenlabs.stt/RealtimeSttAudioFormat // dev.yveskalume.elevenlabs.stt/RealtimeSttAudioFormat.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<dev.yveskalume.elevenlabs.stt/RealtimeSttAudioFormat> // dev.yveskalume.elevenlabs.stt/RealtimeSttAudioFormat.values|values#static(){}[0]
+}
+
+final enum class dev.yveskalume.elevenlabs.stt/RealtimeSttCommitStrategy : kotlin/Enum<dev.yveskalume.elevenlabs.stt/RealtimeSttCommitStrategy> { // dev.yveskalume.elevenlabs.stt/RealtimeSttCommitStrategy|null[0]
+    enum entry Manual // dev.yveskalume.elevenlabs.stt/RealtimeSttCommitStrategy.Manual|null[0]
+    enum entry VoiceActivityDetection // dev.yveskalume.elevenlabs.stt/RealtimeSttCommitStrategy.VoiceActivityDetection|null[0]
+
+    final val entries // dev.yveskalume.elevenlabs.stt/RealtimeSttCommitStrategy.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<dev.yveskalume.elevenlabs.stt/RealtimeSttCommitStrategy> // dev.yveskalume.elevenlabs.stt/RealtimeSttCommitStrategy.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): dev.yveskalume.elevenlabs.stt/RealtimeSttCommitStrategy // dev.yveskalume.elevenlabs.stt/RealtimeSttCommitStrategy.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<dev.yveskalume.elevenlabs.stt/RealtimeSttCommitStrategy> // dev.yveskalume.elevenlabs.stt/RealtimeSttCommitStrategy.values|values#static(){}[0]
+}
+
+final enum class dev.yveskalume.elevenlabs.stt/SpeechToTextFileFormat : kotlin/Enum<dev.yveskalume.elevenlabs.stt/SpeechToTextFileFormat> { // dev.yveskalume.elevenlabs.stt/SpeechToTextFileFormat|null[0]
+    enum entry Other // dev.yveskalume.elevenlabs.stt/SpeechToTextFileFormat.Other|null[0]
+    enum entry PcmS16Le16 // dev.yveskalume.elevenlabs.stt/SpeechToTextFileFormat.PcmS16Le16|null[0]
+
+    final val entries // dev.yveskalume.elevenlabs.stt/SpeechToTextFileFormat.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<dev.yveskalume.elevenlabs.stt/SpeechToTextFileFormat> // dev.yveskalume.elevenlabs.stt/SpeechToTextFileFormat.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): dev.yveskalume.elevenlabs.stt/SpeechToTextFileFormat // dev.yveskalume.elevenlabs.stt/SpeechToTextFileFormat.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<dev.yveskalume.elevenlabs.stt/SpeechToTextFileFormat> // dev.yveskalume.elevenlabs.stt/SpeechToTextFileFormat.values|values#static(){}[0]
+}
+
+final enum class dev.yveskalume.elevenlabs.stt/TimestampsGranularity : kotlin/Enum<dev.yveskalume.elevenlabs.stt/TimestampsGranularity> { // dev.yveskalume.elevenlabs.stt/TimestampsGranularity|null[0]
+    enum entry Character // dev.yveskalume.elevenlabs.stt/TimestampsGranularity.Character|null[0]
+    enum entry None // dev.yveskalume.elevenlabs.stt/TimestampsGranularity.None|null[0]
+    enum entry Word // dev.yveskalume.elevenlabs.stt/TimestampsGranularity.Word|null[0]
+
+    final val entries // dev.yveskalume.elevenlabs.stt/TimestampsGranularity.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<dev.yveskalume.elevenlabs.stt/TimestampsGranularity> // dev.yveskalume.elevenlabs.stt/TimestampsGranularity.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): dev.yveskalume.elevenlabs.stt/TimestampsGranularity // dev.yveskalume.elevenlabs.stt/TimestampsGranularity.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<dev.yveskalume.elevenlabs.stt/TimestampsGranularity> // dev.yveskalume.elevenlabs.stt/TimestampsGranularity.values|values#static(){}[0]
+}
+
+abstract fun interface dev.yveskalume.elevenlabs.stt/SpeechToTextTokenProvider { // dev.yveskalume.elevenlabs.stt/SpeechToTextTokenProvider|null[0]
+    abstract suspend fun getToken(): kotlin/String // dev.yveskalume.elevenlabs.stt/SpeechToTextTokenProvider.getToken|getToken(){}[0]
+}
+
+abstract fun interface dev.yveskalume.elevenlabs.tts/RealtimeTokenProvider { // dev.yveskalume.elevenlabs.tts/RealtimeTokenProvider|null[0]
+    abstract suspend fun getToken(): kotlin/String // dev.yveskalume.elevenlabs.tts/RealtimeTokenProvider.getToken|getToken(){}[0]
+}
+
+abstract fun interface dev.yveskalume.elevenlabs/ApiKeyProvider { // dev.yveskalume.elevenlabs/ApiKeyProvider|null[0]
+    abstract suspend fun getApiKey(): kotlin/String // dev.yveskalume.elevenlabs/ApiKeyProvider.getApiKey|getApiKey(){}[0]
+}
+
+abstract interface dev.yveskalume.elevenlabs.models/ModelsApi { // dev.yveskalume.elevenlabs.models/ModelsApi|null[0]
+    abstract suspend fun list(): kotlin.collections/List<dev.yveskalume.elevenlabs.models/Model> // dev.yveskalume.elevenlabs.models/ModelsApi.list|list(){}[0]
+}
+
+abstract interface dev.yveskalume.elevenlabs.stt/RealtimeSttSession { // dev.yveskalume.elevenlabs.stt/RealtimeSttSession|null[0]
+    abstract val events // dev.yveskalume.elevenlabs.stt/RealtimeSttSession.events|{}events[0]
+        abstract fun <get-events>(): kotlinx.coroutines.flow/Flow<dev.yveskalume.elevenlabs.stt/RealtimeSttEvent> // dev.yveskalume.elevenlabs.stt/RealtimeSttSession.events.<get-events>|<get-events>(){}[0]
+
+    abstract suspend fun close() // dev.yveskalume.elevenlabs.stt/RealtimeSttSession.close|close(){}[0]
+    abstract suspend fun commit() // dev.yveskalume.elevenlabs.stt/RealtimeSttSession.commit|commit(){}[0]
+    abstract suspend fun sendAudio(kotlin/ByteArray, kotlin/Boolean = ...) // dev.yveskalume.elevenlabs.stt/RealtimeSttSession.sendAudio|sendAudio(kotlin.ByteArray;kotlin.Boolean){}[0]
+}
+
+abstract interface dev.yveskalume.elevenlabs.stt/SpeechToTextApi { // dev.yveskalume.elevenlabs.stt/SpeechToTextApi|null[0]
+    abstract suspend fun openRealtimeSession(dev.yveskalume.elevenlabs.stt/RealtimeSttOptions = ..., dev.yveskalume.elevenlabs.stt/SpeechToTextAuthorization = ...): dev.yveskalume.elevenlabs.stt/RealtimeSttSession // dev.yveskalume.elevenlabs.stt/SpeechToTextApi.openRealtimeSession|openRealtimeSession(dev.yveskalume.elevenlabs.stt.RealtimeSttOptions;dev.yveskalume.elevenlabs.stt.SpeechToTextAuthorization){}[0]
+    abstract suspend fun transcribe(dev.yveskalume.elevenlabs.stt/SpeechToTextRequest, dev.yveskalume.elevenlabs.stt/SpeechToTextAuthorization = ...): dev.yveskalume.elevenlabs.stt/Transcription // dev.yveskalume.elevenlabs.stt/SpeechToTextApi.transcribe|transcribe(dev.yveskalume.elevenlabs.stt.SpeechToTextRequest;dev.yveskalume.elevenlabs.stt.SpeechToTextAuthorization){}[0]
+}
+
+abstract interface dev.yveskalume.elevenlabs.tts/RealtimeTtsSession { // dev.yveskalume.elevenlabs.tts/RealtimeTtsSession|null[0]
+    abstract val events // dev.yveskalume.elevenlabs.tts/RealtimeTtsSession.events|{}events[0]
+        abstract fun <get-events>(): kotlinx.coroutines.flow/Flow<dev.yveskalume.elevenlabs.tts/RealtimeTtsEvent> // dev.yveskalume.elevenlabs.tts/RealtimeTtsSession.events.<get-events>|<get-events>(){}[0]
+
+    abstract suspend fun close() // dev.yveskalume.elevenlabs.tts/RealtimeTtsSession.close|close(){}[0]
+    abstract suspend fun finish() // dev.yveskalume.elevenlabs.tts/RealtimeTtsSession.finish|finish(){}[0]
+    abstract suspend fun flush() // dev.yveskalume.elevenlabs.tts/RealtimeTtsSession.flush|flush(){}[0]
+    abstract suspend fun sendText(kotlin/String, kotlin/Boolean = ...) // dev.yveskalume.elevenlabs.tts/RealtimeTtsSession.sendText|sendText(kotlin.String;kotlin.Boolean){}[0]
+}
+
+abstract interface dev.yveskalume.elevenlabs.tts/TextToSpeechApi { // dev.yveskalume.elevenlabs.tts/TextToSpeechApi|null[0]
+    abstract fun realtime(kotlin/String, kotlinx.coroutines.flow/Flow<kotlin/String>, dev.yveskalume.elevenlabs.tts/RealtimeTtsOptions = ..., dev.yveskalume.elevenlabs.tts/RealtimeTtsAuthorization = ...): kotlinx.coroutines.flow/Flow<dev.yveskalume.elevenlabs.tts/AudioChunk> // dev.yveskalume.elevenlabs.tts/TextToSpeechApi.realtime|realtime(kotlin.String;kotlinx.coroutines.flow.Flow<kotlin.String>;dev.yveskalume.elevenlabs.tts.RealtimeTtsOptions;dev.yveskalume.elevenlabs.tts.RealtimeTtsAuthorization){}[0]
+    abstract fun stream(dev.yveskalume.elevenlabs.tts/TextToSpeechRequest): kotlinx.coroutines.flow/Flow<dev.yveskalume.elevenlabs.tts/AudioChunk> // dev.yveskalume.elevenlabs.tts/TextToSpeechApi.stream|stream(dev.yveskalume.elevenlabs.tts.TextToSpeechRequest){}[0]
+    abstract suspend fun generate(dev.yveskalume.elevenlabs.tts/TextToSpeechRequest): dev.yveskalume.elevenlabs.tts/Audio // dev.yveskalume.elevenlabs.tts/TextToSpeechApi.generate|generate(dev.yveskalume.elevenlabs.tts.TextToSpeechRequest){}[0]
+    abstract suspend fun openRealtimeSession(kotlin/String, dev.yveskalume.elevenlabs.tts/RealtimeTtsOptions = ..., dev.yveskalume.elevenlabs.tts/RealtimeTtsAuthorization = ...): dev.yveskalume.elevenlabs.tts/RealtimeTtsSession // dev.yveskalume.elevenlabs.tts/TextToSpeechApi.openRealtimeSession|openRealtimeSession(kotlin.String;dev.yveskalume.elevenlabs.tts.RealtimeTtsOptions;dev.yveskalume.elevenlabs.tts.RealtimeTtsAuthorization){}[0]
+}
+
+abstract interface dev.yveskalume.elevenlabs.voices/VoicesApi { // dev.yveskalume.elevenlabs.voices/VoicesApi|null[0]
+    abstract suspend fun get(kotlin/String): dev.yveskalume.elevenlabs.voices/Voice // dev.yveskalume.elevenlabs.voices/VoicesApi.get|get(kotlin.String){}[0]
+    abstract suspend fun list(dev.yveskalume.elevenlabs.voices/ListVoicesRequest = ...): dev.yveskalume.elevenlabs.voices/VoicePage // dev.yveskalume.elevenlabs.voices/VoicesApi.list|list(dev.yveskalume.elevenlabs.voices.ListVoicesRequest){}[0]
+}
+
+sealed interface dev.yveskalume.elevenlabs.stt/RealtimeSttEvent { // dev.yveskalume.elevenlabs.stt/RealtimeSttEvent|null[0]
+    final class CommittedTranscript : dev.yveskalume.elevenlabs.stt/RealtimeSttEvent { // dev.yveskalume.elevenlabs.stt/RealtimeSttEvent.CommittedTranscript|null[0]
+        constructor <init>(kotlin/String, kotlin.collections/List<dev.yveskalume.elevenlabs.stt/TranscriptionWord> = ..., kotlin/String? = ...) // dev.yveskalume.elevenlabs.stt/RealtimeSttEvent.CommittedTranscript.<init>|<init>(kotlin.String;kotlin.collections.List<dev.yveskalume.elevenlabs.stt.TranscriptionWord>;kotlin.String?){}[0]
+
+        final val languageCode // dev.yveskalume.elevenlabs.stt/RealtimeSttEvent.CommittedTranscript.languageCode|{}languageCode[0]
+            final fun <get-languageCode>(): kotlin/String? // dev.yveskalume.elevenlabs.stt/RealtimeSttEvent.CommittedTranscript.languageCode.<get-languageCode>|<get-languageCode>(){}[0]
+        final val text // dev.yveskalume.elevenlabs.stt/RealtimeSttEvent.CommittedTranscript.text|{}text[0]
+            final fun <get-text>(): kotlin/String // dev.yveskalume.elevenlabs.stt/RealtimeSttEvent.CommittedTranscript.text.<get-text>|<get-text>(){}[0]
+        final val words // dev.yveskalume.elevenlabs.stt/RealtimeSttEvent.CommittedTranscript.words|{}words[0]
+            final fun <get-words>(): kotlin.collections/List<dev.yveskalume.elevenlabs.stt/TranscriptionWord> // dev.yveskalume.elevenlabs.stt/RealtimeSttEvent.CommittedTranscript.words.<get-words>|<get-words>(){}[0]
+
+        final fun component1(): kotlin/String // dev.yveskalume.elevenlabs.stt/RealtimeSttEvent.CommittedTranscript.component1|component1(){}[0]
+        final fun component2(): kotlin.collections/List<dev.yveskalume.elevenlabs.stt/TranscriptionWord> // dev.yveskalume.elevenlabs.stt/RealtimeSttEvent.CommittedTranscript.component2|component2(){}[0]
+        final fun component3(): kotlin/String? // dev.yveskalume.elevenlabs.stt/RealtimeSttEvent.CommittedTranscript.component3|component3(){}[0]
+        final fun copy(kotlin/String = ..., kotlin.collections/List<dev.yveskalume.elevenlabs.stt/TranscriptionWord> = ..., kotlin/String? = ...): dev.yveskalume.elevenlabs.stt/RealtimeSttEvent.CommittedTranscript // dev.yveskalume.elevenlabs.stt/RealtimeSttEvent.CommittedTranscript.copy|copy(kotlin.String;kotlin.collections.List<dev.yveskalume.elevenlabs.stt.TranscriptionWord>;kotlin.String?){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // dev.yveskalume.elevenlabs.stt/RealtimeSttEvent.CommittedTranscript.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // dev.yveskalume.elevenlabs.stt/RealtimeSttEvent.CommittedTranscript.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // dev.yveskalume.elevenlabs.stt/RealtimeSttEvent.CommittedTranscript.toString|toString(){}[0]
+    }
+
+    final class FinalTranscript : dev.yveskalume.elevenlabs.stt/RealtimeSttEvent { // dev.yveskalume.elevenlabs.stt/RealtimeSttEvent.FinalTranscript|null[0]
+        constructor <init>(kotlin/String, kotlin.collections/List<dev.yveskalume.elevenlabs.stt/TranscriptionWord> = ..., kotlin/String? = ...) // dev.yveskalume.elevenlabs.stt/RealtimeSttEvent.FinalTranscript.<init>|<init>(kotlin.String;kotlin.collections.List<dev.yveskalume.elevenlabs.stt.TranscriptionWord>;kotlin.String?){}[0]
+
+        final val languageCode // dev.yveskalume.elevenlabs.stt/RealtimeSttEvent.FinalTranscript.languageCode|{}languageCode[0]
+            final fun <get-languageCode>(): kotlin/String? // dev.yveskalume.elevenlabs.stt/RealtimeSttEvent.FinalTranscript.languageCode.<get-languageCode>|<get-languageCode>(){}[0]
+        final val text // dev.yveskalume.elevenlabs.stt/RealtimeSttEvent.FinalTranscript.text|{}text[0]
+            final fun <get-text>(): kotlin/String // dev.yveskalume.elevenlabs.stt/RealtimeSttEvent.FinalTranscript.text.<get-text>|<get-text>(){}[0]
+        final val words // dev.yveskalume.elevenlabs.stt/RealtimeSttEvent.FinalTranscript.words|{}words[0]
+            final fun <get-words>(): kotlin.collections/List<dev.yveskalume.elevenlabs.stt/TranscriptionWord> // dev.yveskalume.elevenlabs.stt/RealtimeSttEvent.FinalTranscript.words.<get-words>|<get-words>(){}[0]
+
+        final fun component1(): kotlin/String // dev.yveskalume.elevenlabs.stt/RealtimeSttEvent.FinalTranscript.component1|component1(){}[0]
+        final fun component2(): kotlin.collections/List<dev.yveskalume.elevenlabs.stt/TranscriptionWord> // dev.yveskalume.elevenlabs.stt/RealtimeSttEvent.FinalTranscript.component2|component2(){}[0]
+        final fun component3(): kotlin/String? // dev.yveskalume.elevenlabs.stt/RealtimeSttEvent.FinalTranscript.component3|component3(){}[0]
+        final fun copy(kotlin/String = ..., kotlin.collections/List<dev.yveskalume.elevenlabs.stt/TranscriptionWord> = ..., kotlin/String? = ...): dev.yveskalume.elevenlabs.stt/RealtimeSttEvent.FinalTranscript // dev.yveskalume.elevenlabs.stt/RealtimeSttEvent.FinalTranscript.copy|copy(kotlin.String;kotlin.collections.List<dev.yveskalume.elevenlabs.stt.TranscriptionWord>;kotlin.String?){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // dev.yveskalume.elevenlabs.stt/RealtimeSttEvent.FinalTranscript.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // dev.yveskalume.elevenlabs.stt/RealtimeSttEvent.FinalTranscript.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // dev.yveskalume.elevenlabs.stt/RealtimeSttEvent.FinalTranscript.toString|toString(){}[0]
+    }
+
+    final class PartialTranscript : dev.yveskalume.elevenlabs.stt/RealtimeSttEvent { // dev.yveskalume.elevenlabs.stt/RealtimeSttEvent.PartialTranscript|null[0]
+        constructor <init>(kotlin/String) // dev.yveskalume.elevenlabs.stt/RealtimeSttEvent.PartialTranscript.<init>|<init>(kotlin.String){}[0]
+
+        final val text // dev.yveskalume.elevenlabs.stt/RealtimeSttEvent.PartialTranscript.text|{}text[0]
+            final fun <get-text>(): kotlin/String // dev.yveskalume.elevenlabs.stt/RealtimeSttEvent.PartialTranscript.text.<get-text>|<get-text>(){}[0]
+
+        final fun component1(): kotlin/String // dev.yveskalume.elevenlabs.stt/RealtimeSttEvent.PartialTranscript.component1|component1(){}[0]
+        final fun copy(kotlin/String = ...): dev.yveskalume.elevenlabs.stt/RealtimeSttEvent.PartialTranscript // dev.yveskalume.elevenlabs.stt/RealtimeSttEvent.PartialTranscript.copy|copy(kotlin.String){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // dev.yveskalume.elevenlabs.stt/RealtimeSttEvent.PartialTranscript.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // dev.yveskalume.elevenlabs.stt/RealtimeSttEvent.PartialTranscript.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // dev.yveskalume.elevenlabs.stt/RealtimeSttEvent.PartialTranscript.toString|toString(){}[0]
+    }
+
+    final class SessionStarted : dev.yveskalume.elevenlabs.stt/RealtimeSttEvent { // dev.yveskalume.elevenlabs.stt/RealtimeSttEvent.SessionStarted|null[0]
+        constructor <init>(kotlin/String) // dev.yveskalume.elevenlabs.stt/RealtimeSttEvent.SessionStarted.<init>|<init>(kotlin.String){}[0]
+
+        final val sessionId // dev.yveskalume.elevenlabs.stt/RealtimeSttEvent.SessionStarted.sessionId|{}sessionId[0]
+            final fun <get-sessionId>(): kotlin/String // dev.yveskalume.elevenlabs.stt/RealtimeSttEvent.SessionStarted.sessionId.<get-sessionId>|<get-sessionId>(){}[0]
+
+        final fun component1(): kotlin/String // dev.yveskalume.elevenlabs.stt/RealtimeSttEvent.SessionStarted.component1|component1(){}[0]
+        final fun copy(kotlin/String = ...): dev.yveskalume.elevenlabs.stt/RealtimeSttEvent.SessionStarted // dev.yveskalume.elevenlabs.stt/RealtimeSttEvent.SessionStarted.copy|copy(kotlin.String){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // dev.yveskalume.elevenlabs.stt/RealtimeSttEvent.SessionStarted.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // dev.yveskalume.elevenlabs.stt/RealtimeSttEvent.SessionStarted.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // dev.yveskalume.elevenlabs.stt/RealtimeSttEvent.SessionStarted.toString|toString(){}[0]
+    }
+
+    final class Unknown : dev.yveskalume.elevenlabs.stt/RealtimeSttEvent { // dev.yveskalume.elevenlabs.stt/RealtimeSttEvent.Unknown|null[0]
+        constructor <init>(kotlin/String?, kotlin/String) // dev.yveskalume.elevenlabs.stt/RealtimeSttEvent.Unknown.<init>|<init>(kotlin.String?;kotlin.String){}[0]
+
+        final val messageType // dev.yveskalume.elevenlabs.stt/RealtimeSttEvent.Unknown.messageType|{}messageType[0]
+            final fun <get-messageType>(): kotlin/String? // dev.yveskalume.elevenlabs.stt/RealtimeSttEvent.Unknown.messageType.<get-messageType>|<get-messageType>(){}[0]
+        final val rawMessage // dev.yveskalume.elevenlabs.stt/RealtimeSttEvent.Unknown.rawMessage|{}rawMessage[0]
+            final fun <get-rawMessage>(): kotlin/String // dev.yveskalume.elevenlabs.stt/RealtimeSttEvent.Unknown.rawMessage.<get-rawMessage>|<get-rawMessage>(){}[0]
+
+        final fun component1(): kotlin/String? // dev.yveskalume.elevenlabs.stt/RealtimeSttEvent.Unknown.component1|component1(){}[0]
+        final fun component2(): kotlin/String // dev.yveskalume.elevenlabs.stt/RealtimeSttEvent.Unknown.component2|component2(){}[0]
+        final fun copy(kotlin/String? = ..., kotlin/String = ...): dev.yveskalume.elevenlabs.stt/RealtimeSttEvent.Unknown // dev.yveskalume.elevenlabs.stt/RealtimeSttEvent.Unknown.copy|copy(kotlin.String?;kotlin.String){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // dev.yveskalume.elevenlabs.stt/RealtimeSttEvent.Unknown.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // dev.yveskalume.elevenlabs.stt/RealtimeSttEvent.Unknown.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // dev.yveskalume.elevenlabs.stt/RealtimeSttEvent.Unknown.toString|toString(){}[0]
+    }
+}
+
+sealed interface dev.yveskalume.elevenlabs.stt/SpeechToTextAuthorization { // dev.yveskalume.elevenlabs.stt/SpeechToTextAuthorization|null[0]
+    final class SingleUseToken : dev.yveskalume.elevenlabs.stt/SpeechToTextAuthorization { // dev.yveskalume.elevenlabs.stt/SpeechToTextAuthorization.SingleUseToken|null[0]
+        constructor <init>(kotlin/String) // dev.yveskalume.elevenlabs.stt/SpeechToTextAuthorization.SingleUseToken.<init>|<init>(kotlin.String){}[0]
+
+        final val token // dev.yveskalume.elevenlabs.stt/SpeechToTextAuthorization.SingleUseToken.token|{}token[0]
+            final fun <get-token>(): kotlin/String // dev.yveskalume.elevenlabs.stt/SpeechToTextAuthorization.SingleUseToken.token.<get-token>|<get-token>(){}[0]
+
+        final fun component1(): kotlin/String // dev.yveskalume.elevenlabs.stt/SpeechToTextAuthorization.SingleUseToken.component1|component1(){}[0]
+        final fun copy(kotlin/String = ...): dev.yveskalume.elevenlabs.stt/SpeechToTextAuthorization.SingleUseToken // dev.yveskalume.elevenlabs.stt/SpeechToTextAuthorization.SingleUseToken.copy|copy(kotlin.String){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // dev.yveskalume.elevenlabs.stt/SpeechToTextAuthorization.SingleUseToken.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // dev.yveskalume.elevenlabs.stt/SpeechToTextAuthorization.SingleUseToken.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // dev.yveskalume.elevenlabs.stt/SpeechToTextAuthorization.SingleUseToken.toString|toString(){}[0]
+    }
+
+    final class TokenProvider : dev.yveskalume.elevenlabs.stt/SpeechToTextAuthorization { // dev.yveskalume.elevenlabs.stt/SpeechToTextAuthorization.TokenProvider|null[0]
+        constructor <init>(dev.yveskalume.elevenlabs.stt/SpeechToTextTokenProvider) // dev.yveskalume.elevenlabs.stt/SpeechToTextAuthorization.TokenProvider.<init>|<init>(dev.yveskalume.elevenlabs.stt.SpeechToTextTokenProvider){}[0]
+
+        final val provider // dev.yveskalume.elevenlabs.stt/SpeechToTextAuthorization.TokenProvider.provider|{}provider[0]
+            final fun <get-provider>(): dev.yveskalume.elevenlabs.stt/SpeechToTextTokenProvider // dev.yveskalume.elevenlabs.stt/SpeechToTextAuthorization.TokenProvider.provider.<get-provider>|<get-provider>(){}[0]
+
+        final fun component1(): dev.yveskalume.elevenlabs.stt/SpeechToTextTokenProvider // dev.yveskalume.elevenlabs.stt/SpeechToTextAuthorization.TokenProvider.component1|component1(){}[0]
+        final fun copy(dev.yveskalume.elevenlabs.stt/SpeechToTextTokenProvider = ...): dev.yveskalume.elevenlabs.stt/SpeechToTextAuthorization.TokenProvider // dev.yveskalume.elevenlabs.stt/SpeechToTextAuthorization.TokenProvider.copy|copy(dev.yveskalume.elevenlabs.stt.SpeechToTextTokenProvider){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // dev.yveskalume.elevenlabs.stt/SpeechToTextAuthorization.TokenProvider.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // dev.yveskalume.elevenlabs.stt/SpeechToTextAuthorization.TokenProvider.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // dev.yveskalume.elevenlabs.stt/SpeechToTextAuthorization.TokenProvider.toString|toString(){}[0]
+    }
+
+    final object ConfiguredApiKey : dev.yveskalume.elevenlabs.stt/SpeechToTextAuthorization { // dev.yveskalume.elevenlabs.stt/SpeechToTextAuthorization.ConfiguredApiKey|null[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // dev.yveskalume.elevenlabs.stt/SpeechToTextAuthorization.ConfiguredApiKey.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // dev.yveskalume.elevenlabs.stt/SpeechToTextAuthorization.ConfiguredApiKey.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // dev.yveskalume.elevenlabs.stt/SpeechToTextAuthorization.ConfiguredApiKey.toString|toString(){}[0]
+    }
+}
+
+sealed interface dev.yveskalume.elevenlabs.tts/RealtimeTtsAuthorization { // dev.yveskalume.elevenlabs.tts/RealtimeTtsAuthorization|null[0]
+    final class SingleUseToken : dev.yveskalume.elevenlabs.tts/RealtimeTtsAuthorization { // dev.yveskalume.elevenlabs.tts/RealtimeTtsAuthorization.SingleUseToken|null[0]
+        constructor <init>(kotlin/String) // dev.yveskalume.elevenlabs.tts/RealtimeTtsAuthorization.SingleUseToken.<init>|<init>(kotlin.String){}[0]
+
+        final val token // dev.yveskalume.elevenlabs.tts/RealtimeTtsAuthorization.SingleUseToken.token|{}token[0]
+            final fun <get-token>(): kotlin/String // dev.yveskalume.elevenlabs.tts/RealtimeTtsAuthorization.SingleUseToken.token.<get-token>|<get-token>(){}[0]
+
+        final fun component1(): kotlin/String // dev.yveskalume.elevenlabs.tts/RealtimeTtsAuthorization.SingleUseToken.component1|component1(){}[0]
+        final fun copy(kotlin/String = ...): dev.yveskalume.elevenlabs.tts/RealtimeTtsAuthorization.SingleUseToken // dev.yveskalume.elevenlabs.tts/RealtimeTtsAuthorization.SingleUseToken.copy|copy(kotlin.String){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // dev.yveskalume.elevenlabs.tts/RealtimeTtsAuthorization.SingleUseToken.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // dev.yveskalume.elevenlabs.tts/RealtimeTtsAuthorization.SingleUseToken.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // dev.yveskalume.elevenlabs.tts/RealtimeTtsAuthorization.SingleUseToken.toString|toString(){}[0]
+    }
+
+    final class TokenProvider : dev.yveskalume.elevenlabs.tts/RealtimeTtsAuthorization { // dev.yveskalume.elevenlabs.tts/RealtimeTtsAuthorization.TokenProvider|null[0]
+        constructor <init>(dev.yveskalume.elevenlabs.tts/RealtimeTokenProvider) // dev.yveskalume.elevenlabs.tts/RealtimeTtsAuthorization.TokenProvider.<init>|<init>(dev.yveskalume.elevenlabs.tts.RealtimeTokenProvider){}[0]
+
+        final val provider // dev.yveskalume.elevenlabs.tts/RealtimeTtsAuthorization.TokenProvider.provider|{}provider[0]
+            final fun <get-provider>(): dev.yveskalume.elevenlabs.tts/RealtimeTokenProvider // dev.yveskalume.elevenlabs.tts/RealtimeTtsAuthorization.TokenProvider.provider.<get-provider>|<get-provider>(){}[0]
+
+        final fun component1(): dev.yveskalume.elevenlabs.tts/RealtimeTokenProvider // dev.yveskalume.elevenlabs.tts/RealtimeTtsAuthorization.TokenProvider.component1|component1(){}[0]
+        final fun copy(dev.yveskalume.elevenlabs.tts/RealtimeTokenProvider = ...): dev.yveskalume.elevenlabs.tts/RealtimeTtsAuthorization.TokenProvider // dev.yveskalume.elevenlabs.tts/RealtimeTtsAuthorization.TokenProvider.copy|copy(dev.yveskalume.elevenlabs.tts.RealtimeTokenProvider){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // dev.yveskalume.elevenlabs.tts/RealtimeTtsAuthorization.TokenProvider.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // dev.yveskalume.elevenlabs.tts/RealtimeTtsAuthorization.TokenProvider.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // dev.yveskalume.elevenlabs.tts/RealtimeTtsAuthorization.TokenProvider.toString|toString(){}[0]
+    }
+
+    final object ConfiguredApiKey : dev.yveskalume.elevenlabs.tts/RealtimeTtsAuthorization { // dev.yveskalume.elevenlabs.tts/RealtimeTtsAuthorization.ConfiguredApiKey|null[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // dev.yveskalume.elevenlabs.tts/RealtimeTtsAuthorization.ConfiguredApiKey.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // dev.yveskalume.elevenlabs.tts/RealtimeTtsAuthorization.ConfiguredApiKey.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // dev.yveskalume.elevenlabs.tts/RealtimeTtsAuthorization.ConfiguredApiKey.toString|toString(){}[0]
+    }
+}
+
+sealed interface dev.yveskalume.elevenlabs.tts/RealtimeTtsEvent { // dev.yveskalume.elevenlabs.tts/RealtimeTtsEvent|null[0]
+    final class Audio : dev.yveskalume.elevenlabs.tts/RealtimeTtsEvent { // dev.yveskalume.elevenlabs.tts/RealtimeTtsEvent.Audio|null[0]
+        constructor <init>(kotlin/ByteArray, dev.yveskalume.elevenlabs.tts/RealtimeTtsAlignment? = ..., dev.yveskalume.elevenlabs.tts/RealtimeTtsAlignment? = ...) // dev.yveskalume.elevenlabs.tts/RealtimeTtsEvent.Audio.<init>|<init>(kotlin.ByteArray;dev.yveskalume.elevenlabs.tts.RealtimeTtsAlignment?;dev.yveskalume.elevenlabs.tts.RealtimeTtsAlignment?){}[0]
+
+        final val alignment // dev.yveskalume.elevenlabs.tts/RealtimeTtsEvent.Audio.alignment|{}alignment[0]
+            final fun <get-alignment>(): dev.yveskalume.elevenlabs.tts/RealtimeTtsAlignment? // dev.yveskalume.elevenlabs.tts/RealtimeTtsEvent.Audio.alignment.<get-alignment>|<get-alignment>(){}[0]
+        final val bytes // dev.yveskalume.elevenlabs.tts/RealtimeTtsEvent.Audio.bytes|{}bytes[0]
+            final fun <get-bytes>(): kotlin/ByteArray // dev.yveskalume.elevenlabs.tts/RealtimeTtsEvent.Audio.bytes.<get-bytes>|<get-bytes>(){}[0]
+        final val normalizedAlignment // dev.yveskalume.elevenlabs.tts/RealtimeTtsEvent.Audio.normalizedAlignment|{}normalizedAlignment[0]
+            final fun <get-normalizedAlignment>(): dev.yveskalume.elevenlabs.tts/RealtimeTtsAlignment? // dev.yveskalume.elevenlabs.tts/RealtimeTtsEvent.Audio.normalizedAlignment.<get-normalizedAlignment>|<get-normalizedAlignment>(){}[0]
+
+        final fun component1(): kotlin/ByteArray // dev.yveskalume.elevenlabs.tts/RealtimeTtsEvent.Audio.component1|component1(){}[0]
+        final fun component2(): dev.yveskalume.elevenlabs.tts/RealtimeTtsAlignment? // dev.yveskalume.elevenlabs.tts/RealtimeTtsEvent.Audio.component2|component2(){}[0]
+        final fun component3(): dev.yveskalume.elevenlabs.tts/RealtimeTtsAlignment? // dev.yveskalume.elevenlabs.tts/RealtimeTtsEvent.Audio.component3|component3(){}[0]
+        final fun copy(kotlin/ByteArray = ..., dev.yveskalume.elevenlabs.tts/RealtimeTtsAlignment? = ..., dev.yveskalume.elevenlabs.tts/RealtimeTtsAlignment? = ...): dev.yveskalume.elevenlabs.tts/RealtimeTtsEvent.Audio // dev.yveskalume.elevenlabs.tts/RealtimeTtsEvent.Audio.copy|copy(kotlin.ByteArray;dev.yveskalume.elevenlabs.tts.RealtimeTtsAlignment?;dev.yveskalume.elevenlabs.tts.RealtimeTtsAlignment?){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // dev.yveskalume.elevenlabs.tts/RealtimeTtsEvent.Audio.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // dev.yveskalume.elevenlabs.tts/RealtimeTtsEvent.Audio.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // dev.yveskalume.elevenlabs.tts/RealtimeTtsEvent.Audio.toString|toString(){}[0]
+    }
+
+    final object Finished : dev.yveskalume.elevenlabs.tts/RealtimeTtsEvent { // dev.yveskalume.elevenlabs.tts/RealtimeTtsEvent.Finished|null[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // dev.yveskalume.elevenlabs.tts/RealtimeTtsEvent.Finished.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // dev.yveskalume.elevenlabs.tts/RealtimeTtsEvent.Finished.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // dev.yveskalume.elevenlabs.tts/RealtimeTtsEvent.Finished.toString|toString(){}[0]
+    }
+}
+
+sealed interface dev.yveskalume.elevenlabs.tts/RealtimeTtsReconnectPolicy { // dev.yveskalume.elevenlabs.tts/RealtimeTtsReconnectPolicy|null[0]
+    final class BeforeFirstAudio : dev.yveskalume.elevenlabs.tts/RealtimeTtsReconnectPolicy { // dev.yveskalume.elevenlabs.tts/RealtimeTtsReconnectPolicy.BeforeFirstAudio|null[0]
+        constructor <init>(kotlin/Int = ..., kotlin/Long = ..., kotlin/Long = ..., kotlin/Double = ...) // dev.yveskalume.elevenlabs.tts/RealtimeTtsReconnectPolicy.BeforeFirstAudio.<init>|<init>(kotlin.Int;kotlin.Long;kotlin.Long;kotlin.Double){}[0]
+
+        final val initialDelayMillis // dev.yveskalume.elevenlabs.tts/RealtimeTtsReconnectPolicy.BeforeFirstAudio.initialDelayMillis|{}initialDelayMillis[0]
+            final fun <get-initialDelayMillis>(): kotlin/Long // dev.yveskalume.elevenlabs.tts/RealtimeTtsReconnectPolicy.BeforeFirstAudio.initialDelayMillis.<get-initialDelayMillis>|<get-initialDelayMillis>(){}[0]
+        final val jitterFactor // dev.yveskalume.elevenlabs.tts/RealtimeTtsReconnectPolicy.BeforeFirstAudio.jitterFactor|{}jitterFactor[0]
+            final fun <get-jitterFactor>(): kotlin/Double // dev.yveskalume.elevenlabs.tts/RealtimeTtsReconnectPolicy.BeforeFirstAudio.jitterFactor.<get-jitterFactor>|<get-jitterFactor>(){}[0]
+        final val maxAttempts // dev.yveskalume.elevenlabs.tts/RealtimeTtsReconnectPolicy.BeforeFirstAudio.maxAttempts|{}maxAttempts[0]
+            final fun <get-maxAttempts>(): kotlin/Int // dev.yveskalume.elevenlabs.tts/RealtimeTtsReconnectPolicy.BeforeFirstAudio.maxAttempts.<get-maxAttempts>|<get-maxAttempts>(){}[0]
+        final val maxDelayMillis // dev.yveskalume.elevenlabs.tts/RealtimeTtsReconnectPolicy.BeforeFirstAudio.maxDelayMillis|{}maxDelayMillis[0]
+            final fun <get-maxDelayMillis>(): kotlin/Long // dev.yveskalume.elevenlabs.tts/RealtimeTtsReconnectPolicy.BeforeFirstAudio.maxDelayMillis.<get-maxDelayMillis>|<get-maxDelayMillis>(){}[0]
+
+        final fun component1(): kotlin/Int // dev.yveskalume.elevenlabs.tts/RealtimeTtsReconnectPolicy.BeforeFirstAudio.component1|component1(){}[0]
+        final fun component2(): kotlin/Long // dev.yveskalume.elevenlabs.tts/RealtimeTtsReconnectPolicy.BeforeFirstAudio.component2|component2(){}[0]
+        final fun component3(): kotlin/Long // dev.yveskalume.elevenlabs.tts/RealtimeTtsReconnectPolicy.BeforeFirstAudio.component3|component3(){}[0]
+        final fun component4(): kotlin/Double // dev.yveskalume.elevenlabs.tts/RealtimeTtsReconnectPolicy.BeforeFirstAudio.component4|component4(){}[0]
+        final fun copy(kotlin/Int = ..., kotlin/Long = ..., kotlin/Long = ..., kotlin/Double = ...): dev.yveskalume.elevenlabs.tts/RealtimeTtsReconnectPolicy.BeforeFirstAudio // dev.yveskalume.elevenlabs.tts/RealtimeTtsReconnectPolicy.BeforeFirstAudio.copy|copy(kotlin.Int;kotlin.Long;kotlin.Long;kotlin.Double){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // dev.yveskalume.elevenlabs.tts/RealtimeTtsReconnectPolicy.BeforeFirstAudio.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // dev.yveskalume.elevenlabs.tts/RealtimeTtsReconnectPolicy.BeforeFirstAudio.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // dev.yveskalume.elevenlabs.tts/RealtimeTtsReconnectPolicy.BeforeFirstAudio.toString|toString(){}[0]
+    }
+
+    final object Never : dev.yveskalume.elevenlabs.tts/RealtimeTtsReconnectPolicy { // dev.yveskalume.elevenlabs.tts/RealtimeTtsReconnectPolicy.Never|null[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // dev.yveskalume.elevenlabs.tts/RealtimeTtsReconnectPolicy.Never.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // dev.yveskalume.elevenlabs.tts/RealtimeTtsReconnectPolicy.Never.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // dev.yveskalume.elevenlabs.tts/RealtimeTtsReconnectPolicy.Never.toString|toString(){}[0]
+    }
+}
+
+final class dev.yveskalume.elevenlabs.models/Model { // dev.yveskalume.elevenlabs.models/Model|null[0]
+    constructor <init>(kotlin/String, kotlin/String, kotlin/String? = ..., kotlin/Boolean, kotlin/Boolean, kotlin/Boolean, kotlin/Boolean, kotlin/Int? = ..., kotlin.collections/List<dev.yveskalume.elevenlabs.models/ModelLanguage> = ...) // dev.yveskalume.elevenlabs.models/Model.<init>|<init>(kotlin.String;kotlin.String;kotlin.String?;kotlin.Boolean;kotlin.Boolean;kotlin.Boolean;kotlin.Boolean;kotlin.Int?;kotlin.collections.List<dev.yveskalume.elevenlabs.models.ModelLanguage>){}[0]
+
+    final val canDoTextToSpeech // dev.yveskalume.elevenlabs.models/Model.canDoTextToSpeech|{}canDoTextToSpeech[0]
+        final fun <get-canDoTextToSpeech>(): kotlin/Boolean // dev.yveskalume.elevenlabs.models/Model.canDoTextToSpeech.<get-canDoTextToSpeech>|<get-canDoTextToSpeech>(){}[0]
+    final val canDoVoiceConversion // dev.yveskalume.elevenlabs.models/Model.canDoVoiceConversion|{}canDoVoiceConversion[0]
+        final fun <get-canDoVoiceConversion>(): kotlin/Boolean // dev.yveskalume.elevenlabs.models/Model.canDoVoiceConversion.<get-canDoVoiceConversion>|<get-canDoVoiceConversion>(){}[0]
+    final val canUseSpeakerBoost // dev.yveskalume.elevenlabs.models/Model.canUseSpeakerBoost|{}canUseSpeakerBoost[0]
+        final fun <get-canUseSpeakerBoost>(): kotlin/Boolean // dev.yveskalume.elevenlabs.models/Model.canUseSpeakerBoost.<get-canUseSpeakerBoost>|<get-canUseSpeakerBoost>(){}[0]
+    final val canUseStyle // dev.yveskalume.elevenlabs.models/Model.canUseStyle|{}canUseStyle[0]
+        final fun <get-canUseStyle>(): kotlin/Boolean // dev.yveskalume.elevenlabs.models/Model.canUseStyle.<get-canUseStyle>|<get-canUseStyle>(){}[0]
+    final val description // dev.yveskalume.elevenlabs.models/Model.description|{}description[0]
+        final fun <get-description>(): kotlin/String? // dev.yveskalume.elevenlabs.models/Model.description.<get-description>|<get-description>(){}[0]
+    final val id // dev.yveskalume.elevenlabs.models/Model.id|{}id[0]
+        final fun <get-id>(): kotlin/String // dev.yveskalume.elevenlabs.models/Model.id.<get-id>|<get-id>(){}[0]
+    final val languages // dev.yveskalume.elevenlabs.models/Model.languages|{}languages[0]
+        final fun <get-languages>(): kotlin.collections/List<dev.yveskalume.elevenlabs.models/ModelLanguage> // dev.yveskalume.elevenlabs.models/Model.languages.<get-languages>|<get-languages>(){}[0]
+    final val maximumTextLengthPerRequest // dev.yveskalume.elevenlabs.models/Model.maximumTextLengthPerRequest|{}maximumTextLengthPerRequest[0]
+        final fun <get-maximumTextLengthPerRequest>(): kotlin/Int? // dev.yveskalume.elevenlabs.models/Model.maximumTextLengthPerRequest.<get-maximumTextLengthPerRequest>|<get-maximumTextLengthPerRequest>(){}[0]
+    final val name // dev.yveskalume.elevenlabs.models/Model.name|{}name[0]
+        final fun <get-name>(): kotlin/String // dev.yveskalume.elevenlabs.models/Model.name.<get-name>|<get-name>(){}[0]
+
+    final fun component1(): kotlin/String // dev.yveskalume.elevenlabs.models/Model.component1|component1(){}[0]
+    final fun component2(): kotlin/String // dev.yveskalume.elevenlabs.models/Model.component2|component2(){}[0]
+    final fun component3(): kotlin/String? // dev.yveskalume.elevenlabs.models/Model.component3|component3(){}[0]
+    final fun component4(): kotlin/Boolean // dev.yveskalume.elevenlabs.models/Model.component4|component4(){}[0]
+    final fun component5(): kotlin/Boolean // dev.yveskalume.elevenlabs.models/Model.component5|component5(){}[0]
+    final fun component6(): kotlin/Boolean // dev.yveskalume.elevenlabs.models/Model.component6|component6(){}[0]
+    final fun component7(): kotlin/Boolean // dev.yveskalume.elevenlabs.models/Model.component7|component7(){}[0]
+    final fun component8(): kotlin/Int? // dev.yveskalume.elevenlabs.models/Model.component8|component8(){}[0]
+    final fun component9(): kotlin.collections/List<dev.yveskalume.elevenlabs.models/ModelLanguage> // dev.yveskalume.elevenlabs.models/Model.component9|component9(){}[0]
+    final fun copy(kotlin/String = ..., kotlin/String = ..., kotlin/String? = ..., kotlin/Boolean = ..., kotlin/Boolean = ..., kotlin/Boolean = ..., kotlin/Boolean = ..., kotlin/Int? = ..., kotlin.collections/List<dev.yveskalume.elevenlabs.models/ModelLanguage> = ...): dev.yveskalume.elevenlabs.models/Model // dev.yveskalume.elevenlabs.models/Model.copy|copy(kotlin.String;kotlin.String;kotlin.String?;kotlin.Boolean;kotlin.Boolean;kotlin.Boolean;kotlin.Boolean;kotlin.Int?;kotlin.collections.List<dev.yveskalume.elevenlabs.models.ModelLanguage>){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // dev.yveskalume.elevenlabs.models/Model.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // dev.yveskalume.elevenlabs.models/Model.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // dev.yveskalume.elevenlabs.models/Model.toString|toString(){}[0]
+}
+
+final class dev.yveskalume.elevenlabs.models/ModelLanguage { // dev.yveskalume.elevenlabs.models/ModelLanguage|null[0]
+    constructor <init>(kotlin/String, kotlin/String) // dev.yveskalume.elevenlabs.models/ModelLanguage.<init>|<init>(kotlin.String;kotlin.String){}[0]
+
+    final val id // dev.yveskalume.elevenlabs.models/ModelLanguage.id|{}id[0]
+        final fun <get-id>(): kotlin/String // dev.yveskalume.elevenlabs.models/ModelLanguage.id.<get-id>|<get-id>(){}[0]
+    final val name // dev.yveskalume.elevenlabs.models/ModelLanguage.name|{}name[0]
+        final fun <get-name>(): kotlin/String // dev.yveskalume.elevenlabs.models/ModelLanguage.name.<get-name>|<get-name>(){}[0]
+
+    final fun component1(): kotlin/String // dev.yveskalume.elevenlabs.models/ModelLanguage.component1|component1(){}[0]
+    final fun component2(): kotlin/String // dev.yveskalume.elevenlabs.models/ModelLanguage.component2|component2(){}[0]
+    final fun copy(kotlin/String = ..., kotlin/String = ...): dev.yveskalume.elevenlabs.models/ModelLanguage // dev.yveskalume.elevenlabs.models/ModelLanguage.copy|copy(kotlin.String;kotlin.String){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // dev.yveskalume.elevenlabs.models/ModelLanguage.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // dev.yveskalume.elevenlabs.models/ModelLanguage.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // dev.yveskalume.elevenlabs.models/ModelLanguage.toString|toString(){}[0]
+}
+
+final class dev.yveskalume.elevenlabs.stt/RealtimeSttOptions { // dev.yveskalume.elevenlabs.stt/RealtimeSttOptions|null[0]
+    constructor <init>(kotlin/String = ..., dev.yveskalume.elevenlabs.stt/RealtimeSttAudioFormat = ..., kotlin/String? = ..., kotlin.collections/List<kotlin/String> = ..., dev.yveskalume.elevenlabs.stt/RealtimeSttCommitStrategy = ..., kotlin/Boolean = ..., kotlin/Boolean = ..., kotlin.collections/List<kotlin/String> = ..., kotlin/Boolean = ..., kotlin/Boolean = ...) // dev.yveskalume.elevenlabs.stt/RealtimeSttOptions.<init>|<init>(kotlin.String;dev.yveskalume.elevenlabs.stt.RealtimeSttAudioFormat;kotlin.String?;kotlin.collections.List<kotlin.String>;dev.yveskalume.elevenlabs.stt.RealtimeSttCommitStrategy;kotlin.Boolean;kotlin.Boolean;kotlin.collections.List<kotlin.String>;kotlin.Boolean;kotlin.Boolean){}[0]
+
+    final val audioFormat // dev.yveskalume.elevenlabs.stt/RealtimeSttOptions.audioFormat|{}audioFormat[0]
+        final fun <get-audioFormat>(): dev.yveskalume.elevenlabs.stt/RealtimeSttAudioFormat // dev.yveskalume.elevenlabs.stt/RealtimeSttOptions.audioFormat.<get-audioFormat>|<get-audioFormat>(){}[0]
+    final val commitStrategy // dev.yveskalume.elevenlabs.stt/RealtimeSttOptions.commitStrategy|{}commitStrategy[0]
+        final fun <get-commitStrategy>(): dev.yveskalume.elevenlabs.stt/RealtimeSttCommitStrategy // dev.yveskalume.elevenlabs.stt/RealtimeSttOptions.commitStrategy.<get-commitStrategy>|<get-commitStrategy>(){}[0]
+    final val enableLogging // dev.yveskalume.elevenlabs.stt/RealtimeSttOptions.enableLogging|{}enableLogging[0]
+        final fun <get-enableLogging>(): kotlin/Boolean // dev.yveskalume.elevenlabs.stt/RealtimeSttOptions.enableLogging.<get-enableLogging>|<get-enableLogging>(){}[0]
+    final val includeLanguageDetection // dev.yveskalume.elevenlabs.stt/RealtimeSttOptions.includeLanguageDetection|{}includeLanguageDetection[0]
+        final fun <get-includeLanguageDetection>(): kotlin/Boolean // dev.yveskalume.elevenlabs.stt/RealtimeSttOptions.includeLanguageDetection.<get-includeLanguageDetection>|<get-includeLanguageDetection>(){}[0]
+    final val includeTimestamps // dev.yveskalume.elevenlabs.stt/RealtimeSttOptions.includeTimestamps|{}includeTimestamps[0]
+        final fun <get-includeTimestamps>(): kotlin/Boolean // dev.yveskalume.elevenlabs.stt/RealtimeSttOptions.includeTimestamps.<get-includeTimestamps>|<get-includeTimestamps>(){}[0]
+    final val keyterms // dev.yveskalume.elevenlabs.stt/RealtimeSttOptions.keyterms|{}keyterms[0]
+        final fun <get-keyterms>(): kotlin.collections/List<kotlin/String> // dev.yveskalume.elevenlabs.stt/RealtimeSttOptions.keyterms.<get-keyterms>|<get-keyterms>(){}[0]
+    final val languageCode // dev.yveskalume.elevenlabs.stt/RealtimeSttOptions.languageCode|{}languageCode[0]
+        final fun <get-languageCode>(): kotlin/String? // dev.yveskalume.elevenlabs.stt/RealtimeSttOptions.languageCode.<get-languageCode>|<get-languageCode>(){}[0]
+    final val modelId // dev.yveskalume.elevenlabs.stt/RealtimeSttOptions.modelId|{}modelId[0]
+        final fun <get-modelId>(): kotlin/String // dev.yveskalume.elevenlabs.stt/RealtimeSttOptions.modelId.<get-modelId>|<get-modelId>(){}[0]
+    final val noVerbatim // dev.yveskalume.elevenlabs.stt/RealtimeSttOptions.noVerbatim|{}noVerbatim[0]
+        final fun <get-noVerbatim>(): kotlin/Boolean // dev.yveskalume.elevenlabs.stt/RealtimeSttOptions.noVerbatim.<get-noVerbatim>|<get-noVerbatim>(){}[0]
+    final val secondaryLanguages // dev.yveskalume.elevenlabs.stt/RealtimeSttOptions.secondaryLanguages|{}secondaryLanguages[0]
+        final fun <get-secondaryLanguages>(): kotlin.collections/List<kotlin/String> // dev.yveskalume.elevenlabs.stt/RealtimeSttOptions.secondaryLanguages.<get-secondaryLanguages>|<get-secondaryLanguages>(){}[0]
+
+    final fun component1(): kotlin/String // dev.yveskalume.elevenlabs.stt/RealtimeSttOptions.component1|component1(){}[0]
+    final fun component10(): kotlin/Boolean // dev.yveskalume.elevenlabs.stt/RealtimeSttOptions.component10|component10(){}[0]
+    final fun component2(): dev.yveskalume.elevenlabs.stt/RealtimeSttAudioFormat // dev.yveskalume.elevenlabs.stt/RealtimeSttOptions.component2|component2(){}[0]
+    final fun component3(): kotlin/String? // dev.yveskalume.elevenlabs.stt/RealtimeSttOptions.component3|component3(){}[0]
+    final fun component4(): kotlin.collections/List<kotlin/String> // dev.yveskalume.elevenlabs.stt/RealtimeSttOptions.component4|component4(){}[0]
+    final fun component5(): dev.yveskalume.elevenlabs.stt/RealtimeSttCommitStrategy // dev.yveskalume.elevenlabs.stt/RealtimeSttOptions.component5|component5(){}[0]
+    final fun component6(): kotlin/Boolean // dev.yveskalume.elevenlabs.stt/RealtimeSttOptions.component6|component6(){}[0]
+    final fun component7(): kotlin/Boolean // dev.yveskalume.elevenlabs.stt/RealtimeSttOptions.component7|component7(){}[0]
+    final fun component8(): kotlin.collections/List<kotlin/String> // dev.yveskalume.elevenlabs.stt/RealtimeSttOptions.component8|component8(){}[0]
+    final fun component9(): kotlin/Boolean // dev.yveskalume.elevenlabs.stt/RealtimeSttOptions.component9|component9(){}[0]
+    final fun copy(kotlin/String = ..., dev.yveskalume.elevenlabs.stt/RealtimeSttAudioFormat = ..., kotlin/String? = ..., kotlin.collections/List<kotlin/String> = ..., dev.yveskalume.elevenlabs.stt/RealtimeSttCommitStrategy = ..., kotlin/Boolean = ..., kotlin/Boolean = ..., kotlin.collections/List<kotlin/String> = ..., kotlin/Boolean = ..., kotlin/Boolean = ...): dev.yveskalume.elevenlabs.stt/RealtimeSttOptions // dev.yveskalume.elevenlabs.stt/RealtimeSttOptions.copy|copy(kotlin.String;dev.yveskalume.elevenlabs.stt.RealtimeSttAudioFormat;kotlin.String?;kotlin.collections.List<kotlin.String>;dev.yveskalume.elevenlabs.stt.RealtimeSttCommitStrategy;kotlin.Boolean;kotlin.Boolean;kotlin.collections.List<kotlin.String>;kotlin.Boolean;kotlin.Boolean){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // dev.yveskalume.elevenlabs.stt/RealtimeSttOptions.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // dev.yveskalume.elevenlabs.stt/RealtimeSttOptions.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // dev.yveskalume.elevenlabs.stt/RealtimeSttOptions.toString|toString(){}[0]
+}
+
+final class dev.yveskalume.elevenlabs.stt/SpeechToTextRequest { // dev.yveskalume.elevenlabs.stt/SpeechToTextRequest|null[0]
+    constructor <init>(kotlin/ByteArray, kotlin/String = ..., kotlin/String = ..., kotlin/String = ..., kotlin/String? = ..., kotlin/Boolean = ..., kotlin/Int? = ..., dev.yveskalume.elevenlabs.stt/TimestampsGranularity = ..., kotlin/Boolean = ..., dev.yveskalume.elevenlabs.stt/SpeechToTextFileFormat = ..., kotlin/Boolean = ...) // dev.yveskalume.elevenlabs.stt/SpeechToTextRequest.<init>|<init>(kotlin.ByteArray;kotlin.String;kotlin.String;kotlin.String;kotlin.String?;kotlin.Boolean;kotlin.Int?;dev.yveskalume.elevenlabs.stt.TimestampsGranularity;kotlin.Boolean;dev.yveskalume.elevenlabs.stt.SpeechToTextFileFormat;kotlin.Boolean){}[0]
+
+    final val audio // dev.yveskalume.elevenlabs.stt/SpeechToTextRequest.audio|{}audio[0]
+        final fun <get-audio>(): kotlin/ByteArray // dev.yveskalume.elevenlabs.stt/SpeechToTextRequest.audio.<get-audio>|<get-audio>(){}[0]
+    final val contentType // dev.yveskalume.elevenlabs.stt/SpeechToTextRequest.contentType|{}contentType[0]
+        final fun <get-contentType>(): kotlin/String // dev.yveskalume.elevenlabs.stt/SpeechToTextRequest.contentType.<get-contentType>|<get-contentType>(){}[0]
+    final val diarize // dev.yveskalume.elevenlabs.stt/SpeechToTextRequest.diarize|{}diarize[0]
+        final fun <get-diarize>(): kotlin/Boolean // dev.yveskalume.elevenlabs.stt/SpeechToTextRequest.diarize.<get-diarize>|<get-diarize>(){}[0]
+    final val enableLogging // dev.yveskalume.elevenlabs.stt/SpeechToTextRequest.enableLogging|{}enableLogging[0]
+        final fun <get-enableLogging>(): kotlin/Boolean // dev.yveskalume.elevenlabs.stt/SpeechToTextRequest.enableLogging.<get-enableLogging>|<get-enableLogging>(){}[0]
+    final val fileFormat // dev.yveskalume.elevenlabs.stt/SpeechToTextRequest.fileFormat|{}fileFormat[0]
+        final fun <get-fileFormat>(): dev.yveskalume.elevenlabs.stt/SpeechToTextFileFormat // dev.yveskalume.elevenlabs.stt/SpeechToTextRequest.fileFormat.<get-fileFormat>|<get-fileFormat>(){}[0]
+    final val fileName // dev.yveskalume.elevenlabs.stt/SpeechToTextRequest.fileName|{}fileName[0]
+        final fun <get-fileName>(): kotlin/String // dev.yveskalume.elevenlabs.stt/SpeechToTextRequest.fileName.<get-fileName>|<get-fileName>(){}[0]
+    final val languageCode // dev.yveskalume.elevenlabs.stt/SpeechToTextRequest.languageCode|{}languageCode[0]
+        final fun <get-languageCode>(): kotlin/String? // dev.yveskalume.elevenlabs.stt/SpeechToTextRequest.languageCode.<get-languageCode>|<get-languageCode>(){}[0]
+    final val modelId // dev.yveskalume.elevenlabs.stt/SpeechToTextRequest.modelId|{}modelId[0]
+        final fun <get-modelId>(): kotlin/String // dev.yveskalume.elevenlabs.stt/SpeechToTextRequest.modelId.<get-modelId>|<get-modelId>(){}[0]
+    final val numberOfSpeakers // dev.yveskalume.elevenlabs.stt/SpeechToTextRequest.numberOfSpeakers|{}numberOfSpeakers[0]
+        final fun <get-numberOfSpeakers>(): kotlin/Int? // dev.yveskalume.elevenlabs.stt/SpeechToTextRequest.numberOfSpeakers.<get-numberOfSpeakers>|<get-numberOfSpeakers>(){}[0]
+    final val tagAudioEvents // dev.yveskalume.elevenlabs.stt/SpeechToTextRequest.tagAudioEvents|{}tagAudioEvents[0]
+        final fun <get-tagAudioEvents>(): kotlin/Boolean // dev.yveskalume.elevenlabs.stt/SpeechToTextRequest.tagAudioEvents.<get-tagAudioEvents>|<get-tagAudioEvents>(){}[0]
+    final val timestampsGranularity // dev.yveskalume.elevenlabs.stt/SpeechToTextRequest.timestampsGranularity|{}timestampsGranularity[0]
+        final fun <get-timestampsGranularity>(): dev.yveskalume.elevenlabs.stt/TimestampsGranularity // dev.yveskalume.elevenlabs.stt/SpeechToTextRequest.timestampsGranularity.<get-timestampsGranularity>|<get-timestampsGranularity>(){}[0]
+
+    final fun component1(): kotlin/ByteArray // dev.yveskalume.elevenlabs.stt/SpeechToTextRequest.component1|component1(){}[0]
+    final fun component10(): dev.yveskalume.elevenlabs.stt/SpeechToTextFileFormat // dev.yveskalume.elevenlabs.stt/SpeechToTextRequest.component10|component10(){}[0]
+    final fun component11(): kotlin/Boolean // dev.yveskalume.elevenlabs.stt/SpeechToTextRequest.component11|component11(){}[0]
+    final fun component2(): kotlin/String // dev.yveskalume.elevenlabs.stt/SpeechToTextRequest.component2|component2(){}[0]
+    final fun component3(): kotlin/String // dev.yveskalume.elevenlabs.stt/SpeechToTextRequest.component3|component3(){}[0]
+    final fun component4(): kotlin/String // dev.yveskalume.elevenlabs.stt/SpeechToTextRequest.component4|component4(){}[0]
+    final fun component5(): kotlin/String? // dev.yveskalume.elevenlabs.stt/SpeechToTextRequest.component5|component5(){}[0]
+    final fun component6(): kotlin/Boolean // dev.yveskalume.elevenlabs.stt/SpeechToTextRequest.component6|component6(){}[0]
+    final fun component7(): kotlin/Int? // dev.yveskalume.elevenlabs.stt/SpeechToTextRequest.component7|component7(){}[0]
+    final fun component8(): dev.yveskalume.elevenlabs.stt/TimestampsGranularity // dev.yveskalume.elevenlabs.stt/SpeechToTextRequest.component8|component8(){}[0]
+    final fun component9(): kotlin/Boolean // dev.yveskalume.elevenlabs.stt/SpeechToTextRequest.component9|component9(){}[0]
+    final fun copy(kotlin/ByteArray = ..., kotlin/String = ..., kotlin/String = ..., kotlin/String = ..., kotlin/String? = ..., kotlin/Boolean = ..., kotlin/Int? = ..., dev.yveskalume.elevenlabs.stt/TimestampsGranularity = ..., kotlin/Boolean = ..., dev.yveskalume.elevenlabs.stt/SpeechToTextFileFormat = ..., kotlin/Boolean = ...): dev.yveskalume.elevenlabs.stt/SpeechToTextRequest // dev.yveskalume.elevenlabs.stt/SpeechToTextRequest.copy|copy(kotlin.ByteArray;kotlin.String;kotlin.String;kotlin.String;kotlin.String?;kotlin.Boolean;kotlin.Int?;dev.yveskalume.elevenlabs.stt.TimestampsGranularity;kotlin.Boolean;dev.yveskalume.elevenlabs.stt.SpeechToTextFileFormat;kotlin.Boolean){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // dev.yveskalume.elevenlabs.stt/SpeechToTextRequest.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // dev.yveskalume.elevenlabs.stt/SpeechToTextRequest.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // dev.yveskalume.elevenlabs.stt/SpeechToTextRequest.toString|toString(){}[0]
+}
+
+final class dev.yveskalume.elevenlabs.stt/Transcription { // dev.yveskalume.elevenlabs.stt/Transcription|null[0]
+    constructor <init>(kotlin/String?, kotlin/Double?, kotlin/String, kotlin.collections/List<dev.yveskalume.elevenlabs.stt/TranscriptionWord>) // dev.yveskalume.elevenlabs.stt/Transcription.<init>|<init>(kotlin.String?;kotlin.Double?;kotlin.String;kotlin.collections.List<dev.yveskalume.elevenlabs.stt.TranscriptionWord>){}[0]
+
+    final val languageCode // dev.yveskalume.elevenlabs.stt/Transcription.languageCode|{}languageCode[0]
+        final fun <get-languageCode>(): kotlin/String? // dev.yveskalume.elevenlabs.stt/Transcription.languageCode.<get-languageCode>|<get-languageCode>(){}[0]
+    final val languageProbability // dev.yveskalume.elevenlabs.stt/Transcription.languageProbability|{}languageProbability[0]
+        final fun <get-languageProbability>(): kotlin/Double? // dev.yveskalume.elevenlabs.stt/Transcription.languageProbability.<get-languageProbability>|<get-languageProbability>(){}[0]
+    final val text // dev.yveskalume.elevenlabs.stt/Transcription.text|{}text[0]
+        final fun <get-text>(): kotlin/String // dev.yveskalume.elevenlabs.stt/Transcription.text.<get-text>|<get-text>(){}[0]
+    final val words // dev.yveskalume.elevenlabs.stt/Transcription.words|{}words[0]
+        final fun <get-words>(): kotlin.collections/List<dev.yveskalume.elevenlabs.stt/TranscriptionWord> // dev.yveskalume.elevenlabs.stt/Transcription.words.<get-words>|<get-words>(){}[0]
+
+    final fun component1(): kotlin/String? // dev.yveskalume.elevenlabs.stt/Transcription.component1|component1(){}[0]
+    final fun component2(): kotlin/Double? // dev.yveskalume.elevenlabs.stt/Transcription.component2|component2(){}[0]
+    final fun component3(): kotlin/String // dev.yveskalume.elevenlabs.stt/Transcription.component3|component3(){}[0]
+    final fun component4(): kotlin.collections/List<dev.yveskalume.elevenlabs.stt/TranscriptionWord> // dev.yveskalume.elevenlabs.stt/Transcription.component4|component4(){}[0]
+    final fun copy(kotlin/String? = ..., kotlin/Double? = ..., kotlin/String = ..., kotlin.collections/List<dev.yveskalume.elevenlabs.stt/TranscriptionWord> = ...): dev.yveskalume.elevenlabs.stt/Transcription // dev.yveskalume.elevenlabs.stt/Transcription.copy|copy(kotlin.String?;kotlin.Double?;kotlin.String;kotlin.collections.List<dev.yveskalume.elevenlabs.stt.TranscriptionWord>){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // dev.yveskalume.elevenlabs.stt/Transcription.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // dev.yveskalume.elevenlabs.stt/Transcription.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // dev.yveskalume.elevenlabs.stt/Transcription.toString|toString(){}[0]
+}
+
+final class dev.yveskalume.elevenlabs.stt/TranscriptionWord { // dev.yveskalume.elevenlabs.stt/TranscriptionWord|null[0]
+    constructor <init>(kotlin/String, kotlin/Double?, kotlin/Double?, kotlin/String, kotlin/String?, kotlin/Double?, kotlin/Int?) // dev.yveskalume.elevenlabs.stt/TranscriptionWord.<init>|<init>(kotlin.String;kotlin.Double?;kotlin.Double?;kotlin.String;kotlin.String?;kotlin.Double?;kotlin.Int?){}[0]
+
+    final val channelIndex // dev.yveskalume.elevenlabs.stt/TranscriptionWord.channelIndex|{}channelIndex[0]
+        final fun <get-channelIndex>(): kotlin/Int? // dev.yveskalume.elevenlabs.stt/TranscriptionWord.channelIndex.<get-channelIndex>|<get-channelIndex>(){}[0]
+    final val endSeconds // dev.yveskalume.elevenlabs.stt/TranscriptionWord.endSeconds|{}endSeconds[0]
+        final fun <get-endSeconds>(): kotlin/Double? // dev.yveskalume.elevenlabs.stt/TranscriptionWord.endSeconds.<get-endSeconds>|<get-endSeconds>(){}[0]
+    final val logProbability // dev.yveskalume.elevenlabs.stt/TranscriptionWord.logProbability|{}logProbability[0]
+        final fun <get-logProbability>(): kotlin/Double? // dev.yveskalume.elevenlabs.stt/TranscriptionWord.logProbability.<get-logProbability>|<get-logProbability>(){}[0]
+    final val speakerId // dev.yveskalume.elevenlabs.stt/TranscriptionWord.speakerId|{}speakerId[0]
+        final fun <get-speakerId>(): kotlin/String? // dev.yveskalume.elevenlabs.stt/TranscriptionWord.speakerId.<get-speakerId>|<get-speakerId>(){}[0]
+    final val startSeconds // dev.yveskalume.elevenlabs.stt/TranscriptionWord.startSeconds|{}startSeconds[0]
+        final fun <get-startSeconds>(): kotlin/Double? // dev.yveskalume.elevenlabs.stt/TranscriptionWord.startSeconds.<get-startSeconds>|<get-startSeconds>(){}[0]
+    final val text // dev.yveskalume.elevenlabs.stt/TranscriptionWord.text|{}text[0]
+        final fun <get-text>(): kotlin/String // dev.yveskalume.elevenlabs.stt/TranscriptionWord.text.<get-text>|<get-text>(){}[0]
+    final val type // dev.yveskalume.elevenlabs.stt/TranscriptionWord.type|{}type[0]
+        final fun <get-type>(): kotlin/String // dev.yveskalume.elevenlabs.stt/TranscriptionWord.type.<get-type>|<get-type>(){}[0]
+
+    final fun component1(): kotlin/String // dev.yveskalume.elevenlabs.stt/TranscriptionWord.component1|component1(){}[0]
+    final fun component2(): kotlin/Double? // dev.yveskalume.elevenlabs.stt/TranscriptionWord.component2|component2(){}[0]
+    final fun component3(): kotlin/Double? // dev.yveskalume.elevenlabs.stt/TranscriptionWord.component3|component3(){}[0]
+    final fun component4(): kotlin/String // dev.yveskalume.elevenlabs.stt/TranscriptionWord.component4|component4(){}[0]
+    final fun component5(): kotlin/String? // dev.yveskalume.elevenlabs.stt/TranscriptionWord.component5|component5(){}[0]
+    final fun component6(): kotlin/Double? // dev.yveskalume.elevenlabs.stt/TranscriptionWord.component6|component6(){}[0]
+    final fun component7(): kotlin/Int? // dev.yveskalume.elevenlabs.stt/TranscriptionWord.component7|component7(){}[0]
+    final fun copy(kotlin/String = ..., kotlin/Double? = ..., kotlin/Double? = ..., kotlin/String = ..., kotlin/String? = ..., kotlin/Double? = ..., kotlin/Int? = ...): dev.yveskalume.elevenlabs.stt/TranscriptionWord // dev.yveskalume.elevenlabs.stt/TranscriptionWord.copy|copy(kotlin.String;kotlin.Double?;kotlin.Double?;kotlin.String;kotlin.String?;kotlin.Double?;kotlin.Int?){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // dev.yveskalume.elevenlabs.stt/TranscriptionWord.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // dev.yveskalume.elevenlabs.stt/TranscriptionWord.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // dev.yveskalume.elevenlabs.stt/TranscriptionWord.toString|toString(){}[0]
+}
+
+final class dev.yveskalume.elevenlabs.tts/Audio { // dev.yveskalume.elevenlabs.tts/Audio|null[0]
+    final val bytes // dev.yveskalume.elevenlabs.tts/Audio.bytes|{}bytes[0]
+        final fun <get-bytes>(): kotlin/ByteArray // dev.yveskalume.elevenlabs.tts/Audio.bytes.<get-bytes>|<get-bytes>(){}[0]
+    final val contentType // dev.yveskalume.elevenlabs.tts/Audio.contentType|{}contentType[0]
+        final fun <get-contentType>(): kotlin/String? // dev.yveskalume.elevenlabs.tts/Audio.contentType.<get-contentType>|<get-contentType>(){}[0]
+    final val requestId // dev.yveskalume.elevenlabs.tts/Audio.requestId|{}requestId[0]
+        final fun <get-requestId>(): kotlin/String? // dev.yveskalume.elevenlabs.tts/Audio.requestId.<get-requestId>|<get-requestId>(){}[0]
+}
+
+final class dev.yveskalume.elevenlabs.tts/AudioChunk { // dev.yveskalume.elevenlabs.tts/AudioChunk|null[0]
+    final val bytes // dev.yveskalume.elevenlabs.tts/AudioChunk.bytes|{}bytes[0]
+        final fun <get-bytes>(): kotlin/ByteArray // dev.yveskalume.elevenlabs.tts/AudioChunk.bytes.<get-bytes>|<get-bytes>(){}[0]
+}
+
+final class dev.yveskalume.elevenlabs.tts/OutputFormat { // dev.yveskalume.elevenlabs.tts/OutputFormat|null[0]
+    constructor <init>(kotlin/String) // dev.yveskalume.elevenlabs.tts/OutputFormat.<init>|<init>(kotlin.String){}[0]
+
+    final val value // dev.yveskalume.elevenlabs.tts/OutputFormat.value|{}value[0]
+        final fun <get-value>(): kotlin/String // dev.yveskalume.elevenlabs.tts/OutputFormat.value.<get-value>|<get-value>(){}[0]
+
+    final fun component1(): kotlin/String // dev.yveskalume.elevenlabs.tts/OutputFormat.component1|component1(){}[0]
+    final fun copy(kotlin/String = ...): dev.yveskalume.elevenlabs.tts/OutputFormat // dev.yveskalume.elevenlabs.tts/OutputFormat.copy|copy(kotlin.String){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // dev.yveskalume.elevenlabs.tts/OutputFormat.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // dev.yveskalume.elevenlabs.tts/OutputFormat.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // dev.yveskalume.elevenlabs.tts/OutputFormat.toString|toString(){}[0]
+
+    final object Companion { // dev.yveskalume.elevenlabs.tts/OutputFormat.Companion|null[0]
+        final val Mp3_44100_128 // dev.yveskalume.elevenlabs.tts/OutputFormat.Companion.Mp3_44100_128|{}Mp3_44100_128[0]
+            final fun <get-Mp3_44100_128>(): dev.yveskalume.elevenlabs.tts/OutputFormat // dev.yveskalume.elevenlabs.tts/OutputFormat.Companion.Mp3_44100_128.<get-Mp3_44100_128>|<get-Mp3_44100_128>(){}[0]
+        final val Mp3_44100_192 // dev.yveskalume.elevenlabs.tts/OutputFormat.Companion.Mp3_44100_192|{}Mp3_44100_192[0]
+            final fun <get-Mp3_44100_192>(): dev.yveskalume.elevenlabs.tts/OutputFormat // dev.yveskalume.elevenlabs.tts/OutputFormat.Companion.Mp3_44100_192.<get-Mp3_44100_192>|<get-Mp3_44100_192>(){}[0]
+        final val Pcm_16000 // dev.yveskalume.elevenlabs.tts/OutputFormat.Companion.Pcm_16000|{}Pcm_16000[0]
+            final fun <get-Pcm_16000>(): dev.yveskalume.elevenlabs.tts/OutputFormat // dev.yveskalume.elevenlabs.tts/OutputFormat.Companion.Pcm_16000.<get-Pcm_16000>|<get-Pcm_16000>(){}[0]
+        final val Pcm_24000 // dev.yveskalume.elevenlabs.tts/OutputFormat.Companion.Pcm_24000|{}Pcm_24000[0]
+            final fun <get-Pcm_24000>(): dev.yveskalume.elevenlabs.tts/OutputFormat // dev.yveskalume.elevenlabs.tts/OutputFormat.Companion.Pcm_24000.<get-Pcm_24000>|<get-Pcm_24000>(){}[0]
+        final val Pcm_44100 // dev.yveskalume.elevenlabs.tts/OutputFormat.Companion.Pcm_44100|{}Pcm_44100[0]
+            final fun <get-Pcm_44100>(): dev.yveskalume.elevenlabs.tts/OutputFormat // dev.yveskalume.elevenlabs.tts/OutputFormat.Companion.Pcm_44100.<get-Pcm_44100>|<get-Pcm_44100>(){}[0]
+        final val Ulaw_8000 // dev.yveskalume.elevenlabs.tts/OutputFormat.Companion.Ulaw_8000|{}Ulaw_8000[0]
+            final fun <get-Ulaw_8000>(): dev.yveskalume.elevenlabs.tts/OutputFormat // dev.yveskalume.elevenlabs.tts/OutputFormat.Companion.Ulaw_8000.<get-Ulaw_8000>|<get-Ulaw_8000>(){}[0]
+        final val Wav_44100 // dev.yveskalume.elevenlabs.tts/OutputFormat.Companion.Wav_44100|{}Wav_44100[0]
+            final fun <get-Wav_44100>(): dev.yveskalume.elevenlabs.tts/OutputFormat // dev.yveskalume.elevenlabs.tts/OutputFormat.Companion.Wav_44100.<get-Wav_44100>|<get-Wav_44100>(){}[0]
+    }
+}
+
+final class dev.yveskalume.elevenlabs.tts/RealtimeTtsAlignment { // dev.yveskalume.elevenlabs.tts/RealtimeTtsAlignment|null[0]
+    constructor <init>(kotlin.collections/List<kotlin/String>, kotlin.collections/List<kotlin/Int>, kotlin.collections/List<kotlin/Int>) // dev.yveskalume.elevenlabs.tts/RealtimeTtsAlignment.<init>|<init>(kotlin.collections.List<kotlin.String>;kotlin.collections.List<kotlin.Int>;kotlin.collections.List<kotlin.Int>){}[0]
+
+    final val characterDurationsMs // dev.yveskalume.elevenlabs.tts/RealtimeTtsAlignment.characterDurationsMs|{}characterDurationsMs[0]
+        final fun <get-characterDurationsMs>(): kotlin.collections/List<kotlin/Int> // dev.yveskalume.elevenlabs.tts/RealtimeTtsAlignment.characterDurationsMs.<get-characterDurationsMs>|<get-characterDurationsMs>(){}[0]
+    final val characterStartTimesMs // dev.yveskalume.elevenlabs.tts/RealtimeTtsAlignment.characterStartTimesMs|{}characterStartTimesMs[0]
+        final fun <get-characterStartTimesMs>(): kotlin.collections/List<kotlin/Int> // dev.yveskalume.elevenlabs.tts/RealtimeTtsAlignment.characterStartTimesMs.<get-characterStartTimesMs>|<get-characterStartTimesMs>(){}[0]
+    final val characters // dev.yveskalume.elevenlabs.tts/RealtimeTtsAlignment.characters|{}characters[0]
+        final fun <get-characters>(): kotlin.collections/List<kotlin/String> // dev.yveskalume.elevenlabs.tts/RealtimeTtsAlignment.characters.<get-characters>|<get-characters>(){}[0]
+
+    final fun component1(): kotlin.collections/List<kotlin/String> // dev.yveskalume.elevenlabs.tts/RealtimeTtsAlignment.component1|component1(){}[0]
+    final fun component2(): kotlin.collections/List<kotlin/Int> // dev.yveskalume.elevenlabs.tts/RealtimeTtsAlignment.component2|component2(){}[0]
+    final fun component3(): kotlin.collections/List<kotlin/Int> // dev.yveskalume.elevenlabs.tts/RealtimeTtsAlignment.component3|component3(){}[0]
+    final fun copy(kotlin.collections/List<kotlin/String> = ..., kotlin.collections/List<kotlin/Int> = ..., kotlin.collections/List<kotlin/Int> = ...): dev.yveskalume.elevenlabs.tts/RealtimeTtsAlignment // dev.yveskalume.elevenlabs.tts/RealtimeTtsAlignment.copy|copy(kotlin.collections.List<kotlin.String>;kotlin.collections.List<kotlin.Int>;kotlin.collections.List<kotlin.Int>){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // dev.yveskalume.elevenlabs.tts/RealtimeTtsAlignment.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // dev.yveskalume.elevenlabs.tts/RealtimeTtsAlignment.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // dev.yveskalume.elevenlabs.tts/RealtimeTtsAlignment.toString|toString(){}[0]
+}
+
+final class dev.yveskalume.elevenlabs.tts/RealtimeTtsGenerationConfig { // dev.yveskalume.elevenlabs.tts/RealtimeTtsGenerationConfig|null[0]
+    constructor <init>(kotlin.collections/List<kotlin/Int>) // dev.yveskalume.elevenlabs.tts/RealtimeTtsGenerationConfig.<init>|<init>(kotlin.collections.List<kotlin.Int>){}[0]
+
+    final val chunkLengthSchedule // dev.yveskalume.elevenlabs.tts/RealtimeTtsGenerationConfig.chunkLengthSchedule|{}chunkLengthSchedule[0]
+        final fun <get-chunkLengthSchedule>(): kotlin.collections/List<kotlin/Int> // dev.yveskalume.elevenlabs.tts/RealtimeTtsGenerationConfig.chunkLengthSchedule.<get-chunkLengthSchedule>|<get-chunkLengthSchedule>(){}[0]
+
+    final fun component1(): kotlin.collections/List<kotlin/Int> // dev.yveskalume.elevenlabs.tts/RealtimeTtsGenerationConfig.component1|component1(){}[0]
+    final fun copy(kotlin.collections/List<kotlin/Int> = ...): dev.yveskalume.elevenlabs.tts/RealtimeTtsGenerationConfig // dev.yveskalume.elevenlabs.tts/RealtimeTtsGenerationConfig.copy|copy(kotlin.collections.List<kotlin.Int>){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // dev.yveskalume.elevenlabs.tts/RealtimeTtsGenerationConfig.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // dev.yveskalume.elevenlabs.tts/RealtimeTtsGenerationConfig.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // dev.yveskalume.elevenlabs.tts/RealtimeTtsGenerationConfig.toString|toString(){}[0]
+}
+
+final class dev.yveskalume.elevenlabs.tts/RealtimeTtsKeepAlive { // dev.yveskalume.elevenlabs.tts/RealtimeTtsKeepAlive|null[0]
+    constructor <init>(kotlin/Boolean = ..., kotlin/Long = ...) // dev.yveskalume.elevenlabs.tts/RealtimeTtsKeepAlive.<init>|<init>(kotlin.Boolean;kotlin.Long){}[0]
+
+    final val enabled // dev.yveskalume.elevenlabs.tts/RealtimeTtsKeepAlive.enabled|{}enabled[0]
+        final fun <get-enabled>(): kotlin/Boolean // dev.yveskalume.elevenlabs.tts/RealtimeTtsKeepAlive.enabled.<get-enabled>|<get-enabled>(){}[0]
+    final val intervalMillis // dev.yveskalume.elevenlabs.tts/RealtimeTtsKeepAlive.intervalMillis|{}intervalMillis[0]
+        final fun <get-intervalMillis>(): kotlin/Long // dev.yveskalume.elevenlabs.tts/RealtimeTtsKeepAlive.intervalMillis.<get-intervalMillis>|<get-intervalMillis>(){}[0]
+
+    final fun component1(): kotlin/Boolean // dev.yveskalume.elevenlabs.tts/RealtimeTtsKeepAlive.component1|component1(){}[0]
+    final fun component2(): kotlin/Long // dev.yveskalume.elevenlabs.tts/RealtimeTtsKeepAlive.component2|component2(){}[0]
+    final fun copy(kotlin/Boolean = ..., kotlin/Long = ...): dev.yveskalume.elevenlabs.tts/RealtimeTtsKeepAlive // dev.yveskalume.elevenlabs.tts/RealtimeTtsKeepAlive.copy|copy(kotlin.Boolean;kotlin.Long){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // dev.yveskalume.elevenlabs.tts/RealtimeTtsKeepAlive.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // dev.yveskalume.elevenlabs.tts/RealtimeTtsKeepAlive.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // dev.yveskalume.elevenlabs.tts/RealtimeTtsKeepAlive.toString|toString(){}[0]
+}
+
+final class dev.yveskalume.elevenlabs.tts/RealtimeTtsOptions { // dev.yveskalume.elevenlabs.tts/RealtimeTtsOptions|null[0]
+    constructor <init>(kotlin/String? = ..., kotlin/String? = ..., dev.yveskalume.elevenlabs.tts/OutputFormat = ..., dev.yveskalume.elevenlabs.tts/VoiceSettings? = ..., dev.yveskalume.elevenlabs.tts/RealtimeTtsGenerationConfig? = ..., kotlin/Boolean = ..., kotlin/Boolean = ..., kotlin/Boolean = ..., dev.yveskalume.elevenlabs.tts/RealtimeTtsTimeouts = ..., dev.yveskalume.elevenlabs.tts/RealtimeTtsKeepAlive = ..., dev.yveskalume.elevenlabs.tts/RealtimeTtsReconnectPolicy = ...) // dev.yveskalume.elevenlabs.tts/RealtimeTtsOptions.<init>|<init>(kotlin.String?;kotlin.String?;dev.yveskalume.elevenlabs.tts.OutputFormat;dev.yveskalume.elevenlabs.tts.VoiceSettings?;dev.yveskalume.elevenlabs.tts.RealtimeTtsGenerationConfig?;kotlin.Boolean;kotlin.Boolean;kotlin.Boolean;dev.yveskalume.elevenlabs.tts.RealtimeTtsTimeouts;dev.yveskalume.elevenlabs.tts.RealtimeTtsKeepAlive;dev.yveskalume.elevenlabs.tts.RealtimeTtsReconnectPolicy){}[0]
+
+    final val enableLogging // dev.yveskalume.elevenlabs.tts/RealtimeTtsOptions.enableLogging|{}enableLogging[0]
+        final fun <get-enableLogging>(): kotlin/Boolean // dev.yveskalume.elevenlabs.tts/RealtimeTtsOptions.enableLogging.<get-enableLogging>|<get-enableLogging>(){}[0]
+    final val enableSsmlParsing // dev.yveskalume.elevenlabs.tts/RealtimeTtsOptions.enableSsmlParsing|{}enableSsmlParsing[0]
+        final fun <get-enableSsmlParsing>(): kotlin/Boolean // dev.yveskalume.elevenlabs.tts/RealtimeTtsOptions.enableSsmlParsing.<get-enableSsmlParsing>|<get-enableSsmlParsing>(){}[0]
+    final val generationConfig // dev.yveskalume.elevenlabs.tts/RealtimeTtsOptions.generationConfig|{}generationConfig[0]
+        final fun <get-generationConfig>(): dev.yveskalume.elevenlabs.tts/RealtimeTtsGenerationConfig? // dev.yveskalume.elevenlabs.tts/RealtimeTtsOptions.generationConfig.<get-generationConfig>|<get-generationConfig>(){}[0]
+    final val keepAlive // dev.yveskalume.elevenlabs.tts/RealtimeTtsOptions.keepAlive|{}keepAlive[0]
+        final fun <get-keepAlive>(): dev.yveskalume.elevenlabs.tts/RealtimeTtsKeepAlive // dev.yveskalume.elevenlabs.tts/RealtimeTtsOptions.keepAlive.<get-keepAlive>|<get-keepAlive>(){}[0]
+    final val languageCode // dev.yveskalume.elevenlabs.tts/RealtimeTtsOptions.languageCode|{}languageCode[0]
+        final fun <get-languageCode>(): kotlin/String? // dev.yveskalume.elevenlabs.tts/RealtimeTtsOptions.languageCode.<get-languageCode>|<get-languageCode>(){}[0]
+    final val modelId // dev.yveskalume.elevenlabs.tts/RealtimeTtsOptions.modelId|{}modelId[0]
+        final fun <get-modelId>(): kotlin/String? // dev.yveskalume.elevenlabs.tts/RealtimeTtsOptions.modelId.<get-modelId>|<get-modelId>(){}[0]
+    final val outputFormat // dev.yveskalume.elevenlabs.tts/RealtimeTtsOptions.outputFormat|{}outputFormat[0]
+        final fun <get-outputFormat>(): dev.yveskalume.elevenlabs.tts/OutputFormat // dev.yveskalume.elevenlabs.tts/RealtimeTtsOptions.outputFormat.<get-outputFormat>|<get-outputFormat>(){}[0]
+    final val reconnectPolicy // dev.yveskalume.elevenlabs.tts/RealtimeTtsOptions.reconnectPolicy|{}reconnectPolicy[0]
+        final fun <get-reconnectPolicy>(): dev.yveskalume.elevenlabs.tts/RealtimeTtsReconnectPolicy // dev.yveskalume.elevenlabs.tts/RealtimeTtsOptions.reconnectPolicy.<get-reconnectPolicy>|<get-reconnectPolicy>(){}[0]
+    final val syncAlignment // dev.yveskalume.elevenlabs.tts/RealtimeTtsOptions.syncAlignment|{}syncAlignment[0]
+        final fun <get-syncAlignment>(): kotlin/Boolean // dev.yveskalume.elevenlabs.tts/RealtimeTtsOptions.syncAlignment.<get-syncAlignment>|<get-syncAlignment>(){}[0]
+    final val timeouts // dev.yveskalume.elevenlabs.tts/RealtimeTtsOptions.timeouts|{}timeouts[0]
+        final fun <get-timeouts>(): dev.yveskalume.elevenlabs.tts/RealtimeTtsTimeouts // dev.yveskalume.elevenlabs.tts/RealtimeTtsOptions.timeouts.<get-timeouts>|<get-timeouts>(){}[0]
+    final val voiceSettings // dev.yveskalume.elevenlabs.tts/RealtimeTtsOptions.voiceSettings|{}voiceSettings[0]
+        final fun <get-voiceSettings>(): dev.yveskalume.elevenlabs.tts/VoiceSettings? // dev.yveskalume.elevenlabs.tts/RealtimeTtsOptions.voiceSettings.<get-voiceSettings>|<get-voiceSettings>(){}[0]
+
+    final fun component1(): kotlin/String? // dev.yveskalume.elevenlabs.tts/RealtimeTtsOptions.component1|component1(){}[0]
+    final fun component10(): dev.yveskalume.elevenlabs.tts/RealtimeTtsKeepAlive // dev.yveskalume.elevenlabs.tts/RealtimeTtsOptions.component10|component10(){}[0]
+    final fun component11(): dev.yveskalume.elevenlabs.tts/RealtimeTtsReconnectPolicy // dev.yveskalume.elevenlabs.tts/RealtimeTtsOptions.component11|component11(){}[0]
+    final fun component2(): kotlin/String? // dev.yveskalume.elevenlabs.tts/RealtimeTtsOptions.component2|component2(){}[0]
+    final fun component3(): dev.yveskalume.elevenlabs.tts/OutputFormat // dev.yveskalume.elevenlabs.tts/RealtimeTtsOptions.component3|component3(){}[0]
+    final fun component4(): dev.yveskalume.elevenlabs.tts/VoiceSettings? // dev.yveskalume.elevenlabs.tts/RealtimeTtsOptions.component4|component4(){}[0]
+    final fun component5(): dev.yveskalume.elevenlabs.tts/RealtimeTtsGenerationConfig? // dev.yveskalume.elevenlabs.tts/RealtimeTtsOptions.component5|component5(){}[0]
+    final fun component6(): kotlin/Boolean // dev.yveskalume.elevenlabs.tts/RealtimeTtsOptions.component6|component6(){}[0]
+    final fun component7(): kotlin/Boolean // dev.yveskalume.elevenlabs.tts/RealtimeTtsOptions.component7|component7(){}[0]
+    final fun component8(): kotlin/Boolean // dev.yveskalume.elevenlabs.tts/RealtimeTtsOptions.component8|component8(){}[0]
+    final fun component9(): dev.yveskalume.elevenlabs.tts/RealtimeTtsTimeouts // dev.yveskalume.elevenlabs.tts/RealtimeTtsOptions.component9|component9(){}[0]
+    final fun copy(kotlin/String? = ..., kotlin/String? = ..., dev.yveskalume.elevenlabs.tts/OutputFormat = ..., dev.yveskalume.elevenlabs.tts/VoiceSettings? = ..., dev.yveskalume.elevenlabs.tts/RealtimeTtsGenerationConfig? = ..., kotlin/Boolean = ..., kotlin/Boolean = ..., kotlin/Boolean = ..., dev.yveskalume.elevenlabs.tts/RealtimeTtsTimeouts = ..., dev.yveskalume.elevenlabs.tts/RealtimeTtsKeepAlive = ..., dev.yveskalume.elevenlabs.tts/RealtimeTtsReconnectPolicy = ...): dev.yveskalume.elevenlabs.tts/RealtimeTtsOptions // dev.yveskalume.elevenlabs.tts/RealtimeTtsOptions.copy|copy(kotlin.String?;kotlin.String?;dev.yveskalume.elevenlabs.tts.OutputFormat;dev.yveskalume.elevenlabs.tts.VoiceSettings?;dev.yveskalume.elevenlabs.tts.RealtimeTtsGenerationConfig?;kotlin.Boolean;kotlin.Boolean;kotlin.Boolean;dev.yveskalume.elevenlabs.tts.RealtimeTtsTimeouts;dev.yveskalume.elevenlabs.tts.RealtimeTtsKeepAlive;dev.yveskalume.elevenlabs.tts.RealtimeTtsReconnectPolicy){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // dev.yveskalume.elevenlabs.tts/RealtimeTtsOptions.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // dev.yveskalume.elevenlabs.tts/RealtimeTtsOptions.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // dev.yveskalume.elevenlabs.tts/RealtimeTtsOptions.toString|toString(){}[0]
+}
+
+final class dev.yveskalume.elevenlabs.tts/RealtimeTtsTimeouts { // dev.yveskalume.elevenlabs.tts/RealtimeTtsTimeouts|null[0]
+    constructor <init>(kotlin/Long = ..., kotlin/Long = ..., kotlin/Long = ..., kotlin/Int = ...) // dev.yveskalume.elevenlabs.tts/RealtimeTtsTimeouts.<init>|<init>(kotlin.Long;kotlin.Long;kotlin.Long;kotlin.Int){}[0]
+
+    final val connectTimeoutMillis // dev.yveskalume.elevenlabs.tts/RealtimeTtsTimeouts.connectTimeoutMillis|{}connectTimeoutMillis[0]
+        final fun <get-connectTimeoutMillis>(): kotlin/Long // dev.yveskalume.elevenlabs.tts/RealtimeTtsTimeouts.connectTimeoutMillis.<get-connectTimeoutMillis>|<get-connectTimeoutMillis>(){}[0]
+    final val finishTimeoutMillis // dev.yveskalume.elevenlabs.tts/RealtimeTtsTimeouts.finishTimeoutMillis|{}finishTimeoutMillis[0]
+        final fun <get-finishTimeoutMillis>(): kotlin/Long // dev.yveskalume.elevenlabs.tts/RealtimeTtsTimeouts.finishTimeoutMillis.<get-finishTimeoutMillis>|<get-finishTimeoutMillis>(){}[0]
+    final val inactivityTimeoutSeconds // dev.yveskalume.elevenlabs.tts/RealtimeTtsTimeouts.inactivityTimeoutSeconds|{}inactivityTimeoutSeconds[0]
+        final fun <get-inactivityTimeoutSeconds>(): kotlin/Int // dev.yveskalume.elevenlabs.tts/RealtimeTtsTimeouts.inactivityTimeoutSeconds.<get-inactivityTimeoutSeconds>|<get-inactivityTimeoutSeconds>(){}[0]
+    final val sendTimeoutMillis // dev.yveskalume.elevenlabs.tts/RealtimeTtsTimeouts.sendTimeoutMillis|{}sendTimeoutMillis[0]
+        final fun <get-sendTimeoutMillis>(): kotlin/Long // dev.yveskalume.elevenlabs.tts/RealtimeTtsTimeouts.sendTimeoutMillis.<get-sendTimeoutMillis>|<get-sendTimeoutMillis>(){}[0]
+
+    final fun component1(): kotlin/Long // dev.yveskalume.elevenlabs.tts/RealtimeTtsTimeouts.component1|component1(){}[0]
+    final fun component2(): kotlin/Long // dev.yveskalume.elevenlabs.tts/RealtimeTtsTimeouts.component2|component2(){}[0]
+    final fun component3(): kotlin/Long // dev.yveskalume.elevenlabs.tts/RealtimeTtsTimeouts.component3|component3(){}[0]
+    final fun component4(): kotlin/Int // dev.yveskalume.elevenlabs.tts/RealtimeTtsTimeouts.component4|component4(){}[0]
+    final fun copy(kotlin/Long = ..., kotlin/Long = ..., kotlin/Long = ..., kotlin/Int = ...): dev.yveskalume.elevenlabs.tts/RealtimeTtsTimeouts // dev.yveskalume.elevenlabs.tts/RealtimeTtsTimeouts.copy|copy(kotlin.Long;kotlin.Long;kotlin.Long;kotlin.Int){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // dev.yveskalume.elevenlabs.tts/RealtimeTtsTimeouts.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // dev.yveskalume.elevenlabs.tts/RealtimeTtsTimeouts.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // dev.yveskalume.elevenlabs.tts/RealtimeTtsTimeouts.toString|toString(){}[0]
+}
+
+final class dev.yveskalume.elevenlabs.tts/TextToSpeechRequest { // dev.yveskalume.elevenlabs.tts/TextToSpeechRequest|null[0]
+    constructor <init>(kotlin/String, kotlin/String, kotlin/String? = ..., kotlin/String? = ..., dev.yveskalume.elevenlabs.tts/VoiceSettings? = ..., dev.yveskalume.elevenlabs.tts/OutputFormat = ..., kotlin/Boolean = ...) // dev.yveskalume.elevenlabs.tts/TextToSpeechRequest.<init>|<init>(kotlin.String;kotlin.String;kotlin.String?;kotlin.String?;dev.yveskalume.elevenlabs.tts.VoiceSettings?;dev.yveskalume.elevenlabs.tts.OutputFormat;kotlin.Boolean){}[0]
+
+    final val enableLogging // dev.yveskalume.elevenlabs.tts/TextToSpeechRequest.enableLogging|{}enableLogging[0]
+        final fun <get-enableLogging>(): kotlin/Boolean // dev.yveskalume.elevenlabs.tts/TextToSpeechRequest.enableLogging.<get-enableLogging>|<get-enableLogging>(){}[0]
+    final val languageCode // dev.yveskalume.elevenlabs.tts/TextToSpeechRequest.languageCode|{}languageCode[0]
+        final fun <get-languageCode>(): kotlin/String? // dev.yveskalume.elevenlabs.tts/TextToSpeechRequest.languageCode.<get-languageCode>|<get-languageCode>(){}[0]
+    final val modelId // dev.yveskalume.elevenlabs.tts/TextToSpeechRequest.modelId|{}modelId[0]
+        final fun <get-modelId>(): kotlin/String? // dev.yveskalume.elevenlabs.tts/TextToSpeechRequest.modelId.<get-modelId>|<get-modelId>(){}[0]
+    final val outputFormat // dev.yveskalume.elevenlabs.tts/TextToSpeechRequest.outputFormat|{}outputFormat[0]
+        final fun <get-outputFormat>(): dev.yveskalume.elevenlabs.tts/OutputFormat // dev.yveskalume.elevenlabs.tts/TextToSpeechRequest.outputFormat.<get-outputFormat>|<get-outputFormat>(){}[0]
+    final val text // dev.yveskalume.elevenlabs.tts/TextToSpeechRequest.text|{}text[0]
+        final fun <get-text>(): kotlin/String // dev.yveskalume.elevenlabs.tts/TextToSpeechRequest.text.<get-text>|<get-text>(){}[0]
+    final val voiceId // dev.yveskalume.elevenlabs.tts/TextToSpeechRequest.voiceId|{}voiceId[0]
+        final fun <get-voiceId>(): kotlin/String // dev.yveskalume.elevenlabs.tts/TextToSpeechRequest.voiceId.<get-voiceId>|<get-voiceId>(){}[0]
+    final val voiceSettings // dev.yveskalume.elevenlabs.tts/TextToSpeechRequest.voiceSettings|{}voiceSettings[0]
+        final fun <get-voiceSettings>(): dev.yveskalume.elevenlabs.tts/VoiceSettings? // dev.yveskalume.elevenlabs.tts/TextToSpeechRequest.voiceSettings.<get-voiceSettings>|<get-voiceSettings>(){}[0]
+
+    final fun component1(): kotlin/String // dev.yveskalume.elevenlabs.tts/TextToSpeechRequest.component1|component1(){}[0]
+    final fun component2(): kotlin/String // dev.yveskalume.elevenlabs.tts/TextToSpeechRequest.component2|component2(){}[0]
+    final fun component3(): kotlin/String? // dev.yveskalume.elevenlabs.tts/TextToSpeechRequest.component3|component3(){}[0]
+    final fun component4(): kotlin/String? // dev.yveskalume.elevenlabs.tts/TextToSpeechRequest.component4|component4(){}[0]
+    final fun component5(): dev.yveskalume.elevenlabs.tts/VoiceSettings? // dev.yveskalume.elevenlabs.tts/TextToSpeechRequest.component5|component5(){}[0]
+    final fun component6(): dev.yveskalume.elevenlabs.tts/OutputFormat // dev.yveskalume.elevenlabs.tts/TextToSpeechRequest.component6|component6(){}[0]
+    final fun component7(): kotlin/Boolean // dev.yveskalume.elevenlabs.tts/TextToSpeechRequest.component7|component7(){}[0]
+    final fun copy(kotlin/String = ..., kotlin/String = ..., kotlin/String? = ..., kotlin/String? = ..., dev.yveskalume.elevenlabs.tts/VoiceSettings? = ..., dev.yveskalume.elevenlabs.tts/OutputFormat = ..., kotlin/Boolean = ...): dev.yveskalume.elevenlabs.tts/TextToSpeechRequest // dev.yveskalume.elevenlabs.tts/TextToSpeechRequest.copy|copy(kotlin.String;kotlin.String;kotlin.String?;kotlin.String?;dev.yveskalume.elevenlabs.tts.VoiceSettings?;dev.yveskalume.elevenlabs.tts.OutputFormat;kotlin.Boolean){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // dev.yveskalume.elevenlabs.tts/TextToSpeechRequest.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // dev.yveskalume.elevenlabs.tts/TextToSpeechRequest.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // dev.yveskalume.elevenlabs.tts/TextToSpeechRequest.toString|toString(){}[0]
+}
+
+final class dev.yveskalume.elevenlabs.tts/VoiceSettings { // dev.yveskalume.elevenlabs.tts/VoiceSettings|null[0]
+    constructor <init>(kotlin/Double? = ..., kotlin/Double? = ..., kotlin/Double? = ..., kotlin/Boolean? = ..., kotlin/Double? = ...) // dev.yveskalume.elevenlabs.tts/VoiceSettings.<init>|<init>(kotlin.Double?;kotlin.Double?;kotlin.Double?;kotlin.Boolean?;kotlin.Double?){}[0]
+
+    final val similarityBoost // dev.yveskalume.elevenlabs.tts/VoiceSettings.similarityBoost|{}similarityBoost[0]
+        final fun <get-similarityBoost>(): kotlin/Double? // dev.yveskalume.elevenlabs.tts/VoiceSettings.similarityBoost.<get-similarityBoost>|<get-similarityBoost>(){}[0]
+    final val speed // dev.yveskalume.elevenlabs.tts/VoiceSettings.speed|{}speed[0]
+        final fun <get-speed>(): kotlin/Double? // dev.yveskalume.elevenlabs.tts/VoiceSettings.speed.<get-speed>|<get-speed>(){}[0]
+    final val stability // dev.yveskalume.elevenlabs.tts/VoiceSettings.stability|{}stability[0]
+        final fun <get-stability>(): kotlin/Double? // dev.yveskalume.elevenlabs.tts/VoiceSettings.stability.<get-stability>|<get-stability>(){}[0]
+    final val style // dev.yveskalume.elevenlabs.tts/VoiceSettings.style|{}style[0]
+        final fun <get-style>(): kotlin/Double? // dev.yveskalume.elevenlabs.tts/VoiceSettings.style.<get-style>|<get-style>(){}[0]
+    final val useSpeakerBoost // dev.yveskalume.elevenlabs.tts/VoiceSettings.useSpeakerBoost|{}useSpeakerBoost[0]
+        final fun <get-useSpeakerBoost>(): kotlin/Boolean? // dev.yveskalume.elevenlabs.tts/VoiceSettings.useSpeakerBoost.<get-useSpeakerBoost>|<get-useSpeakerBoost>(){}[0]
+
+    final fun component1(): kotlin/Double? // dev.yveskalume.elevenlabs.tts/VoiceSettings.component1|component1(){}[0]
+    final fun component2(): kotlin/Double? // dev.yveskalume.elevenlabs.tts/VoiceSettings.component2|component2(){}[0]
+    final fun component3(): kotlin/Double? // dev.yveskalume.elevenlabs.tts/VoiceSettings.component3|component3(){}[0]
+    final fun component4(): kotlin/Boolean? // dev.yveskalume.elevenlabs.tts/VoiceSettings.component4|component4(){}[0]
+    final fun component5(): kotlin/Double? // dev.yveskalume.elevenlabs.tts/VoiceSettings.component5|component5(){}[0]
+    final fun copy(kotlin/Double? = ..., kotlin/Double? = ..., kotlin/Double? = ..., kotlin/Boolean? = ..., kotlin/Double? = ...): dev.yveskalume.elevenlabs.tts/VoiceSettings // dev.yveskalume.elevenlabs.tts/VoiceSettings.copy|copy(kotlin.Double?;kotlin.Double?;kotlin.Double?;kotlin.Boolean?;kotlin.Double?){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // dev.yveskalume.elevenlabs.tts/VoiceSettings.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // dev.yveskalume.elevenlabs.tts/VoiceSettings.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // dev.yveskalume.elevenlabs.tts/VoiceSettings.toString|toString(){}[0]
+}
+
+final class dev.yveskalume.elevenlabs.voices/ListVoicesRequest { // dev.yveskalume.elevenlabs.voices/ListVoicesRequest|null[0]
+    constructor <init>(kotlin/Int = ..., kotlin/String? = ..., kotlin/String? = ..., kotlin/String? = ..., kotlin/String? = ..., kotlin/Boolean = ...) // dev.yveskalume.elevenlabs.voices/ListVoicesRequest.<init>|<init>(kotlin.Int;kotlin.String?;kotlin.String?;kotlin.String?;kotlin.String?;kotlin.Boolean){}[0]
+
+    final val category // dev.yveskalume.elevenlabs.voices/ListVoicesRequest.category|{}category[0]
+        final fun <get-category>(): kotlin/String? // dev.yveskalume.elevenlabs.voices/ListVoicesRequest.category.<get-category>|<get-category>(){}[0]
+    final val includeTotalCount // dev.yveskalume.elevenlabs.voices/ListVoicesRequest.includeTotalCount|{}includeTotalCount[0]
+        final fun <get-includeTotalCount>(): kotlin/Boolean // dev.yveskalume.elevenlabs.voices/ListVoicesRequest.includeTotalCount.<get-includeTotalCount>|<get-includeTotalCount>(){}[0]
+    final val nextPageToken // dev.yveskalume.elevenlabs.voices/ListVoicesRequest.nextPageToken|{}nextPageToken[0]
+        final fun <get-nextPageToken>(): kotlin/String? // dev.yveskalume.elevenlabs.voices/ListVoicesRequest.nextPageToken.<get-nextPageToken>|<get-nextPageToken>(){}[0]
+    final val pageSize // dev.yveskalume.elevenlabs.voices/ListVoicesRequest.pageSize|{}pageSize[0]
+        final fun <get-pageSize>(): kotlin/Int // dev.yveskalume.elevenlabs.voices/ListVoicesRequest.pageSize.<get-pageSize>|<get-pageSize>(){}[0]
+    final val search // dev.yveskalume.elevenlabs.voices/ListVoicesRequest.search|{}search[0]
+        final fun <get-search>(): kotlin/String? // dev.yveskalume.elevenlabs.voices/ListVoicesRequest.search.<get-search>|<get-search>(){}[0]
+    final val voiceType // dev.yveskalume.elevenlabs.voices/ListVoicesRequest.voiceType|{}voiceType[0]
+        final fun <get-voiceType>(): kotlin/String? // dev.yveskalume.elevenlabs.voices/ListVoicesRequest.voiceType.<get-voiceType>|<get-voiceType>(){}[0]
+
+    final fun component1(): kotlin/Int // dev.yveskalume.elevenlabs.voices/ListVoicesRequest.component1|component1(){}[0]
+    final fun component2(): kotlin/String? // dev.yveskalume.elevenlabs.voices/ListVoicesRequest.component2|component2(){}[0]
+    final fun component3(): kotlin/String? // dev.yveskalume.elevenlabs.voices/ListVoicesRequest.component3|component3(){}[0]
+    final fun component4(): kotlin/String? // dev.yveskalume.elevenlabs.voices/ListVoicesRequest.component4|component4(){}[0]
+    final fun component5(): kotlin/String? // dev.yveskalume.elevenlabs.voices/ListVoicesRequest.component5|component5(){}[0]
+    final fun component6(): kotlin/Boolean // dev.yveskalume.elevenlabs.voices/ListVoicesRequest.component6|component6(){}[0]
+    final fun copy(kotlin/Int = ..., kotlin/String? = ..., kotlin/String? = ..., kotlin/String? = ..., kotlin/String? = ..., kotlin/Boolean = ...): dev.yveskalume.elevenlabs.voices/ListVoicesRequest // dev.yveskalume.elevenlabs.voices/ListVoicesRequest.copy|copy(kotlin.Int;kotlin.String?;kotlin.String?;kotlin.String?;kotlin.String?;kotlin.Boolean){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // dev.yveskalume.elevenlabs.voices/ListVoicesRequest.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // dev.yveskalume.elevenlabs.voices/ListVoicesRequest.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // dev.yveskalume.elevenlabs.voices/ListVoicesRequest.toString|toString(){}[0]
+}
+
+final class dev.yveskalume.elevenlabs.voices/Voice { // dev.yveskalume.elevenlabs.voices/Voice|null[0]
+    constructor <init>(kotlin/String, kotlin/String, kotlin/String? = ..., kotlin/String? = ..., kotlin/String? = ..., kotlin.collections/Map<kotlin/String, kotlin/String> = ...) // dev.yveskalume.elevenlabs.voices/Voice.<init>|<init>(kotlin.String;kotlin.String;kotlin.String?;kotlin.String?;kotlin.String?;kotlin.collections.Map<kotlin.String,kotlin.String>){}[0]
+
+    final val category // dev.yveskalume.elevenlabs.voices/Voice.category|{}category[0]
+        final fun <get-category>(): kotlin/String? // dev.yveskalume.elevenlabs.voices/Voice.category.<get-category>|<get-category>(){}[0]
+    final val description // dev.yveskalume.elevenlabs.voices/Voice.description|{}description[0]
+        final fun <get-description>(): kotlin/String? // dev.yveskalume.elevenlabs.voices/Voice.description.<get-description>|<get-description>(){}[0]
+    final val id // dev.yveskalume.elevenlabs.voices/Voice.id|{}id[0]
+        final fun <get-id>(): kotlin/String // dev.yveskalume.elevenlabs.voices/Voice.id.<get-id>|<get-id>(){}[0]
+    final val labels // dev.yveskalume.elevenlabs.voices/Voice.labels|{}labels[0]
+        final fun <get-labels>(): kotlin.collections/Map<kotlin/String, kotlin/String> // dev.yveskalume.elevenlabs.voices/Voice.labels.<get-labels>|<get-labels>(){}[0]
+    final val name // dev.yveskalume.elevenlabs.voices/Voice.name|{}name[0]
+        final fun <get-name>(): kotlin/String // dev.yveskalume.elevenlabs.voices/Voice.name.<get-name>|<get-name>(){}[0]
+    final val previewUrl // dev.yveskalume.elevenlabs.voices/Voice.previewUrl|{}previewUrl[0]
+        final fun <get-previewUrl>(): kotlin/String? // dev.yveskalume.elevenlabs.voices/Voice.previewUrl.<get-previewUrl>|<get-previewUrl>(){}[0]
+
+    final fun component1(): kotlin/String // dev.yveskalume.elevenlabs.voices/Voice.component1|component1(){}[0]
+    final fun component2(): kotlin/String // dev.yveskalume.elevenlabs.voices/Voice.component2|component2(){}[0]
+    final fun component3(): kotlin/String? // dev.yveskalume.elevenlabs.voices/Voice.component3|component3(){}[0]
+    final fun component4(): kotlin/String? // dev.yveskalume.elevenlabs.voices/Voice.component4|component4(){}[0]
+    final fun component5(): kotlin/String? // dev.yveskalume.elevenlabs.voices/Voice.component5|component5(){}[0]
+    final fun component6(): kotlin.collections/Map<kotlin/String, kotlin/String> // dev.yveskalume.elevenlabs.voices/Voice.component6|component6(){}[0]
+    final fun copy(kotlin/String = ..., kotlin/String = ..., kotlin/String? = ..., kotlin/String? = ..., kotlin/String? = ..., kotlin.collections/Map<kotlin/String, kotlin/String> = ...): dev.yveskalume.elevenlabs.voices/Voice // dev.yveskalume.elevenlabs.voices/Voice.copy|copy(kotlin.String;kotlin.String;kotlin.String?;kotlin.String?;kotlin.String?;kotlin.collections.Map<kotlin.String,kotlin.String>){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // dev.yveskalume.elevenlabs.voices/Voice.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // dev.yveskalume.elevenlabs.voices/Voice.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // dev.yveskalume.elevenlabs.voices/Voice.toString|toString(){}[0]
+}
+
+final class dev.yveskalume.elevenlabs.voices/VoicePage { // dev.yveskalume.elevenlabs.voices/VoicePage|null[0]
+    constructor <init>(kotlin.collections/List<dev.yveskalume.elevenlabs.voices/Voice>, kotlin/Boolean, kotlin/String? = ..., kotlin/Int? = ...) // dev.yveskalume.elevenlabs.voices/VoicePage.<init>|<init>(kotlin.collections.List<dev.yveskalume.elevenlabs.voices.Voice>;kotlin.Boolean;kotlin.String?;kotlin.Int?){}[0]
+
+    final val hasMore // dev.yveskalume.elevenlabs.voices/VoicePage.hasMore|{}hasMore[0]
+        final fun <get-hasMore>(): kotlin/Boolean // dev.yveskalume.elevenlabs.voices/VoicePage.hasMore.<get-hasMore>|<get-hasMore>(){}[0]
+    final val nextPageToken // dev.yveskalume.elevenlabs.voices/VoicePage.nextPageToken|{}nextPageToken[0]
+        final fun <get-nextPageToken>(): kotlin/String? // dev.yveskalume.elevenlabs.voices/VoicePage.nextPageToken.<get-nextPageToken>|<get-nextPageToken>(){}[0]
+    final val totalCount // dev.yveskalume.elevenlabs.voices/VoicePage.totalCount|{}totalCount[0]
+        final fun <get-totalCount>(): kotlin/Int? // dev.yveskalume.elevenlabs.voices/VoicePage.totalCount.<get-totalCount>|<get-totalCount>(){}[0]
+    final val voices // dev.yveskalume.elevenlabs.voices/VoicePage.voices|{}voices[0]
+        final fun <get-voices>(): kotlin.collections/List<dev.yveskalume.elevenlabs.voices/Voice> // dev.yveskalume.elevenlabs.voices/VoicePage.voices.<get-voices>|<get-voices>(){}[0]
+
+    final fun component1(): kotlin.collections/List<dev.yveskalume.elevenlabs.voices/Voice> // dev.yveskalume.elevenlabs.voices/VoicePage.component1|component1(){}[0]
+    final fun component2(): kotlin/Boolean // dev.yveskalume.elevenlabs.voices/VoicePage.component2|component2(){}[0]
+    final fun component3(): kotlin/String? // dev.yveskalume.elevenlabs.voices/VoicePage.component3|component3(){}[0]
+    final fun component4(): kotlin/Int? // dev.yveskalume.elevenlabs.voices/VoicePage.component4|component4(){}[0]
+    final fun copy(kotlin.collections/List<dev.yveskalume.elevenlabs.voices/Voice> = ..., kotlin/Boolean = ..., kotlin/String? = ..., kotlin/Int? = ...): dev.yveskalume.elevenlabs.voices/VoicePage // dev.yveskalume.elevenlabs.voices/VoicePage.copy|copy(kotlin.collections.List<dev.yveskalume.elevenlabs.voices.Voice>;kotlin.Boolean;kotlin.String?;kotlin.Int?){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // dev.yveskalume.elevenlabs.voices/VoicePage.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // dev.yveskalume.elevenlabs.voices/VoicePage.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // dev.yveskalume.elevenlabs.voices/VoicePage.toString|toString(){}[0]
+}
+
+final class dev.yveskalume.elevenlabs/ElevenLabs { // dev.yveskalume.elevenlabs/ElevenLabs|null[0]
+    constructor <init>(kotlin/Function1<dev.yveskalume.elevenlabs/ElevenLabsConfiguration, kotlin/Unit>) // dev.yveskalume.elevenlabs/ElevenLabs.<init>|<init>(kotlin.Function1<dev.yveskalume.elevenlabs.ElevenLabsConfiguration,kotlin.Unit>){}[0]
+
+    final val models // dev.yveskalume.elevenlabs/ElevenLabs.models|{}models[0]
+        final fun <get-models>(): dev.yveskalume.elevenlabs.models/ModelsApi // dev.yveskalume.elevenlabs/ElevenLabs.models.<get-models>|<get-models>(){}[0]
+    final val speechToText // dev.yveskalume.elevenlabs/ElevenLabs.speechToText|{}speechToText[0]
+        final fun <get-speechToText>(): dev.yveskalume.elevenlabs.stt/SpeechToTextApi // dev.yveskalume.elevenlabs/ElevenLabs.speechToText.<get-speechToText>|<get-speechToText>(){}[0]
+    final val textToSpeech // dev.yveskalume.elevenlabs/ElevenLabs.textToSpeech|{}textToSpeech[0]
+        final fun <get-textToSpeech>(): dev.yveskalume.elevenlabs.tts/TextToSpeechApi // dev.yveskalume.elevenlabs/ElevenLabs.textToSpeech.<get-textToSpeech>|<get-textToSpeech>(){}[0]
+    final val voices // dev.yveskalume.elevenlabs/ElevenLabs.voices|{}voices[0]
+        final fun <get-voices>(): dev.yveskalume.elevenlabs.voices/VoicesApi // dev.yveskalume.elevenlabs/ElevenLabs.voices.<get-voices>|<get-voices>(){}[0]
+
+    final fun close() // dev.yveskalume.elevenlabs/ElevenLabs.close|close(){}[0]
+}
+
+final class dev.yveskalume.elevenlabs/ElevenLabsConfiguration { // dev.yveskalume.elevenlabs/ElevenLabsConfiguration|null[0]
+    constructor <init>() // dev.yveskalume.elevenlabs/ElevenLabsConfiguration.<init>|<init>(){}[0]
+
+    final var baseUrl // dev.yveskalume.elevenlabs/ElevenLabsConfiguration.baseUrl|{}baseUrl[0]
+        final fun <get-baseUrl>(): kotlin/String // dev.yveskalume.elevenlabs/ElevenLabsConfiguration.baseUrl.<get-baseUrl>|<get-baseUrl>(){}[0]
+        final fun <set-baseUrl>(kotlin/String) // dev.yveskalume.elevenlabs/ElevenLabsConfiguration.baseUrl.<set-baseUrl>|<set-baseUrl>(kotlin.String){}[0]
+
+    final fun apiKey(dev.yveskalume.elevenlabs/ApiKeyProvider) // dev.yveskalume.elevenlabs/ElevenLabsConfiguration.apiKey|apiKey(dev.yveskalume.elevenlabs.ApiKeyProvider){}[0]
+    final fun apiKey(kotlin/String) // dev.yveskalume.elevenlabs/ElevenLabsConfiguration.apiKey|apiKey(kotlin.String){}[0]
+}
+
+final class dev.yveskalume.elevenlabs/ElevenLabsError { // dev.yveskalume.elevenlabs/ElevenLabsError|null[0]
+    constructor <init>(kotlin/Int?, kotlin/String, kotlin/String? = ..., kotlin/String? = ...) // dev.yveskalume.elevenlabs/ElevenLabsError.<init>|<init>(kotlin.Int?;kotlin.String;kotlin.String?;kotlin.String?){}[0]
+
+    final val message // dev.yveskalume.elevenlabs/ElevenLabsError.message|{}message[0]
+        final fun <get-message>(): kotlin/String // dev.yveskalume.elevenlabs/ElevenLabsError.message.<get-message>|<get-message>(){}[0]
+    final val requestId // dev.yveskalume.elevenlabs/ElevenLabsError.requestId|{}requestId[0]
+        final fun <get-requestId>(): kotlin/String? // dev.yveskalume.elevenlabs/ElevenLabsError.requestId.<get-requestId>|<get-requestId>(){}[0]
+    final val responseBody // dev.yveskalume.elevenlabs/ElevenLabsError.responseBody|{}responseBody[0]
+        final fun <get-responseBody>(): kotlin/String? // dev.yveskalume.elevenlabs/ElevenLabsError.responseBody.<get-responseBody>|<get-responseBody>(){}[0]
+    final val statusCode // dev.yveskalume.elevenlabs/ElevenLabsError.statusCode|{}statusCode[0]
+        final fun <get-statusCode>(): kotlin/Int? // dev.yveskalume.elevenlabs/ElevenLabsError.statusCode.<get-statusCode>|<get-statusCode>(){}[0]
+
+    final fun component1(): kotlin/Int? // dev.yveskalume.elevenlabs/ElevenLabsError.component1|component1(){}[0]
+    final fun component2(): kotlin/String // dev.yveskalume.elevenlabs/ElevenLabsError.component2|component2(){}[0]
+    final fun component3(): kotlin/String? // dev.yveskalume.elevenlabs/ElevenLabsError.component3|component3(){}[0]
+    final fun component4(): kotlin/String? // dev.yveskalume.elevenlabs/ElevenLabsError.component4|component4(){}[0]
+    final fun copy(kotlin/Int? = ..., kotlin/String = ..., kotlin/String? = ..., kotlin/String? = ...): dev.yveskalume.elevenlabs/ElevenLabsError // dev.yveskalume.elevenlabs/ElevenLabsError.copy|copy(kotlin.Int?;kotlin.String;kotlin.String?;kotlin.String?){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // dev.yveskalume.elevenlabs/ElevenLabsError.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // dev.yveskalume.elevenlabs/ElevenLabsError.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // dev.yveskalume.elevenlabs/ElevenLabsError.toString|toString(){}[0]
+}
+
+sealed class dev.yveskalume.elevenlabs/ElevenLabsException : kotlin/Exception { // dev.yveskalume.elevenlabs/ElevenLabsException|null[0]
+    final class Realtime : dev.yveskalume.elevenlabs/ElevenLabsException { // dev.yveskalume.elevenlabs/ElevenLabsException.Realtime|null[0]
+        final val closeCode // dev.yveskalume.elevenlabs/ElevenLabsException.Realtime.closeCode|{}closeCode[0]
+            final fun <get-closeCode>(): kotlin/Short? // dev.yveskalume.elevenlabs/ElevenLabsException.Realtime.closeCode.<get-closeCode>|<get-closeCode>(){}[0]
+        final val responseBody // dev.yveskalume.elevenlabs/ElevenLabsException.Realtime.responseBody|{}responseBody[0]
+            final fun <get-responseBody>(): kotlin/String? // dev.yveskalume.elevenlabs/ElevenLabsException.Realtime.responseBody.<get-responseBody>|<get-responseBody>(){}[0]
+    }
+
+    final class Serialization : dev.yveskalume.elevenlabs/ElevenLabsException { // dev.yveskalume.elevenlabs/ElevenLabsException.Serialization|null[0]
+        final val error // dev.yveskalume.elevenlabs/ElevenLabsException.Serialization.error|{}error[0]
+            final fun <get-error>(): dev.yveskalume.elevenlabs/ElevenLabsError // dev.yveskalume.elevenlabs/ElevenLabsException.Serialization.error.<get-error>|<get-error>(){}[0]
+    }
+
+    final class UnexpectedResponse : dev.yveskalume.elevenlabs/ElevenLabsException { // dev.yveskalume.elevenlabs/ElevenLabsException.UnexpectedResponse|null[0]
+        final val error // dev.yveskalume.elevenlabs/ElevenLabsException.UnexpectedResponse.error|{}error[0]
+            final fun <get-error>(): dev.yveskalume.elevenlabs/ElevenLabsError // dev.yveskalume.elevenlabs/ElevenLabsException.UnexpectedResponse.error.<get-error>|<get-error>(){}[0]
+    }
+}

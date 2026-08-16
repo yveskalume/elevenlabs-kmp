@@ -1,0 +1,77 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  android-jvm:
+    name: Android & JVM
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up build
+        uses: ./.github/actions/setup-gradle
+
+      - name: Check code and assemble Android sample
+        run: ./gradlew check :androidApp:assembleDebug
+
+      - name: Upload Gradle reports
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: android-jvm-reports
+          path: "**/build/reports/**"
+          if-no-files-found: ignore
+
+  apple:
+    name: Apple SDK & sample
+    runs-on: macos-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up build
+        uses: ./.github/actions/setup-gradle
+
+      - name: Build and test multiplatform SDK
+        run: ./gradlew :elevenlabs:build
+
+      - name: Build iOS sample
+        run: |
+          xcodebuild \
+            -project iosApp/iosApp.xcodeproj \
+            -scheme iosApp \
+            -configuration Debug \
+            -sdk iphonesimulator \
+            -destination 'generic/platform=iOS Simulator' \
+            -resultBundlePath "${RUNNER_TEMP}/ios-ci.xcresult" \
+            CODE_SIGNING_ALLOWED=NO \
+            ELEVENLABS_API_KEY=ci-placeholder \
+            build
+
+      - name: Upload Apple reports
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: apple-reports
+          path: |
+            **/build/reports/**
+            ${{ runner.temp }}/ios-ci.xcresult
+          if-no-files-found: ignore

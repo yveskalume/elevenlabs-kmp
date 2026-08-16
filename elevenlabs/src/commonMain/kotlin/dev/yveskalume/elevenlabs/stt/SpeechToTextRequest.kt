@@ -1,16 +1,34 @@
 package dev.yveskalume.elevenlabs.stt
 
-data class SpeechToTextRequest(
+/** Input for transcribing one complete audio or video file. */
+public data class SpeechToTextRequest(
+    /**
+     * Non-empty contents of the file to upload.
+     *
+     * The request retains this array to avoid copying potentially large media. Do not mutate it
+     * while [SpeechToTextApi.transcribe] is running. Because it participates in equality and hash
+     * calculation, do not mutate it while this request is stored in a hashed collection.
+     */
     val audio: ByteArray,
+    /** File name included in the multipart upload. */
     val fileName: String = "audio.mp3",
+    /** MIME type included in the multipart upload. */
     val contentType: String = "audio/mpeg",
+    /** Speech-to-text model identifier. */
     val modelId: String = "scribe_v2",
+    /** Expected language code, or `null` for automatic detection. */
     val languageCode: String? = null,
+    /** Whether identifiable non-speech audio events should be tagged in the transcript. */
     val tagAudioEvents: Boolean = true,
+    /** Expected speaker count from 1 through 32, or `null` when unknown. */
     val numberOfSpeakers: Int? = null,
+    /** Requested timestamp detail. */
     val timestampsGranularity: TimestampsGranularity = TimestampsGranularity.Word,
+    /** Whether to identify speakers in the transcription. */
     val diarize: Boolean = false,
+    /** Hint describing the uploaded file's raw or container format. */
     val fileFormat: SpeechToTextFileFormat = SpeechToTextFileFormat.Other,
+    /** Whether request logging is enabled. */
     val enableLogging: Boolean = true,
 ) {
     init {
