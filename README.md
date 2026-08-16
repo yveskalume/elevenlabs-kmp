@@ -4,7 +4,7 @@
 [![CI](https://github.com/yveskalume/elevenlabs-kmp/actions/workflows/ci.yml/badge.svg)](https://github.com/yveskalume/elevenlabs-kmp/actions/workflows/ci.yml)
 [![Documentation](https://github.com/yveskalume/elevenlabs-kmp/actions/workflows/docs.yml/badge.svg)](https://github.com/yveskalume/elevenlabs-kmp/actions/workflows/docs.yml)
 
-A Kotlin-first Multiplatform SDK for the ElevenLabs API, with coroutine and `Flow`-based APIs for Android, iOS and JVM.
+A Kotlin-first Multiplatform SDK for the [ElevenLabs](https://elevenlabs.io/) API, with coroutine and `Flow`-based APIs for Android, iOS and JVM.
 
 > [!IMPORTANT]
 > This is an unofficial community SDK. It is not affiliated with or endorsed by ElevenLabs.
@@ -240,6 +240,9 @@ credentials issued by a trusted backend instead. See the [authentication guide](
 - Batch speech-to-text transcription
 - Realtime speech-to-text over WebSockets
 - API-key and endpoint-specific token authentication
+
+## Documentation
+[https://yveskalume.github.io/elevenlabs-kmp](https://yveskalume.github.io/elevenlabs-kmp)
 
 ## Running the samples
 
