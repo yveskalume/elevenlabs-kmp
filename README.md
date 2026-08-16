@@ -1,6 +1,8 @@
 # ElevenLabs KMP
 
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.yveskalume/elevenlabs-kmp?label=Maven%20Central)](https://central.sonatype.com/artifact/io.github.yveskalume/elevenlabs-kmp/0.1.0)
+[![CI](https://github.com/yveskalume/elevenlabs-kmp/actions/workflows/ci.yml/badge.svg)](https://github.com/yveskalume/elevenlabs-kmp/actions/workflows/ci.yml)
+[![Documentation](https://github.com/yveskalume/elevenlabs-kmp/actions/workflows/docs.yml/badge.svg)](https://github.com/yveskalume/elevenlabs-kmp/actions/workflows/docs.yml)
 
 A Kotlin-first Multiplatform SDK for the ElevenLabs API, with coroutine and `Flow`-based APIs for Android, iOS and JVM.
 
