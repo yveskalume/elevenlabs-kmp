@@ -6,8 +6,7 @@
 
 A Kotlin-first Multiplatform SDK for the [ElevenLabs](https://elevenlabs.io/) API, with coroutine and `Flow`-based APIs for Android, iOS and JVM.
 
-> [!IMPORTANT]
-> This is an unofficial community SDK. It is not affiliated with or endorsed by ElevenLabs.
+> Community-maintained SDK. Not affiliated with or endorsed by ElevenLabs.
 
 ## Installation
 
