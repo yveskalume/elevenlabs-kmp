@@ -201,7 +201,7 @@ internal class RealtimeTtsSessionImpl private constructor(
         keepAliveJob?.cancel()
         keepAliveJob = scope.launch {
             while (true) {
-                delay(options.keepAlive.intervalMillis)
+                delay(options.keepAlive.intervalMillis.milliseconds)
                 var failedConnection: RealtimeTtsConnection? = null
                 stateMutex.withLock {
                     if (state != State.Active) return@launch

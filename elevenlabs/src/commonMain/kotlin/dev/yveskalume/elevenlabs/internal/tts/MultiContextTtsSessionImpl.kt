@@ -168,7 +168,7 @@ internal class MultiContextTtsSessionImpl private constructor(
         record.keepAliveJob?.cancel()
         record.keepAliveJob = scope.launch {
             while (true) {
-                delay(options.keepAlive.intervalMillis)
+                delay(options.keepAlive.intervalMillis.milliseconds)
                 try {
                     stateMutex.withLock {
                         if (state != State.Active || contexts[contextId] !== record) return@launch
@@ -211,7 +211,7 @@ internal class MultiContextTtsSessionImpl private constructor(
         }
 
         val closeTimeout = try {
-            withTimeout(options.timeouts.finishTimeoutMillis) {
+            withTimeout(options.timeouts.finishTimeoutMillis.milliseconds) {
                 receiverJob?.join()
             }
             null
@@ -320,7 +320,7 @@ internal class MultiContextTtsSessionImpl private constructor(
 
     private suspend fun sendWithTimeout(message: String) {
         try {
-            withTimeout(options.timeouts.sendTimeoutMillis) { connection.send(message) }
+            withTimeout(options.timeouts.sendTimeoutMillis.milliseconds) { connection.send(message) }
         } catch (timeout: TimeoutCancellationException) {
             throw ElevenLabsException.Realtime(
                 message = "Multi-context TTS send timed out after ${options.timeouts.sendTimeoutMillis} ms.",
