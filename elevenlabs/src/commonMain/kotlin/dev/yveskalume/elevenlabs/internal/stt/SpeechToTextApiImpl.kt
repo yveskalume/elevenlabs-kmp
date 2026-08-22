@@ -1,7 +1,8 @@
 package dev.yveskalume.elevenlabs.internal.stt
 
-import dev.yveskalume.elevenlabs.ElevenLabsException
+import dev.yveskalume.elevenlabs.error.ElevenLabsException
 import dev.yveskalume.elevenlabs.internal.http.ElevenLabsHttpClient
+import dev.yveskalume.elevenlabs.internal.error.toRealtimeFailure
 import dev.yveskalume.elevenlabs.internal.stt.dtos.SpeechToTextResponseDto
 import dev.yveskalume.elevenlabs.stt.RealtimeSttOptions
 import dev.yveskalume.elevenlabs.stt.RealtimeSttSession
@@ -60,7 +61,6 @@ internal class SpeechToTextApiImpl(
                 ),
             )
         }
-        http.validate(response)
         return response.body<SpeechToTextResponseDto>().toPublic()
     }
 
@@ -76,9 +76,6 @@ internal class SpeechToTextApiImpl(
     } catch (exception: ElevenLabsException) {
         throw exception
     } catch (throwable: Throwable) {
-        throw ElevenLabsException.Realtime(
-            message = throwable.message ?: "Could not open the realtime STT connection.",
-            cause = throwable,
-        )
+        throw throwable.toRealtimeFailure()
     }
 }

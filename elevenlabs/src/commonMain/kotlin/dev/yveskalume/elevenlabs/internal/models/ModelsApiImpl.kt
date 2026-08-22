@@ -14,7 +14,6 @@ internal class ModelsApiImpl(
         val response = http.client.get("${http.baseUrl}/v1/models") {
             http.run { authenticate() }
         }
-        http.validate(response)
         return response.body<List<ModelDto>>().map(ModelDto::toPublic)
     }
 }
