@@ -1,5 +1,7 @@
 package dev.yveskalume.elevenlabs.stt
 
+import dev.yveskalume.elevenlabs.error.ElevenLabsException
+import kotlin.coroutines.cancellation.CancellationException
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -8,7 +10,13 @@ import kotlinx.coroutines.flow.Flow
  * Sessions support one [events] collector. Close the session when audio capture ends.
  */
 public interface RealtimeSttSession {
-    /** A buffered, single-consumer stream of server events. */
+    /**
+     * A buffered, single-consumer stream of server events.
+     *
+     * Collection terminates with [dev.yveskalume.elevenlabs.error.RealtimeServerError] for a server
+     * protocol failure, [dev.yveskalume.elevenlabs.error.NetworkError] for transport failure, or
+     * [dev.yveskalume.elevenlabs.error.SerializationError] when a server message cannot be decoded.
+     */
     public val events: Flow<RealtimeSttEvent>
 
     /**
@@ -18,6 +26,7 @@ public interface RealtimeSttSession {
      * @throws IllegalArgumentException if [audio] is empty.
      * @throws IllegalStateException if the session is closed.
      */
+    @Throws(ElevenLabsException::class, CancellationException::class)
     public suspend fun sendAudio(audio: ByteArray, commit: Boolean = false)
 
     /**
@@ -25,6 +34,7 @@ public interface RealtimeSttSession {
      *
      * @throws IllegalStateException if the session is closed.
      */
+    @Throws(ElevenLabsException::class, CancellationException::class)
     public suspend fun commit()
 
     /** Immediately closes the realtime session. */

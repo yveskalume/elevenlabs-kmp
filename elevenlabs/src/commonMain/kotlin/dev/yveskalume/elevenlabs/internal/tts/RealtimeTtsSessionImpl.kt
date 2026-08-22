@@ -1,9 +1,13 @@
 package dev.yveskalume.elevenlabs.internal.tts
 
-import dev.yveskalume.elevenlabs.ElevenLabsError
-import dev.yveskalume.elevenlabs.ElevenLabsException
+import dev.yveskalume.elevenlabs.error.ElevenLabsErrorDetails
+import dev.yveskalume.elevenlabs.error.NetworkError
+import dev.yveskalume.elevenlabs.error.RealtimeServerError
+import dev.yveskalume.elevenlabs.error.SerializationError
+import dev.yveskalume.elevenlabs.error.TimeoutError
 import dev.yveskalume.elevenlabs.internal.tts.dtos.DecodedRealtimeTtsMessage
 import dev.yveskalume.elevenlabs.internal.tts.dtos.RealtimeTtsMessages
+import dev.yveskalume.elevenlabs.internal.error.toRealtimeFailure
 import dev.yveskalume.elevenlabs.tts.RealtimeTtsEvent
 import dev.yveskalume.elevenlabs.tts.RealtimeTtsOptions
 import dev.yveskalume.elevenlabs.tts.RealtimeTtsReconnectPolicy
@@ -83,7 +87,10 @@ internal class RealtimeTtsSessionImpl private constructor(
             throw cancellation
         } catch (throwable: Throwable) {
             val current = failedConnection
-            if (current == null || !reconnect(current, throwable)) throw throwable
+            if (current == null) throw throwable
+            if (!reconnect(current, throwable)) {
+                throw throwable.toRealtimeFailure()
+            }
         }
     }
 
@@ -111,8 +118,9 @@ internal class RealtimeTtsSessionImpl private constructor(
         } catch (throwable: Throwable) {
             val current = failedConnection
             if (current == null || !reconnect(current, throwable)) {
-                failSession(throwable)
-                throw throwable
+                val failure = throwable.toRealtimeFailure()
+                failSession(failure)
+                throw failure
             }
             startTimeout = true
         }
@@ -162,7 +170,7 @@ internal class RealtimeTtsSessionImpl private constructor(
                             val wasClosedLocally = stateMutex.withLock { state == State.Closed }
                             if (wasClosedLocally) return@launch
 
-                            val exception = ElevenLabsException.Realtime(
+                            val exception = RealtimeServerError(
                                 message = frame.reason
                                     ?: "The realtime TTS connection closed before a final response.",
                                 closeCode = frame.code,
@@ -176,7 +184,7 @@ internal class RealtimeTtsSessionImpl private constructor(
                 val wasClosedLocally = stateMutex.withLock { state == State.Closed }
                 if (!wasClosedLocally) failure = cancellation
             } catch (throwable: Throwable) {
-                failure = throwable
+                failure = throwable.toRealtimeFailure()
             } finally {
                 val connectionToClose = stateMutex.withLock {
                     state = State.Closed
@@ -201,24 +209,23 @@ internal class RealtimeTtsSessionImpl private constructor(
         keepAliveJob?.cancel()
         keepAliveJob = scope.launch {
             while (true) {
-                delay(options.keepAlive.intervalMillis)
-                var failedConnection: RealtimeTtsConnection? = null
+                delay(options.keepAlive.intervalMillis.milliseconds)
+                var keepAliveFailure: Pair<RealtimeTtsConnection, Throwable>? = null
                 stateMutex.withLock {
                     if (state != State.Active) return@launch
                     if (!reconnecting) {
                         val current = requireNotNull(connection)
                         try {
                             sendWithTimeout(current, RealtimeTtsMessages.text(" "))
-                        } catch (_: Throwable) {
-                            failedConnection = current
+                        } catch (cancellation: CancellationException) {
+                            throw cancellation
+                        } catch (throwable: Throwable) {
+                            keepAliveFailure = current to throwable.toRealtimeFailure()
                         }
                     }
                 }
-                failedConnection?.let { failed ->
+                keepAliveFailure?.let { (failed, failure) ->
                     try {
-                        val failure = ElevenLabsException.Realtime(
-                            message = "Realtime TTS keepalive failed.",
-                        )
                         if (!reconnect(failed, failure)) {
                             failSession(failure)
                             return@launch
@@ -226,7 +233,7 @@ internal class RealtimeTtsSessionImpl private constructor(
                     } catch (cancellation: CancellationException) {
                         throw cancellation
                     } catch (throwable: Throwable) {
-                        failSession(throwable)
+                        failSession(throwable.toRealtimeFailure())
                         return@launch
                     }
                 }
@@ -248,8 +255,8 @@ internal class RealtimeTtsSessionImpl private constructor(
 
     private fun startFinishTimeout() {
         finishTimeoutJob = scope.launch {
-            delay(options.timeouts.finishTimeoutMillis)
-            val timeout = ElevenLabsException.Realtime(
+            delay(options.timeouts.finishTimeoutMillis.milliseconds)
+            val timeout = TimeoutError(
                 message = "Realtime TTS did not finish within ${options.timeouts.finishTimeoutMillis} ms.",
             )
             val connectionToClose = stateMutex.withLock {
@@ -335,7 +342,7 @@ internal class RealtimeTtsSessionImpl private constructor(
         }
 
         stateMutex.withLock { reconnecting = false }
-        throw failure
+        throw failure.toRealtimeFailure()
     }
 
     private fun canRetry(failure: Throwable): Boolean {
@@ -344,11 +351,13 @@ internal class RealtimeTtsSessionImpl private constructor(
         if (audioReceived || connectionAttempts >= policy.maxAttempts) return false
         return when (failure) {
             is CancellationException -> false
-            is ElevenLabsException.Serialization -> false
-            is ElevenLabsException.Realtime -> {
+            is SerializationError -> false
+            is RealtimeServerError -> {
                 if (failure.responseBody != null) return false
                 failure.closeCode == null || failure.closeCode in RETRYABLE_CLOSE_CODES
             }
+            is NetworkError,
+            is TimeoutError,
             is IOException -> true
             else -> false
         }
@@ -381,7 +390,7 @@ internal class RealtimeTtsSessionImpl private constructor(
         val newConnection = try {
             withTimeout(options.timeouts.connectTimeoutMillis.milliseconds) { openConnection() }
         } catch (timeout: TimeoutCancellationException) {
-            throw ElevenLabsException.Realtime(
+            throw TimeoutError(
                 message = "Realtime TTS connection timed out after ${options.timeouts.connectTimeoutMillis} ms.",
                 cause = timeout,
             )
@@ -399,7 +408,7 @@ internal class RealtimeTtsSessionImpl private constructor(
         try {
             withTimeout(options.timeouts.sendTimeoutMillis.milliseconds) { connection.send(message) }
         } catch (timeout: TimeoutCancellationException) {
-            throw ElevenLabsException.Realtime(
+            throw TimeoutError(
                 message = "Realtime TTS send timed out after ${options.timeouts.sendTimeoutMillis} ms.",
                 cause = timeout,
             )
@@ -410,8 +419,8 @@ internal class RealtimeTtsSessionImpl private constructor(
         val decoded = try {
             RealtimeTtsMessages.decode(rawMessage)
         } catch (throwable: Throwable) {
-            throw ElevenLabsException.Serialization(
-                error = ElevenLabsError(
+            throw SerializationError(
+                details = ElevenLabsErrorDetails(
                     statusCode = null,
                     message = "Could not decode an ElevenLabs realtime TTS response.",
                     responseBody = rawMessage,
@@ -434,9 +443,9 @@ internal class RealtimeTtsSessionImpl private constructor(
                     return true
                 }
             }
-            is DecodedRealtimeTtsMessage.Error -> throw ElevenLabsException.Realtime(
+            is DecodedRealtimeTtsMessage.Error -> throw RealtimeServerError(
                 message = decoded.message,
-                responseBody = rawMessage,
+                rawResponseBody = rawMessage,
             )
             DecodedRealtimeTtsMessage.Unknown -> Unit
         }

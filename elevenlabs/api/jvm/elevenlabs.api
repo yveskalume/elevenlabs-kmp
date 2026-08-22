@@ -19,39 +19,141 @@ public final class dev/yveskalume/elevenlabs/ElevenLabsConfiguration {
 	public final fun setBaseUrl (Ljava/lang/String;)V
 }
 
-public final class dev/yveskalume/elevenlabs/ElevenLabsError {
-	public fun <init> (Ljava/lang/Integer;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
-	public synthetic fun <init> (Ljava/lang/Integer;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+public abstract class dev/yveskalume/elevenlabs/error/ApiException : dev/yveskalume/elevenlabs/error/ElevenLabsException {
+	public synthetic fun <init> (Ldev/yveskalume/elevenlabs/error/ElevenLabsErrorDetails;Ldev/yveskalume/elevenlabs/error/ElevenLabsErrorKind;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun getDetails ()Ldev/yveskalume/elevenlabs/error/ElevenLabsErrorDetails;
+	public final fun getErrorCode ()Ljava/lang/String;
+	public fun getKind ()Ldev/yveskalume/elevenlabs/error/ElevenLabsErrorKind;
+	public final fun getRequestId ()Ljava/lang/String;
+	public final fun getResponseBody ()Ljava/lang/String;
+	public final fun getStatusCode ()I
+	public final fun getValidationErrors ()Ljava/util/List;
+}
+
+public final class dev/yveskalume/elevenlabs/error/ApiException$BadRequest : dev/yveskalume/elevenlabs/error/ApiException {
+}
+
+public final class dev/yveskalume/elevenlabs/error/ApiException$Forbidden : dev/yveskalume/elevenlabs/error/ApiException {
+}
+
+public final class dev/yveskalume/elevenlabs/error/ApiException$NotFound : dev/yveskalume/elevenlabs/error/ApiException {
+}
+
+public final class dev/yveskalume/elevenlabs/error/ApiException$PaymentRequired : dev/yveskalume/elevenlabs/error/ApiException {
+}
+
+public final class dev/yveskalume/elevenlabs/error/ApiException$RateLimitExceeded : dev/yveskalume/elevenlabs/error/ApiException {
+	public final fun getRetryAfterSeconds ()Ljava/lang/Long;
+}
+
+public final class dev/yveskalume/elevenlabs/error/ApiException$ServerError : dev/yveskalume/elevenlabs/error/ApiException {
+}
+
+public final class dev/yveskalume/elevenlabs/error/ApiException$Unauthorized : dev/yveskalume/elevenlabs/error/ApiException {
+}
+
+public final class dev/yveskalume/elevenlabs/error/ApiException$UnknownHttpError : dev/yveskalume/elevenlabs/error/ApiException {
+}
+
+public final class dev/yveskalume/elevenlabs/error/ApiException$UnprocessableEntity : dev/yveskalume/elevenlabs/error/ApiException {
+}
+
+public final class dev/yveskalume/elevenlabs/error/ElevenLabsErrorDetails {
+	public fun <init> (Ljava/lang/Integer;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;)V
+	public synthetic fun <init> (Ljava/lang/Integer;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1 ()Ljava/lang/Integer;
 	public final fun component2 ()Ljava/lang/String;
 	public final fun component3 ()Ljava/lang/String;
 	public final fun component4 ()Ljava/lang/String;
-	public final fun copy (Ljava/lang/Integer;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Ldev/yveskalume/elevenlabs/ElevenLabsError;
-	public static synthetic fun copy$default (Ldev/yveskalume/elevenlabs/ElevenLabsError;Ljava/lang/Integer;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Ldev/yveskalume/elevenlabs/ElevenLabsError;
+	public final fun component5 ()Ljava/lang/String;
+	public final fun component6 ()Ljava/util/List;
+	public final fun copy (Ljava/lang/Integer;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;)Ldev/yveskalume/elevenlabs/error/ElevenLabsErrorDetails;
+	public static synthetic fun copy$default (Ldev/yveskalume/elevenlabs/error/ElevenLabsErrorDetails;Ljava/lang/Integer;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/List;ILjava/lang/Object;)Ldev/yveskalume/elevenlabs/error/ElevenLabsErrorDetails;
 	public fun equals (Ljava/lang/Object;)Z
+	public final fun getErrorCode ()Ljava/lang/String;
 	public final fun getMessage ()Ljava/lang/String;
 	public final fun getRequestId ()Ljava/lang/String;
 	public final fun getResponseBody ()Ljava/lang/String;
 	public final fun getStatusCode ()Ljava/lang/Integer;
+	public final fun getValidationErrors ()Ljava/util/List;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
 
-public abstract class dev/yveskalume/elevenlabs/ElevenLabsException : java/lang/Exception {
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/Throwable;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+public final class dev/yveskalume/elevenlabs/error/ElevenLabsErrorKind : java/lang/Enum {
+	public static final field Api Ldev/yveskalume/elevenlabs/error/ElevenLabsErrorKind;
+	public static final field Authentication Ldev/yveskalume/elevenlabs/error/ElevenLabsErrorKind;
+	public static final field Network Ldev/yveskalume/elevenlabs/error/ElevenLabsErrorKind;
+	public static final field NotFound Ldev/yveskalume/elevenlabs/error/ElevenLabsErrorKind;
+	public static final field Permission Ldev/yveskalume/elevenlabs/error/ElevenLabsErrorKind;
+	public static final field Quota Ldev/yveskalume/elevenlabs/error/ElevenLabsErrorKind;
+	public static final field RateLimit Ldev/yveskalume/elevenlabs/error/ElevenLabsErrorKind;
+	public static final field Realtime Ldev/yveskalume/elevenlabs/error/ElevenLabsErrorKind;
+	public static final field Serialization Ldev/yveskalume/elevenlabs/error/ElevenLabsErrorKind;
+	public static final field Server Ldev/yveskalume/elevenlabs/error/ElevenLabsErrorKind;
+	public static final field Timeout Ldev/yveskalume/elevenlabs/error/ElevenLabsErrorKind;
+	public static final field Unknown Ldev/yveskalume/elevenlabs/error/ElevenLabsErrorKind;
+	public static final field Validation Ldev/yveskalume/elevenlabs/error/ElevenLabsErrorKind;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Ldev/yveskalume/elevenlabs/error/ElevenLabsErrorKind;
+	public static fun values ()[Ldev/yveskalume/elevenlabs/error/ElevenLabsErrorKind;
 }
 
-public final class dev/yveskalume/elevenlabs/ElevenLabsException$Realtime : dev/yveskalume/elevenlabs/ElevenLabsException {
+public abstract class dev/yveskalume/elevenlabs/error/ElevenLabsException : java/lang/Exception {
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/Throwable;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public abstract fun getKind ()Ldev/yveskalume/elevenlabs/error/ElevenLabsErrorKind;
+	public final fun isRetryable ()Z
+}
+
+public final class dev/yveskalume/elevenlabs/error/ElevenLabsException$Realtime : dev/yveskalume/elevenlabs/error/RealtimeServerError {
+}
+
+public final class dev/yveskalume/elevenlabs/error/ElevenLabsException$Serialization : dev/yveskalume/elevenlabs/error/ElevenLabsException {
+	public fun getKind ()Ldev/yveskalume/elevenlabs/error/ElevenLabsErrorKind;
+}
+
+public final class dev/yveskalume/elevenlabs/error/ElevenLabsException$UnexpectedResponse : dev/yveskalume/elevenlabs/error/ElevenLabsException {
+	public final fun getDetails ()Ldev/yveskalume/elevenlabs/error/ElevenLabsErrorDetails;
+	public fun getKind ()Ldev/yveskalume/elevenlabs/error/ElevenLabsErrorKind;
+}
+
+public final class dev/yveskalume/elevenlabs/error/ElevenLabsValidationError {
+	public fun <init> (Ljava/util/List;Ljava/lang/String;Ljava/lang/String;)V
+	public synthetic fun <init> (Ljava/util/List;Ljava/lang/String;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/util/List;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun copy (Ljava/util/List;Ljava/lang/String;Ljava/lang/String;)Ldev/yveskalume/elevenlabs/error/ElevenLabsValidationError;
+	public static synthetic fun copy$default (Ldev/yveskalume/elevenlabs/error/ElevenLabsValidationError;Ljava/util/List;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Ldev/yveskalume/elevenlabs/error/ElevenLabsValidationError;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getLocation ()Ljava/util/List;
+	public final fun getMessage ()Ljava/lang/String;
+	public final fun getType ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/yveskalume/elevenlabs/error/NetworkError : dev/yveskalume/elevenlabs/error/ElevenLabsException {
+	public fun getKind ()Ldev/yveskalume/elevenlabs/error/ElevenLabsErrorKind;
+}
+
+public class dev/yveskalume/elevenlabs/error/RealtimeServerError : dev/yveskalume/elevenlabs/error/ElevenLabsException {
 	public final fun getCloseCode ()Ljava/lang/Short;
+	public fun getKind ()Ldev/yveskalume/elevenlabs/error/ElevenLabsErrorKind;
 	public final fun getResponseBody ()Ljava/lang/String;
 }
 
-public final class dev/yveskalume/elevenlabs/ElevenLabsException$Serialization : dev/yveskalume/elevenlabs/ElevenLabsException {
-	public final fun getError ()Ldev/yveskalume/elevenlabs/ElevenLabsError;
+public final class dev/yveskalume/elevenlabs/error/SerializationError : dev/yveskalume/elevenlabs/error/ElevenLabsException {
+	public final fun getDetails ()Ldev/yveskalume/elevenlabs/error/ElevenLabsErrorDetails;
+	public fun getKind ()Ldev/yveskalume/elevenlabs/error/ElevenLabsErrorKind;
 }
 
-public final class dev/yveskalume/elevenlabs/ElevenLabsException$UnexpectedResponse : dev/yveskalume/elevenlabs/ElevenLabsException {
-	public final fun getError ()Ldev/yveskalume/elevenlabs/ElevenLabsError;
+public final class dev/yveskalume/elevenlabs/error/TimeoutError : dev/yveskalume/elevenlabs/error/ElevenLabsException {
+	public fun getKind ()Ldev/yveskalume/elevenlabs/error/ElevenLabsErrorKind;
+}
+
+public final class dev/yveskalume/elevenlabs/error/UnknownError : dev/yveskalume/elevenlabs/error/ElevenLabsException {
+	public fun getKind ()Ldev/yveskalume/elevenlabs/error/ElevenLabsErrorKind;
 }
 
 public final class dev/yveskalume/elevenlabs/models/Model {

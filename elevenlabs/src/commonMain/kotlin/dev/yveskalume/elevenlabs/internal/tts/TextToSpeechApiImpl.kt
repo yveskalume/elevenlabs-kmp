@@ -1,7 +1,9 @@
 package dev.yveskalume.elevenlabs.internal.tts
 
-import dev.yveskalume.elevenlabs.ElevenLabsException
+import dev.yveskalume.elevenlabs.error.ElevenLabsException
 import dev.yveskalume.elevenlabs.internal.http.ElevenLabsHttpClient
+import dev.yveskalume.elevenlabs.internal.http.toHttpFailure
+import dev.yveskalume.elevenlabs.internal.error.toRealtimeFailure
 import dev.yveskalume.elevenlabs.internal.tts.dtos.toBody
 import dev.yveskalume.elevenlabs.tts.Audio
 import dev.yveskalume.elevenlabs.tts.AudioChunk
@@ -43,7 +45,6 @@ internal class TextToSpeechApiImpl(
             contentType(ContentType.Application.Json)
             setBody(request.toBody())
         }.execute()
-        http.validate(response)
         return Audio(
             bytes = response.body(),
             contentType = response.contentType()?.toString(),
@@ -52,22 +53,24 @@ internal class TextToSpeechApiImpl(
     }
 
     override fun stream(request: TextToSpeechRequest): Flow<AudioChunk> = channelFlow {
-        http.client.preparePost(http.url("v1", "text-to-speech", request.voiceId, "stream")) {
-            http.run { authenticate() }
-            parameter("output_format", request.outputFormat.value)
-            parameter("enable_logging", request.enableLogging)
-            contentType(ContentType.Application.Json)
-            setBody(request.toBody())
-        }.execute { response ->
-            http.validate(response)
-            val channel = response.bodyAsChannel()
-            val buffer = ByteArray(STREAM_BUFFER_SIZE)
-            while (!channel.isClosedForRead) {
-                val count = channel.readAvailable(buffer)
-                if (count > 0) send(AudioChunk(buffer.copyOf(count)))
+        try {
+            http.client.preparePost(http.url("v1", "text-to-speech", request.voiceId, "stream")) {
+                http.run { authenticate() }
+                parameter("output_format", request.outputFormat.value)
+                parameter("enable_logging", request.enableLogging)
+                contentType(ContentType.Application.Json)
+                setBody(request.toBody())
+            }.execute { response ->
+                val channel = response.bodyAsChannel()
+                val buffer = ByteArray(STREAM_BUFFER_SIZE)
+                while (!channel.isClosedForRead) {
+                    val count = channel.readAvailable(buffer)
+                    if (count > 0) send(AudioChunk(buffer.copyOf(count)))
+                }
             }
+        } catch (throwable: Throwable) {
+            throw throwable.toHttpFailure()
         }
-
     }
 
     override fun realtime(
@@ -117,10 +120,7 @@ internal class TextToSpeechApiImpl(
         } catch (exception: ElevenLabsException) {
             throw exception
         } catch (throwable: Throwable) {
-            throw ElevenLabsException.Realtime(
-                message = throwable.message ?: "Could not open the realtime TTS connection.",
-                cause = throwable,
-            )
+            throw throwable.toRealtimeFailure()
         }
     }
 

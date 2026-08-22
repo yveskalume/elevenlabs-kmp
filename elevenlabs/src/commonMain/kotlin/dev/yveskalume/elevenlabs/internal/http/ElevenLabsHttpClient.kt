@@ -2,23 +2,35 @@ package dev.yveskalume.elevenlabs.internal.http
 
 import dev.yveskalume.elevenlabs.ApiKeyProvider
 import dev.yveskalume.elevenlabs.ElevenLabsConfiguration
-import dev.yveskalume.elevenlabs.ElevenLabsError
-import dev.yveskalume.elevenlabs.ElevenLabsException
+import dev.yveskalume.elevenlabs.error.ApiException
+import dev.yveskalume.elevenlabs.error.ElevenLabsErrorDetails
+import dev.yveskalume.elevenlabs.error.ElevenLabsException
+import dev.yveskalume.elevenlabs.error.NetworkError
+import dev.yveskalume.elevenlabs.error.SerializationError
+import dev.yveskalume.elevenlabs.error.TimeoutError
+import dev.yveskalume.elevenlabs.error.UnknownError
+import dev.yveskalume.elevenlabs.error.truncateDiagnosticBody
+import dev.yveskalume.elevenlabs.internal.error.ElevenLabsErrorPayload
 import io.ktor.client.HttpClient
+import io.ktor.client.HttpClientConfig
+import io.ktor.client.network.sockets.ConnectTimeoutException
+import io.ktor.client.network.sockets.SocketTimeoutException
+import io.ktor.client.plugins.HttpRequestTimeoutException
+import io.ktor.client.plugins.HttpResponseValidator
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.websocket.WebSockets
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.header
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsText
+import io.ktor.http.HttpHeaders
 import io.ktor.http.URLBuilder
 import io.ktor.http.appendPathSegments
+import io.ktor.serialization.ContentConvertException
 import io.ktor.serialization.kotlinx.json.json
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.JsonPrimitive
-import kotlinx.serialization.json.contentOrNull
+import kotlinx.coroutines.CancellationException
+import kotlinx.io.IOException
+import kotlinx.serialization.SerializationException
 
 internal class ElevenLabsHttpClient(
     val baseUrl: String,
@@ -46,45 +58,13 @@ internal class ElevenLabsHttpClient(
         return apiKey
     }
 
-    suspend fun validate(response: HttpResponse) {
-        if (response.status.value in 200..299) return
-
-        val body = response.bodyAsText()
-        val error = ElevenLabsError(
-            statusCode = response.status.value,
-            message = errorMessage(body) ?: "ElevenLabs returned HTTP ${response.status.value}.",
-            requestId = response.headers[REQUEST_ID_HEADER],
-            responseBody = body.takeIf(String::isNotBlank),
-        )
-        throw ElevenLabsException.UnexpectedResponse(error)
-    }
-
     fun close() {
         if (ownsClient) client.close()
-    }
-
-    private fun errorMessage(body: String): String? {
-        if (body.isBlank()) return null
-        return runCatching { JSON.parseToJsonElement(body).findMessage() }.getOrNull()
-    }
-
-    private fun JsonElement.findMessage(): String? = when (this) {
-        is JsonPrimitive -> contentOrNull
-        is JsonObject -> {
-            this["message"]?.findMessage()
-                ?: this["detail"]?.findMessage()
-                ?: this["error"]?.findMessage()
-        }
-
-        else -> null
     }
 
     internal companion object {
         const val API_KEY_HEADER = "xi-api-key"
         const val REQUEST_ID_HEADER = "request-id"
-
-
-
 
         fun create(configuration: ElevenLabsConfiguration): ElevenLabsHttpClient {
             val client = createPlatformHttpClient {
@@ -92,13 +72,74 @@ internal class ElevenLabsHttpClient(
                     json(JSON)
                 }
                 install(WebSockets)
+                httpResponseValidator()
             }
             return ElevenLabsHttpClient(
-                configuration.baseUrl,
-                configuration.apiKeyProvider,
-                client,
+                baseUrl = configuration.baseUrl,
+                apiKeyProvider = configuration.apiKeyProvider,
+                client = client,
                 ownsClient = true
             )
         }
+    }
+}
+
+internal fun HttpClientConfig<*>.httpResponseValidator() {
+    HttpResponseValidator {
+        validateResponse { response ->
+            if (response.status.value !in 200..299) {
+                throw response.toApiException()
+            }
+        }
+
+        handleResponseExceptionWithRequest { cause, _ ->
+            throw cause.toHttpFailure()
+        }
+    }
+}
+
+/** Normalizes failures that happen both inside and after Ktor's response pipeline. */
+internal fun Throwable.toHttpFailure(): Throwable = when (this) {
+    is CancellationException,
+    is ElevenLabsException -> this
+
+    is HttpRequestTimeoutException,
+    is ConnectTimeoutException,
+    is SocketTimeoutException -> TimeoutError(this)
+
+    is ContentConvertException,
+    is SerializationException -> SerializationError(this)
+
+    is IOException -> NetworkError(this)
+    else -> UnknownError(this)
+}
+
+private suspend fun HttpResponse.toApiException(): ApiException {
+    val body = bodyAsText()
+    val payload = body.takeIf(String::isNotBlank)?.let { value ->
+        runCatching { JSON.decodeFromString<ElevenLabsErrorPayload>(value) }.getOrNull()
+    }
+    val error = ElevenLabsErrorDetails(
+        statusCode = status.value,
+        message = payload?.parsedMessage ?: "ElevenLabs returned HTTP ${status.value}.",
+        requestId = headers[ElevenLabsHttpClient.REQUEST_ID_HEADER],
+        responseBody = body.takeIf(String::isNotBlank).truncateDiagnosticBody(),
+        errorCode = payload?.parsedCode,
+        validationErrors = payload?.validationErrors.orEmpty(),
+    )
+
+    return when (status.value) {
+        400 -> ApiException.BadRequest(error)
+        401 -> ApiException.Unauthorized(error)
+        402 -> ApiException.PaymentRequired(error)
+        403 -> ApiException.Forbidden(error)
+        404 -> ApiException.NotFound(error)
+        422 -> ApiException.UnprocessableEntity(error)
+        429 -> ApiException.RateLimitExceeded(
+            error = error,
+            retryAfterSeconds = headers[HttpHeaders.RetryAfter]?.toLongOrNull(),
+        )
+        in 500..599 -> ApiException.ServerError(error)
+        else -> ApiException.UnknownHttpError(error)
     }
 }
