@@ -10,6 +10,7 @@ nav = [
     { "Getting started" = "getting-started.md" },
     { "Guides" = [
         { "Authentication" = "authentication.md" },
+        { "Error handling" = "error-handling.md" },
         { "Text to speech" = "text-to-speech.md" },
         { "Speech to text" = "speech-to-text.md" },
     ] },
