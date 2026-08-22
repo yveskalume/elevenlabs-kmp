@@ -142,3 +142,15 @@ jobs:
             --verify-tag \
             --title "ElevenLabs KMP ${RELEASE_VERSION}" \
             --notes-file "${RELEASE_NOTES_PATH}"
+
+  documentation:
+    name: Publish release documentation
+    if: github.event_name == 'push'
+    needs: publish
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    uses: ./.github/workflows/docs.yml
+    with:
+      deploy: true
