@@ -1,7 +1,10 @@
 package dev.yveskalume.elevenlabs.internal.http
 
 import dev.yveskalume.elevenlabs.ApiKeyProvider
-import dev.yveskalume.elevenlabs.ElevenLabsException
+import dev.yveskalume.elevenlabs.error.ApiException
+import dev.yveskalume.elevenlabs.error.ElevenLabsErrorKind
+import dev.yveskalume.elevenlabs.error.SerializationError
+import dev.yveskalume.elevenlabs.error.UnknownError
 import dev.yveskalume.elevenlabs.internal.tts.TextToSpeechApiImpl
 import dev.yveskalume.elevenlabs.internal.voices.VoicesApiImpl
 import dev.yveskalume.elevenlabs.tts.OutputFormat
@@ -18,12 +21,14 @@ import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.headersOf
 import io.ktor.serialization.kotlinx.json.json
+import io.ktor.serialization.ContentConvertException
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
+import kotlin.test.assertIs
 import kotlin.test.assertTrue
 
 class ElevenLabsHttpContractTest {
@@ -132,15 +137,84 @@ class ElevenLabsHttpContractTest {
         }
         val api = VoicesApiImpl(http(engine) { "do-not-leak" })
 
-        val exception = assertFailsWith<ElevenLabsException.UnexpectedResponse> {
+        val exception = assertFailsWith<ApiException.RateLimitExceeded> {
             api.list()
         }
 
-        assertEquals(429, exception.error.statusCode)
-        assertEquals("request-429", exception.error.requestId)
-        assertEquals("quota exceeded", exception.error.message)
+        assertEquals(429, exception.statusCode)
+        assertEquals("request-429", exception.requestId)
         assertEquals("quota exceeded", exception.message)
+        assertEquals(ElevenLabsErrorKind.RateLimit, exception.kind)
         assertFalse(exception.toString().contains("do-not-leak"))
+    }
+
+    @Test
+    fun `validation detail array exposes every field error`() = runTest {
+        val engine = MockEngine {
+            respond(
+                content = """{
+                    "detail": [
+                        {"loc":["body","text"],"msg":"must not be blank","type":"value_error"},
+                        {"loc":["query","output_format"],"msg":"unsupported format","type":"enum"}
+                    ]
+                }""".trimIndent(),
+                status = HttpStatusCode.UnprocessableEntity,
+                headers = jsonHeaders,
+            )
+        }
+        val api = VoicesApiImpl(http(engine) { "secret" })
+
+        val exception = assertFailsWith<ApiException.UnprocessableEntity> { api.list() }
+
+        assertEquals("body.text: must not be blank; query.output_format: unsupported format", exception.message)
+        assertEquals(listOf("body", "text"), exception.validationErrors.first().location)
+        assertEquals("must not be blank", exception.validationErrors.first().message)
+        assertEquals("value_error", exception.validationErrors.first().type)
+        assertEquals(2, exception.validationErrors.size)
+        assertEquals(ElevenLabsErrorKind.Validation, exception.kind)
+    }
+
+    @Test
+    fun `standard detail object exposes code and retry delay`() = runTest {
+        val engine = MockEngine {
+            respond(
+                content = """{"detail":{"status":"too_many_concurrent_requests","message":"Try later"}}""",
+                status = HttpStatusCode.TooManyRequests,
+                headers = headersOf(
+                    HttpHeaders.ContentType to listOf("application/json"),
+                    HttpHeaders.RetryAfter to listOf("12"),
+                ),
+            )
+        }
+        val api = VoicesApiImpl(http(engine) { "secret" })
+
+        val exception = assertFailsWith<ApiException.RateLimitExceeded> { api.list() }
+
+        assertEquals("too_many_concurrent_requests", exception.errorCode)
+        assertEquals(12, exception.retryAfterSeconds)
+    }
+
+    @Test
+    fun `invalid success payload becomes sdk serialization error`() = runTest {
+        val engine = MockEngine {
+            respond(content = "not json", headers = jsonHeaders)
+        }
+        val api = VoicesApiImpl(http(engine) { "secret" })
+
+        val exception = assertFailsWith<SerializationError> { api.list() }
+
+        assertIs<ContentConvertException>(exception.cause)
+        assertEquals(ElevenLabsErrorKind.Serialization, exception.kind)
+    }
+
+    @Test
+    fun `unclassified transport failure becomes sdk unknown error`() = runTest {
+        val engine = MockEngine { error("mock engine failed") }
+        val api = VoicesApiImpl(http(engine) { "secret" })
+
+        val exception = assertFailsWith<UnknownError> { api.list() }
+
+        assertEquals(ElevenLabsErrorKind.Unknown, exception.kind)
     }
 
     private fun http(
@@ -153,6 +227,7 @@ class ElevenLabsHttpContractTest {
             install(ContentNegotiation) {
                 json(JSON)
             }
+            httpResponseValidator()
         },
         ownsClient = true,
     )
