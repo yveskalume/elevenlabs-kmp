@@ -5,17 +5,18 @@ import android.media.AudioAttributes
 import android.media.AudioFormat
 import android.media.AudioTrack
 import android.media.MediaPlayer
+import dev.yveskalume.elevenlabs.AndroidAudioPlayer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
 
-internal class AndroidAudioPlayer(context: Context) {
+internal class AndroidAudioPlayerImpl(context: Context) : AndroidAudioPlayer {
     private val cacheDirectory = context.applicationContext.cacheDir
     private var mediaPlayer: MediaPlayer? = null
     private var streamingPlayer: AudioTrack? = null
     private var audioFile: File? = null
 
-    suspend fun play(audio: ByteArray) {
+    override suspend fun play(audio: ByteArray) {
         withContext(Dispatchers.IO) {
             stop()
             val file = File.createTempFile("elevenlabs-sample-", ".mp3", cacheDirectory).apply {
@@ -51,7 +52,7 @@ internal class AndroidAudioPlayer(context: Context) {
         }
     }
 
-    suspend fun startStream(sampleRate: Int) {
+    override suspend fun startStream(sampleRate: Int) {
         withContext(Dispatchers.IO) {
             stop()
             val minimumBufferSize = AudioTrack.getMinBufferSize(
@@ -87,7 +88,7 @@ internal class AndroidAudioPlayer(context: Context) {
         }
     }
 
-    suspend fun writeStream(audio: ByteArray) {
+    override suspend fun writeStream(audio: ByteArray) {
         if (audio.isEmpty()) return
         withContext(Dispatchers.IO) {
             val player = streamingPlayer ?: return@withContext
@@ -96,12 +97,12 @@ internal class AndroidAudioPlayer(context: Context) {
         }
     }
 
-    fun finishStream() {
+    override fun finishStream() {
         // AudioTrack remains active long enough to play its queued tail. It is released by stop(),
         // the next playback request, or close().
     }
 
-    fun stop() {
+    override fun stop() {
         val activeStream = streamingPlayer
         streamingPlayer = null
         runCatching { activeStream?.pause() }
@@ -116,7 +117,7 @@ internal class AndroidAudioPlayer(context: Context) {
         deleteAudioFile()
     }
 
-    fun close() {
+    override fun close() {
         stop()
     }
 
