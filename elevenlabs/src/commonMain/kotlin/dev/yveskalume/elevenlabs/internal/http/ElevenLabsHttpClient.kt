@@ -24,6 +24,7 @@ import io.ktor.client.request.header
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.HttpHeaders
+import io.ktor.http.HttpStatusCode
 import io.ktor.http.URLBuilder
 import io.ktor.http.appendPathSegments
 import io.ktor.serialization.ContentConvertException
@@ -87,7 +88,10 @@ internal class ElevenLabsHttpClient(
 internal fun HttpClientConfig<*>.httpResponseValidator() {
     HttpResponseValidator {
         validateResponse { response ->
-            if (response.status.value !in 200..299) {
+            if (
+                response.status != HttpStatusCode.SwitchingProtocols &&
+                response.status.value !in 200..299
+            ) {
                 throw response.toApiException()
             }
         }
