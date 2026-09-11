@@ -1,13 +1,5 @@
-//
-//  RealtimeEventCollector.swift
-//  iosApp
-//
-//  Created by Yves Kalume on 15/08/2026.
-//
-
-
 import ElevenLabs
-import SwiftUI
+import Foundation
 
 final class RealtimeEventCollector: NSObject, Kotlinx_coroutines_coreFlowCollector, @unchecked Sendable {
     private let onAudio: @MainActor (KotlinByteArray) throws -> Void
