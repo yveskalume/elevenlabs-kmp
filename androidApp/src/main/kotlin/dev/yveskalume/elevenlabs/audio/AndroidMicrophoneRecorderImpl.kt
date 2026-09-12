@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.media.AudioFormat
 import android.media.AudioRecord
 import android.media.MediaRecorder
+import dev.yveskalume.elevenlabs.AndroidMicrophoneRecorder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -15,16 +16,16 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-internal class AndroidMicrophoneRecorder {
+internal class AndroidMicrophoneRecorderImpl : AndroidMicrophoneRecorder {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private val chunks = MutableSharedFlow<ByteArray>(extraBufferCapacity = 32)
     private var recorder: AudioRecord? = null
     private var captureJob: Job? = null
 
-    val audio: Flow<ByteArray> = chunks
+    override val audio: Flow<ByteArray> = chunks
 
     @SuppressLint("MissingPermission")
-    suspend fun start(sampleRate: Int) = withContext(Dispatchers.IO) {
+    override suspend fun start(sampleRate: Int) = withContext(Dispatchers.IO) {
         stop()
         val minimumBufferSize = AudioRecord.getMinBufferSize(
             sampleRate,
@@ -70,7 +71,7 @@ internal class AndroidMicrophoneRecorder {
         }
     }
 
-    fun stop() {
+    override fun stop() {
         val activeRecorder = recorder
         recorder = null
         runCatching { activeRecorder?.stop() }
@@ -79,7 +80,7 @@ internal class AndroidMicrophoneRecorder {
         runCatching { activeRecorder?.release() }
     }
 
-    fun close() {
+    override fun close() {
         stop()
         scope.cancel()
     }

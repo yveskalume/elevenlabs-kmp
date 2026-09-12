@@ -1,15 +1,7 @@
-//
-//  SttEventCollector.swift
-//  iosApp
-//
-//  Created by Yves Kalume on 15/08/2026.
-//
-
-
 import ElevenLabs
-import SwiftUI
+import Foundation
 
-final class SttEventCollector: NSObject, Kotlinx_coroutines_coreFlowCollector, @unchecked Sendable {
+final class STTEventCollector: NSObject, Kotlinx_coroutines_coreFlowCollector, @unchecked Sendable {
     private let onPartial: @MainActor (String) -> Void
     private let onCommitted: @MainActor (String) -> Void
 

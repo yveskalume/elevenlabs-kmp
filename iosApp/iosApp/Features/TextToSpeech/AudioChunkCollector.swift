@@ -1,13 +1,5 @@
-//
-//  AudioChunkCollector.swift
-//  iosApp
-//
-//  Created by Yves Kalume on 15/08/2026.
-//
-
-
 import ElevenLabs
-import SwiftUI
+import Foundation
 
 final class AudioChunkCollector: NSObject, Kotlinx_coroutines_coreFlowCollector, @unchecked Sendable {
     private(set) var data = Data()

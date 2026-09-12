@@ -52,11 +52,7 @@ final class AudioPlayer: NSObject, AVAudioPlayerDelegate {
         if streamingNode.engine == nil {
             streamingEngine.attach(streamingNode)
         }
-        streamingEngine.connect(
-            streamingNode,
-            to: streamingEngine.mainMixerNode,
-            format: format
-        )
+        streamingEngine.connect(streamingNode, to: streamingEngine.mainMixerNode, format: format)
         streamingEngine.prepare()
         try streamingEngine.start()
         streamingNode.play()
@@ -93,8 +89,7 @@ final class AudioPlayer: NSObject, AVAudioPlayerDelegate {
     }
 
     func finishStream() {
-        // Scheduled buffers remain owned by AVAudioPlayerNode and finish naturally. The engine is
-        // released by stop(), the next playback request, or when the view model closes.
+        // Scheduled buffers finish naturally; stop() owns engine cleanup.
     }
 
     func stop() {
@@ -114,42 +109,6 @@ final class AudioPlayer: NSObject, AVAudioPlayerDelegate {
         Task { @MainActor [weak self] in
             guard self?.player === player else { return }
             self?.player = nil
-        }
-    }
-}
-
-extension Data {
-    init(kotlinBytes bytes: KotlinByteArray) {
-        var buffer = [UInt8](repeating: 0, count: Int(bytes.size))
-        for index in 0..<bytes.size {
-            buffer[Int(index)] = UInt8(bitPattern: bytes.get(index: index))
-        }
-        self.init(buffer)
-    }
-}
-
-private enum IOSAudioPlayerError: LocalizedError {
-    case emptyAudio
-    case playbackDidNotStart
-    case invalidStreamFormat
-    case invalidPcmChunk
-    case streamNotStarted
-    case couldNotCreatePcmBuffer
-
-    var errorDescription: String? {
-        switch self {
-        case .emptyAudio:
-            return "ElevenLabs returned an empty audio response."
-        case .playbackDidNotStart:
-            return "iOS could not start audio playback."
-        case .invalidStreamFormat:
-            return "iOS could not create the realtime PCM audio format."
-        case .invalidPcmChunk:
-            return "ElevenLabs returned an invalid realtime PCM chunk."
-        case .streamNotStarted:
-            return "Realtime audio playback has not started."
-        case .couldNotCreatePcmBuffer:
-            return "iOS could not create a realtime PCM audio buffer."
         }
     }
 }

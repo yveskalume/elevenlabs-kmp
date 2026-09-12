@@ -1,13 +1,4 @@
-//
-//  AudioStreamError.swift
-//  iosApp
-//
-//  Created by Yves Kalume on 15/08/2026.
-//
-
-
-import ElevenLabs
-import SwiftUI
+import Foundation
 
 enum AudioStreamError: LocalizedError {
     case invalidChunk

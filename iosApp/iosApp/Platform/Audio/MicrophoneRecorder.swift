@@ -1,5 +1,4 @@
 import AVFoundation
-import ElevenLabs
 
 @MainActor
 final class MicrophoneRecorder {
@@ -86,32 +85,5 @@ final class MicrophoneRecorder {
             false,
             options: .notifyOthersOnDeactivation
         )
-    }
-}
-
-extension Data {
-    func kotlinByteArray() -> KotlinByteArray {
-        let result = KotlinByteArray(size: Int32(count))
-        withUnsafeBytes { rawBuffer in
-            guard let bytes = rawBuffer.bindMemory(to: UInt8.self).baseAddress else { return }
-            for index in indices {
-                result.set(index: Int32(index), value: Int8(bitPattern: bytes[index]))
-            }
-        }
-        return result
-    }
-}
-
-private enum IOSMicrophoneRecorderError: LocalizedError {
-    case unavailableInput
-    case invalidFormat
-
-    var errorDescription: String? {
-        switch self {
-        case .unavailableInput:
-            return "No microphone input is available."
-        case .invalidFormat:
-            return "iOS could not create the 16 kHz microphone format."
-        }
     }
 }
