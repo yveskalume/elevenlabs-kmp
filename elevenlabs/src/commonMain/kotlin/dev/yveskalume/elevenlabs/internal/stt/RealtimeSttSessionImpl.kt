@@ -87,7 +87,8 @@ internal class RealtimeSttSessionImpl(
                         val wasClosedLocally = stateMutex.withLock { closed }
                         if (!wasClosedLocally) {
                             throw RealtimeServerError(
-                                message = frame.reason
+                                // Ktor reports a missing close reason as "", not null.
+                                message = frame.reason?.takeIf { it.isNotBlank() }
                                     ?: "The realtime STT connection closed unexpectedly.",
                                 closeCode = frame.code,
                             )
