@@ -46,7 +46,7 @@ internal object RealtimeTtsMessages {
 
     fun decode(value: String): DecodedRealtimeTtsMessage {
         val message = JSON.decodeFromString<RealtimeTtsIncomingDto>(value)
-        if (message.isFinal) {
+        if (message.isFinal == true) {
             return DecodedRealtimeTtsMessage.Event(RealtimeTtsEvent.Finished)
         }
 
@@ -115,7 +115,7 @@ private data class RealtimeTtsIncomingDto(
     @SerialName("normalized_alignment")
     val normalizedAlignment: RealtimeTtsAlignmentDto? = null,
     @SerialName("is_final")
-    val isFinal: Boolean = false,
+    val isFinal: Boolean? = null,
     @SerialName("message")
     val message: JsonElement? = null,
     @SerialName("error")

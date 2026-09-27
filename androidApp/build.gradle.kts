@@ -26,11 +26,13 @@ kotlin {
 }
 dependencies {
     implementation(project(":sharedUI"))
+    implementation(project(":elevenlabs"))
 
     implementation(libs.androidx.activity.compose)
 
     implementation(libs.compose.uiToolingPreview)
     debugImplementation(libs.compose.uiTooling)
+    implementation(libs.androidx.lifecycle.viewmodelCompose)
 }
 
 android {

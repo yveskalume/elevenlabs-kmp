@@ -22,7 +22,6 @@ internal class VoicesApiImpl(
             parameter("category", request.category)
             parameter("include_total_count", request.includeTotalCount)
         }
-        http.validate(response)
         return response.body<VoicePageDto>().let {
             VoicePage(
                 voices = it.voices.map(VoiceDto::toPublic),
@@ -38,7 +37,6 @@ internal class VoicesApiImpl(
         val response = http.client.get(http.url("v1", "voices", voiceId)) {
             http.run { authenticate() }
         }
-        http.validate(response)
         return response.body<VoiceDto>().toPublic()
     }
 }

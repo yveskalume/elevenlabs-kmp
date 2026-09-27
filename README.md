@@ -4,10 +4,9 @@
 [![CI](https://github.com/yveskalume/elevenlabs-kmp/actions/workflows/ci.yml/badge.svg)](https://github.com/yveskalume/elevenlabs-kmp/actions/workflows/ci.yml)
 [![Documentation](https://github.com/yveskalume/elevenlabs-kmp/actions/workflows/docs.yml/badge.svg)](https://github.com/yveskalume/elevenlabs-kmp/actions/workflows/docs.yml)
 
-A Kotlin-first Multiplatform SDK for the ElevenLabs API, with coroutine and `Flow`-based APIs for Android, iOS and JVM.
+A Kotlin-first Multiplatform SDK for the [ElevenLabs](https://elevenlabs.io/) API, with coroutine and `Flow`-based APIs for Android, iOS and JVM.
 
-> [!IMPORTANT]
-> This is an unofficial community SDK. It is not affiliated with or endorsed by ElevenLabs.
+> Community-maintained SDK. Not affiliated with or endorsed by ElevenLabs.
 
 ## Installation
 
@@ -241,9 +240,12 @@ credentials issued by a trusted backend instead. See the [authentication guide](
 - Realtime speech-to-text over WebSockets
 - API-key and endpoint-specific token authentication
 
+## Documentation
+[https://yveskalume.github.io/elevenlabs-kmp](https://yveskalume.github.io/elevenlabs-kmp)
+
 ## Running the samples
 
-The Android and iOS sample apps demonstrate text-to-speech and live microphone transcription. Development keys configured for these samples are embedded in the resulting app and must not be used for production builds.
+The Android and iOS sample apps use the same Compose Multiplatform UI in `sharedUI` for text-to-speech and live microphone transcription. Development keys configured for these samples are embedded in the resulting app and must not be used for production builds.
 
 For Android, add the following to the ignored `local.properties` file:
 

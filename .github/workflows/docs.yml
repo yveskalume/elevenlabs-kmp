@@ -1,17 +1,21 @@
 name: API documentation
 
 on:
-  push:
-    branches:
-      - main
   pull_request:
   workflow_dispatch:
+  workflow_call:
+    inputs:
+      deploy:
+        description: Deploy the generated documentation to GitHub Pages
+        required: false
+        type: boolean
+        default: false
 
 permissions:
   contents: read
 
 concurrency:
-  group: pages-${{ github.ref }}
+  group: docs-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -49,18 +53,18 @@ jobs:
           cp -R elevenlabs/build/dokka/html/. site/api/
 
       - name: Configure GitHub Pages
-        if: github.event_name != 'pull_request'
+        if: inputs.deploy
         uses: actions/configure-pages@v6
 
       - name: Upload GitHub Pages artifact
-        if: github.event_name != 'pull_request'
+        if: inputs.deploy
         uses: actions/upload-pages-artifact@v5
         with:
           path: site
 
   deploy:
     name: Deploy documentation
-    if: github.event_name != 'pull_request'
+    if: inputs.deploy
     needs: build
     runs-on: ubuntu-latest
     timeout-minutes: 10

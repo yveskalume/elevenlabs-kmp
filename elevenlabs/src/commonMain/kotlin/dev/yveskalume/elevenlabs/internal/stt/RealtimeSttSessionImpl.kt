@@ -1,9 +1,11 @@
 package dev.yveskalume.elevenlabs.internal.stt
 
-import dev.yveskalume.elevenlabs.ElevenLabsError
-import dev.yveskalume.elevenlabs.ElevenLabsException
+import dev.yveskalume.elevenlabs.error.ElevenLabsErrorDetails
+import dev.yveskalume.elevenlabs.error.RealtimeServerError
+import dev.yveskalume.elevenlabs.error.SerializationError
 import dev.yveskalume.elevenlabs.internal.stt.dtos.DecodedRealtimeSttMessage
 import dev.yveskalume.elevenlabs.internal.stt.dtos.RealtimeSttMessages
+import dev.yveskalume.elevenlabs.internal.error.toRealtimeFailure
 import dev.yveskalume.elevenlabs.stt.RealtimeSttEvent
 import dev.yveskalume.elevenlabs.stt.RealtimeSttSession
 import kotlinx.coroutines.CancellationException
@@ -41,14 +43,22 @@ internal class RealtimeSttSessionImpl(
         require(audio.isNotEmpty()) { "Realtime STT audio cannot be empty. Call commit() instead." }
         stateMutex.withLock {
             check(!closed) { "The realtime STT session is closed." }
-            connection.send(RealtimeSttMessages.audio(audio, commit))
+            send(RealtimeSttMessages.audio(audio, commit))
         }
     }
 
     override suspend fun commit() {
         stateMutex.withLock {
             check(!closed) { "The realtime STT session is closed." }
-            connection.send(RealtimeSttMessages.commit())
+            send(RealtimeSttMessages.commit())
+        }
+    }
+
+    private suspend fun send(message: String) {
+        try {
+            connection.send(message)
+        } catch (throwable: Throwable) {
+            throw throwable.toRealtimeFailure()
         }
     }
 
@@ -76,8 +86,9 @@ internal class RealtimeSttSessionImpl(
                     is RealtimeSttConnectionFrame.Closed -> {
                         val wasClosedLocally = stateMutex.withLock { closed }
                         if (!wasClosedLocally) {
-                            throw ElevenLabsException.Realtime(
-                                message = frame.reason
+                            throw RealtimeServerError(
+                                // Ktor reports a missing close reason as "", not null.
+                                message = frame.reason?.takeIf { it.isNotBlank() }
                                     ?: "The realtime STT connection closed unexpectedly.",
                                 closeCode = frame.code,
                             )
@@ -90,7 +101,7 @@ internal class RealtimeSttSessionImpl(
             val wasClosedLocally = stateMutex.withLock { closed }
             if (!wasClosedLocally) failure = cancellation
         } catch (throwable: Throwable) {
-            failure = throwable
+            failure = throwable.toRealtimeFailure()
         } finally {
             stateMutex.withLock { closed = true }
             withContext(NonCancellable) { runCatching { connection.close() } }
@@ -102,21 +113,21 @@ internal class RealtimeSttSessionImpl(
         val decoded = try {
             RealtimeSttMessages.decode(rawMessage)
         } catch (throwable: Throwable) {
-            throw ElevenLabsException.Serialization(
-                error = ElevenLabsError(
+            throw SerializationError(
+                cause = throwable,
+                details = ElevenLabsErrorDetails(
                     statusCode = null,
                     message = "Could not decode an ElevenLabs realtime STT response.",
                     responseBody = rawMessage,
                 ),
-                cause = throwable,
             )
         }
 
         when (decoded) {
             is DecodedRealtimeSttMessage.Event -> eventChannel.send(decoded.value)
-            is DecodedRealtimeSttMessage.Error -> throw ElevenLabsException.Realtime(
+            is DecodedRealtimeSttMessage.Error -> throw RealtimeServerError(
                 message = decoded.message,
-                responseBody = rawMessage,
+                rawResponseBody = rawMessage,
             )
         }
     }
