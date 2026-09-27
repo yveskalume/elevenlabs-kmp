@@ -167,11 +167,20 @@ internal class RealtimeTtsSessionImpl private constructor(
                             if (handle(frame.value)) return@launch
                         }
                         is RealtimeConnectionFrame.Closed -> {
-                            val wasClosedLocally = stateMutex.withLock { state == State.Closed }
-                            if (wasClosedLocally) return@launch
+                            val stateAtClose = stateMutex.withLock { state }
+                            if (stateAtClose == State.Closed) return@launch
+
+                            // After finish(), the server may end the stream with a normal close
+                            // instead of an isFinal message. Every audio chunk has been delivered,
+                            // so this is a successful end, not a failure.
+                            if (stateAtClose == State.Finishing && frame.code == CloseReason.Codes.NORMAL.code) {
+                                eventChannel.send(RealtimeTtsEvent.Finished)
+                                return@launch
+                            }
 
                             val exception = RealtimeServerError(
-                                message = frame.reason
+                                // Ktor reports a missing close reason as "", not null.
+                                message = frame.reason?.takeIf { it.isNotBlank() }
                                     ?: "The realtime TTS connection closed before a final response.",
                                 closeCode = frame.code,
                             )
