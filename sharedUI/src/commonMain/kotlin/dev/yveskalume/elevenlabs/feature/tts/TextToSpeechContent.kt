@@ -3,169 +3,251 @@ package dev.yveskalume.elevenlabs.feature.tts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuAnchorType
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
-import androidx.compose.material3.FilterChip
+import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonDefaults
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.yveskalume.elevenlabs.feature.LoadingState
+import dev.yveskalume.elevenlabs.ui.AppIcons
+import dev.yveskalume.elevenlabs.ui.ErrorBanner
 import dev.yveskalume.elevenlabs.ui.ErrorScreen
 import dev.yveskalume.elevenlabs.ui.LoadingScreen
 import dev.yveskalume.elevenlabs.voices.Voice
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun TextToSpeechContent(
-    logicHandler: TTSLogicHandler,
+    state: TTSUiState,
+    onAction: (TTSAction) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
-    val state by logicHandler.uiState.collectAsStateWithLifecycle()
-
     when (val voiceState = state.voices) {
         is LoadingState.Error -> ErrorScreen(
+            title = "Couldn't load voices",
             message = voiceState.message,
-            onAction = logicHandler::loadVoices,
-            actionLabel = "Retry",
+            onAction = { onAction(TTSAction.LoadVoices) },
+            modifier = modifier,
         )
 
-        is LoadingState.Idle -> SuccessTextToSpeechContent(
-            logicHandler = logicHandler,
+        LoadingState.Loading -> LoadingScreen(modifier = modifier, message = "Loading voices…")
+
+        is LoadingState.Idle -> TextToSpeechForm(
             voices = voiceState.data,
-            selectedVoice = state.selectedVoice,
-            text = state.text,
-            isInputEnabled = !state.isProcessing,
-            selectedMode = state.mode,
-            canCreateSpeech = state.canCreateSpeech,
-            isCreatingSpeech = state.isProcessing,
-            processingError = (state.processingState as? LoadingState.Error<*>)?.message,
-            onClearError = logicHandler::clearError,
+            state = state,
+            onAction = onAction,
+            modifier = modifier,
         )
-
-        LoadingState.Loading -> LoadingScreen()
     }
 }
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
-private fun SuccessTextToSpeechContent(
+private fun TextToSpeechForm(
     voices: List<Voice>,
-    selectedVoice: Voice?,
-    text: String,
-    isInputEnabled: Boolean,
-    selectedMode: TTSMode,
-    canCreateSpeech: Boolean,
-    isCreatingSpeech: Boolean,
-    processingError: String?,
-    onClearError: () -> Unit,
-    logicHandler: TTSLogicHandler,
-    modifier: Modifier = Modifier
+    state: TTSUiState,
+    onAction: (TTSAction) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
-    var voiceListExpanded by rememberSaveable { mutableStateOf(false) }
+    val isInputEnabled = !state.isProcessing
 
     Column(
         modifier = modifier
-            .fillMaxWidth()
-            .verticalScroll(
-                rememberScrollState()
-            )
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
+        ModeSelector(
+            selected = state.mode,
+            enabled = isInputEnabled,
+            onSelect = { onAction(TTSAction.SelectMode(it)) },
+        )
 
         OutlinedTextField(
-            value = text,
-            onValueChange = logicHandler::updateText,
+            value = state.text,
+            onValueChange = { onAction(TTSAction.UpdateText(it)) },
             modifier = Modifier.fillMaxWidth(),
             enabled = isInputEnabled,
             label = { Text("Text") },
-            minLines = 4,
-            maxLines = 8,
+            placeholder = { Text("What should the voice say?") },
+            minLines = 5,
+            maxLines = 10,
+            shape = MaterialTheme.shapes.medium,
         )
 
-        ExposedDropdownMenuBox(
-            expanded = voiceListExpanded,
-            onExpandedChange = { if (isInputEnabled) voiceListExpanded = !voiceListExpanded },
-        ) {
+        VoicePicker(
+            voices = voices,
+            selectedVoice = state.selectedVoice,
+            enabled = isInputEnabled,
+            onSelect = { onAction(TTSAction.SelectVoice(it)) },
+        )
 
-            OutlinedTextField(
-                value = selectedVoice?.name.orEmpty(),
-                onValueChange = {},
-                modifier = Modifier
-                    .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable, isInputEnabled)
-                    .fillMaxWidth(),
-                enabled = isInputEnabled,
-                readOnly = true,
-                label = { Text("Voice") },
-                placeholder = { Text("Select a voice") },
-                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(voiceListExpanded) },
-            )
+        ErrorBanner(
+            message = (state.processingState as? LoadingState.Error<*>)?.message,
+            onDismiss = { onAction(TTSAction.ClearError) },
+        )
 
-            ExposedDropdownMenu(
-                expanded = voiceListExpanded,
-                onDismissRequest = { voiceListExpanded = false }) {
-                voices.forEach { voice ->
-                    DropdownMenuItem(
-                        text = { Text(voice.name) },
-                        onClick = {
-                            logicHandler.selectVoice(voice.id)
-                            voiceListExpanded = false
-                        },
-                        contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
-                    )
-                }
-            }
-        }
+        PlaybackControls(
+            canCreateSpeech = state.canCreateSpeech,
+            isProcessing = state.isProcessing,
+            onCreate = { onAction(TTSAction.CreateSpeech) },
+            onStop = { onAction(TTSAction.StopPlayback) },
+        )
+    }
+}
 
-        Text("Mode", style = MaterialTheme.typography.titleMedium)
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun VoicePicker(
+    voices: List<Voice>,
+    selectedVoice: Voice?,
+    enabled: Boolean,
+    onSelect: (String) -> Unit,
+) {
+    var expanded by rememberSaveable { mutableStateOf(false) }
 
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            TTSMode.entries.forEach { mode ->
-                FilterChip(
-                    selected = selectedMode == mode,
-                    onClick = { logicHandler.selectMode(mode) },
-                    enabled = isInputEnabled,
-                    label = { Text(mode.name) },
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = { if (enabled) expanded = !expanded },
+    ) {
+        OutlinedTextField(
+            value = selectedVoice?.name.orEmpty(),
+            onValueChange = {},
+            modifier = Modifier
+                .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable, enabled)
+                .fillMaxWidth(),
+            enabled = enabled,
+            readOnly = true,
+            singleLine = true,
+            label = { Text("Voice") },
+            placeholder = { Text("Select a voice") },
+            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded) },
+            shape = MaterialTheme.shapes.medium,
+        )
+
+        ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+            voices.forEach { voice ->
+                DropdownMenuItem(
+                    text = {
+                        Column {
+                            Text(voice.name, style = MaterialTheme.typography.bodyLarge)
+                            voice.category?.let {
+                                Text(
+                                    text = it.replaceFirstChar(Char::uppercase),
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                )
+                            }
+                        }
+                    },
+                    onClick = {
+                        onSelect(voice.id)
+                        expanded = false
+                    },
+                    contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
                 )
             }
         }
+    }
+}
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun ModeSelector(
+    selected: TTSMode,
+    enabled: Boolean,
+    onSelect: (TTSMode) -> Unit,
+) {
+    val modes = TTSMode.entries
+    SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth()) {
+        modes.forEachIndexed { index, mode ->
+            SegmentedButton(
+                selected = mode == selected,
+                onClick = { onSelect(mode) },
+                enabled = enabled,
+                shape = SegmentedButtonDefaults.itemShape(index = index, count = modes.size),
+                label = { Text(mode.name) },
+            )
+        }
+    }
+}
+
+@Composable
+private fun PlaybackControls(
+    canCreateSpeech: Boolean,
+    isProcessing: Boolean,
+    onCreate: () -> Unit,
+    onStop: () -> Unit,
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
         Button(
-            logicHandler::createSpeech,
-            Modifier.fillMaxWidth(),
-            enabled = canCreateSpeech
+            onClick = onCreate,
+            enabled = canCreateSpeech,
+            modifier = Modifier.weight(1f).height(52.dp),
+            contentPadding = ButtonDefaults.ButtonWithIconContentPadding,
         ) {
-            Text("Create speech")
+            if (isProcessing) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(18.dp),
+                    strokeWidth = 2.dp,
+                    color = LocalContentColor.current,
+                )
+            } else {
+                Icon(
+                    AppIcons.PlayArrow,
+                    contentDescription = null,
+                    modifier = Modifier.size(ButtonDefaults.IconSize)
+                )
+            }
+            Spacer(Modifier.width(ButtonDefaults.IconSpacing))
+            Text(if (isProcessing) "Creating speech…" else "Create speech")
         }
 
-        Button(
-            onClick = logicHandler::stopPlayback,
-            modifier = Modifier.fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
+        // Always available: on iOS playback continues after the request finishes.
+        OutlinedButton(
+            onClick = onStop,
+            modifier = Modifier.height(52.dp),
+            contentPadding = ButtonDefaults.ButtonWithIconContentPadding,
         ) {
-            Text("Stop playback")
-        }
-
-        if (isCreatingSpeech) {
-            LoadingScreen(modifier = Modifier.wrapContentHeight())
-        }
-
-        if (processingError != null) {
-            ErrorScreen(message = processingError, onAction = onClearError)
+            Icon(
+                imageVector = AppIcons.Stop,
+                contentDescription = null,
+                modifier = Modifier.size(ButtonDefaults.IconSize)
+            )
+            Spacer(Modifier.width(ButtonDefaults.IconSpacing))
+            Text("Stop")
         }
     }
 }

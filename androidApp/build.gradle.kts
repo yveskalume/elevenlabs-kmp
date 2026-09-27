@@ -26,6 +26,7 @@ kotlin {
 }
 dependencies {
     implementation(project(":sharedUI"))
+    implementation(project(":elevenlabs"))
 
     implementation(libs.androidx.activity.compose)
 

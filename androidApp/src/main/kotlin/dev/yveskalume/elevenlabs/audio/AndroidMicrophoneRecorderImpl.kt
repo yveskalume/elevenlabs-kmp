@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import android.media.AudioFormat
 import android.media.AudioRecord
 import android.media.MediaRecorder
-import dev.yveskalume.elevenlabs.AndroidMicrophoneRecorder
+import dev.yveskalume.elevenlabs.MicrophoneRecorder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -16,7 +16,7 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-internal class AndroidMicrophoneRecorderImpl : AndroidMicrophoneRecorder {
+internal class AndroidMicrophoneRecorderImpl : MicrophoneRecorder {
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private val chunks = MutableSharedFlow<ByteArray>(extraBufferCapacity = 32)
     private var recorder: AudioRecord? = null

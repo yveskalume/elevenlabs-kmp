@@ -245,7 +245,7 @@ credentials issued by a trusted backend instead. See the [authentication guide](
 
 ## Running the samples
 
-The Android and iOS sample apps demonstrate text-to-speech and live microphone transcription. Development keys configured for these samples are embedded in the resulting app and must not be used for production builds.
+The Android and iOS sample apps use the same Compose Multiplatform UI in `sharedUI` for text-to-speech and live microphone transcription. Development keys configured for these samples are embedded in the resulting app and must not be used for production builds.
 
 For Android, add the following to the ignored `local.properties` file:
 

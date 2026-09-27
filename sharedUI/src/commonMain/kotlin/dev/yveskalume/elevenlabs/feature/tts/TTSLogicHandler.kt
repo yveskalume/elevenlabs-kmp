@@ -1,8 +1,10 @@
 package dev.yveskalume.elevenlabs.feature.tts
 
-import dev.yveskalume.elevenlabs.AndroidAudioPlayer
+import dev.yveskalume.elevenlabs.AudioPlayer
 import dev.yveskalume.elevenlabs.ElevenLabs
 import dev.yveskalume.elevenlabs.feature.LoadingState
+import dev.yveskalume.elevenlabs.feature.LogicHandler
+import dev.yveskalume.elevenlabs.feature.userMessage
 import dev.yveskalume.elevenlabs.tts.OutputFormat
 import dev.yveskalume.elevenlabs.tts.RealtimeTtsOptions
 import dev.yveskalume.elevenlabs.tts.TextToSpeechRequest
@@ -10,125 +12,117 @@ import dev.yveskalume.elevenlabs.voices.ListVoicesRequest
 import dev.yveskalume.elevenlabs.voices.Voice
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.milliseconds
 
-
-interface TTSLogicHandler {
-    val uiState: StateFlow<TTSUiState>
-
-    fun loadVoices()
-    fun updateText(value: String)
-    fun selectVoice(voiceId: String)
-    fun selectMode(mode: TTSMode)
-    fun createSpeech()
-    fun stopPlayback()
-    fun clearError()
-    fun close()
-}
-
-internal class TTSLogicHandlerImpl(
+internal class TTSLogicHandler(
     private val client: ElevenLabs,
-    private val audioPlayer: AndroidAudioPlayer,
-    private val scope: CoroutineScope,
-) : TTSLogicHandler {
+    private val audioPlayer: AudioPlayer,
+    scope: CoroutineScope,
+) : LogicHandler<TTSUiState, TTSAction> {
+
+    private val voiceLoads = Channel<Unit>(Channel.CONFLATED)
+    private val speechCommands = Channel<SpeechCommand>(Channel.CONFLATED)
 
     private val _uiState = MutableStateFlow(TTSUiState())
-    override val uiState = _uiState.asStateFlow().onStart {
-        loadVoices()
-    }.stateIn(
-        scope = scope,
-        started = SharingStarted.WhileSubscribed(5_000),
-        initialValue = TTSUiState()
-    )
-
-    private var synthesisJob: Job? = null
 
 
-    override fun loadVoices() {
+    override val uiState: StateFlow<TTSUiState> = _uiState
+        .onStart { if (_uiState.value.voices !is LoadingState.Idle) onAction(TTSAction.LoadVoices) }
+        .stateIn(
+            scope = scope,
+            started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5_000),
+            initialValue = _uiState.value,
+        )
+
+    init {
+        scope.launch { voiceLoads.receiveAsFlow().collectLatest { loadVoices() } }
         scope.launch {
-            _uiState.update { it.copy(voices = LoadingState.Loading) }
-            val voiceState = try {
-                val voices = client.voices.list(ListVoicesRequest(pageSize = 100)).voices
-                LoadingState.Idle(voices)
-            } catch (cancellation: CancellationException) {
-                throw cancellation
-            } catch (throwable: Throwable) {
-                LoadingState.Error(throwable.message ?: "Could not load voices.")
-            }
-            _uiState.update { state ->
-                state.copy(
-                    voices = voiceState,
-                )
-            }
-        }
-    }
-
-    override fun updateText(value: String) {
-        _uiState.update { it.copy(text = value) }
-    }
-
-    override fun selectVoice(voiceId: String) {
-        _uiState.update { it.copy(selectedVoiceId = voiceId) }
-    }
-
-    override fun selectMode(mode: TTSMode) {
-        _uiState.update { it.copy(mode = mode) }
-    }
-
-    override fun createSpeech() {
-        val state = _uiState.value
-        val voice = state.selectedVoice ?: return
-        if (!state.canCreateSpeech || state.isProcessing) return
-        synthesisJob?.cancel()
-        synthesisJob = scope.launch {
-            _uiState.update { it.copy(processingState = LoadingState.Loading) }
-            val processingState = try {
-                when (state.mode) {
-                    TTSMode.Generate -> generate(state.text, voice)
-                    TTSMode.Stream -> stream(state.text, voice)
-                    TTSMode.Realtime -> realtime(state.text, voice)
+            speechCommands.receiveAsFlow().collectLatest { command ->
+                when (command) {
+                    is SpeechCommand.Speak -> synthesize(command)
+                    SpeechCommand.Stop -> Unit // arriving here already cancelled the previous block
                 }
-                LoadingState.Idle(Unit)
-            } catch (cancellation: CancellationException) {
-                throw cancellation
-            } catch (throwable: Throwable) {
-                audioPlayer.stop()
-                LoadingState.Error(throwable.message ?: "Could not create speech.")
             }
-            _uiState.update { it.copy(processingState = processingState) }
         }
     }
 
-    override fun stopPlayback() {
-        synthesisJob?.cancel()
-        synthesisJob = null
-        audioPlayer.stop()
-        _uiState.update { it.copy(processingState = LoadingState.Idle(Unit)) }
-    }
+    override fun onAction(action: TTSAction) {
+        when (action) {
+            TTSAction.LoadVoices -> {
+                _uiState.update { it.copy(voices = LoadingState.Loading) }
+                voiceLoads.trySend(Unit)
+            }
 
-    override fun clearError() {
-        _uiState.update { state ->
-            if (state.processingState is LoadingState.Error) {
-                state.copy(processingState = LoadingState.Idle(Unit))
-            } else state
+            is TTSAction.UpdateText -> _uiState.update { it.copy(text = action.value) }
+            is TTSAction.SelectVoice -> _uiState.update { it.copy(selectedVoiceId = action.voiceId) }
+            is TTSAction.SelectMode -> _uiState.update { it.copy(mode = action.mode) }
+            TTSAction.CreateSpeech -> createSpeech()
+            TTSAction.StopPlayback -> {
+                // Synchronous part: silence now, don't wait for the worker to be dispatched.
+                audioPlayer.stop()
+                _uiState.update { it.copy(processingState = LoadingState.Idle(Unit)) }
+                speechCommands.trySend(SpeechCommand.Stop)
+            }
+
+            TTSAction.ClearError -> _uiState.update { state ->
+                if (state.processingState is LoadingState.Error) {
+                    state.copy(processingState = LoadingState.Idle(Unit))
+                } else state
+            }
         }
     }
 
-    override fun close() {
-        synthesisJob?.cancel()
-        audioPlayer.stop()
+    private fun createSpeech() {
+        val state = _uiState.value
+        val voice = state.selectedVoice
+        if (!state.canCreateSpeech || voice == null) return
+        // Flip to Loading synchronously so a double tap sees isProcessing and is ignored.
+        _uiState.update { it.copy(processingState = LoadingState.Loading) }
+        speechCommands.trySend(SpeechCommand.Speak(state.text, voice, state.mode))
+    }
+
+    private suspend fun loadVoices() {
+        val result = try {
+            LoadingState.Idle(client.voices.list(ListVoicesRequest(pageSize = 100)).voices)
+        } catch (cancellation: CancellationException) {
+            throw cancellation
+        } catch (throwable: Throwable) {
+            LoadingState.Error(throwable.userMessage("Could not load voices."))
+        }
+        _uiState.update { it.copy(voices = result) }
+    }
+
+    private suspend fun synthesize(command: SpeechCommand.Speak) {
+        val result = try {
+            when (command.mode) {
+                TTSMode.Generate -> generate(command.text, command.voice)
+                TTSMode.Stream -> stream(command.text, command.voice)
+                TTSMode.Realtime -> realtime(command.text, command.voice)
+            }
+            LoadingState.Idle(Unit)
+        } catch (cancellation: CancellationException) {
+            audioPlayer.stop()
+            throw cancellation
+        } catch (throwable: Throwable) {
+            audioPlayer.stop()
+            LoadingState.Error(throwable.userMessage("Could not create speech."))
+        }
+        // Guarded transition: only finish a request that is still in flight.
+        // If the user pressed Stop meanwhile, the state is already Idle and stays so.
+        _uiState.update { if (it.isProcessing) it.copy(processingState = result) else it }
     }
 
     private suspend fun generate(text: String, voice: Voice) {
@@ -152,20 +146,15 @@ internal class TTSLogicHandlerImpl(
 
     private suspend fun realtime(text: String, voice: Voice) {
         audioPlayer.startStream(REALTIME_SAMPLE_RATE)
-        try {
-            client.textToSpeech.realtime(
-                voiceId = voice.id,
-                text = text.asRealtimeInput(),
-                options = RealtimeTtsOptions(
-                    modelId = REALTIME_MODEL_ID,
-                    outputFormat = OutputFormat.Pcm_24000,
-                ),
-            ).collect { chunk -> audioPlayer.writeStream(chunk.bytes) }
-            audioPlayer.finishStream()
-        } catch (throwable: Throwable) {
-            audioPlayer.stop()
-            throw throwable
-        }
+        client.textToSpeech.realtime(
+            voiceId = voice.id,
+            text = text.asRealtimeInput(),
+            options = RealtimeTtsOptions(
+                modelId = REALTIME_MODEL_ID,
+                outputFormat = OutputFormat.Pcm_24000,
+            ),
+        ).collect { chunk -> audioPlayer.writeStream(chunk.bytes) }
+        audioPlayer.finishStream()
     }
 
     private fun String.asRealtimeInput(): Flow<String> = flow {
@@ -184,6 +173,11 @@ internal class TTSLogicHandlerImpl(
             offset += chunk.size
         }
         return result
+    }
+
+    private sealed interface SpeechCommand {
+        data class Speak(val text: String, val voice: Voice, val mode: TTSMode) : SpeechCommand
+        data object Stop : SpeechCommand
     }
 
     private companion object {

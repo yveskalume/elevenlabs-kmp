@@ -1,25 +1,46 @@
 package dev.yveskalume.elevenlabs
 
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.animation.Crossfade
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawingPadding
-import androidx.compose.material3.FilterChip
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonDefaults
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import dev.yveskalume.elevenlabs.feature.stt.STTLogicHandler
+import dev.yveskalume.elevenlabs.feature.stt.STTAction
+import dev.yveskalume.elevenlabs.feature.stt.STTUiState
 import dev.yveskalume.elevenlabs.feature.stt.SpeechToTextContent
-import dev.yveskalume.elevenlabs.feature.tts.TTSLogicHandler
+import dev.yveskalume.elevenlabs.feature.tts.TTSAction
+import dev.yveskalume.elevenlabs.feature.tts.TTSUiState
 import dev.yveskalume.elevenlabs.feature.tts.TextToSpeechContent
+import dev.yveskalume.elevenlabs.ui.theme.ElevenLabsTheme
 
 @Composable
 fun App(
@@ -28,81 +49,130 @@ fun App(
     sampleViewModel: SampleViewModel
 ) {
 
+    val lifecycle = LocalLifecycleOwner.current.lifecycle
+    DisposableEffect(lifecycle, sampleViewModel) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_STOP) sampleViewModel.stopActiveAudio()
+        }
+        lifecycle.addObserver(observer)
+        onDispose { lifecycle.removeObserver(observer) }
+    }
+
     val feature by sampleViewModel.selectedFeature.collectAsStateWithLifecycle()
 
-    MaterialTheme {
+    val ttsState by sampleViewModel.ttsState.collectAsStateWithLifecycle()
+    val sttState by sampleViewModel.sttState.collectAsStateWithLifecycle()
+
+    ElevenLabsTheme {
         SampleScreen(
             feature = feature,
             onFeatureSelected = sampleViewModel::selectFeature,
-            ttsLogicHandler = sampleViewModel.ttsLogicHandler,
-            sttLogicHandler = sampleViewModel.sttLogicHandler,
+            ttsState = ttsState,
+            sttState = sttState,
+            onTtsAction = sampleViewModel::onTtsAction,
+            onSttAction = sampleViewModel::onSttAction,
             hasMicrophonePermission = hasMicrophonePermission,
             onRequestMicrophonePermission = onRequestMicrophonePermission,
         )
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SampleScreen(
     feature: SampleFeature,
     onFeatureSelected: (SampleFeature) -> Unit,
-    ttsLogicHandler: TTSLogicHandler,
-    sttLogicHandler: STTLogicHandler,
+    ttsState: TTSUiState,
+    sttState: STTUiState,
+    onTtsAction: (TTSAction) -> Unit,
+    onSttAction: (STTAction) -> Unit,
     hasMicrophonePermission: Boolean,
     onRequestMicrophonePermission: () -> Unit,
 ) {
     Scaffold(
-        modifier = Modifier.safeDrawingPadding(),
+        containerColor = MaterialTheme.colorScheme.surface,
         topBar = {
-            Header(feature = feature, onFeatureSelected = onFeatureSelected)
-        }
+            Column {
+                TopAppBar(
+                    title = {
+                        Column {
+                            Text("ElevenLabs-KMP Playground", style = MaterialTheme.typography.titleLarge)
+                        }
+                    },
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.surface,
+                    ),
+                )
+                FeatureSelector(
+                    feature = feature,
+                    onSelect = onFeatureSelected,
+                    modifier = Modifier
+                        .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
+                        .align(Alignment.CenterHorizontally)
+                        .widthIn(max = MAX_CONTENT_WIDTH)
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                )
+            }
+        },
     ) { contentPadding ->
-        Column(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(contentPadding)
-                .padding(20.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+                .consumeWindowInsets(contentPadding)
+                .imePadding(),
+            contentAlignment = Alignment.TopCenter,
         ) {
+            Surface(
+                modifier = Modifier.widthIn(max = MAX_CONTENT_WIDTH).fillMaxSize(),
+                color = MaterialTheme.colorScheme.surface,
+            ) {
+                Crossfade(targetState = feature, label = "feature") { current ->
+                    when (current) {
+                        SampleFeature.TextToSpeech -> TextToSpeechContent(
+                            state = ttsState,
+                            onAction = onTtsAction,
+                        )
 
-            when (feature) {
-                SampleFeature.TextToSpeech -> TextToSpeechContent(
-                    logicHandler = ttsLogicHandler,
-                )
-
-                SampleFeature.SpeechToText -> SpeechToTextContent(
-                    logicHandler = sttLogicHandler,
-                    hasPermission = hasMicrophonePermission,
-                    onRequestPermission = onRequestMicrophonePermission,
-                )
+                        SampleFeature.SpeechToText -> SpeechToTextContent(
+                            state = sttState,
+                            onAction = onSttAction,
+                            hasPermission = hasMicrophonePermission,
+                            onRequestPermission = onRequestMicrophonePermission,
+                        )
+                    }
+                }
             }
         }
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun Header(
+private fun FeatureSelector(
     feature: SampleFeature,
-    onFeatureSelected: (SampleFeature) -> Unit
+    onSelect: (SampleFeature) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
-    Column(modifier = Modifier.padding(horizontal = 24.dp)) {
-        Text("ElevenLabs Sample", style = MaterialTheme.typography.headlineMedium)
-        FeatureSelector(feature = feature, onSelect = onFeatureSelected)
+    val features = SampleFeature.entries
+    SingleChoiceSegmentedButtonRow(modifier) {
+        features.forEachIndexed { index, item ->
+            SegmentedButton(
+                selected = item == feature,
+                onClick = { onSelect(item) },
+                shape = SegmentedButtonDefaults.itemShape(index = index, count = features.size),
+                label = {
+                    Text(
+                        when (item) {
+                            SampleFeature.TextToSpeech -> "Text to speech"
+                            SampleFeature.SpeechToText -> "Speech to text"
+                        },
+                    )
+                },
+            )
+        }
     }
 }
 
-@Composable
-private fun FeatureSelector(feature: SampleFeature, onSelect: (SampleFeature) -> Unit) {
-    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-        FilterChip(
-            selected = feature == SampleFeature.TextToSpeech,
-            onClick = { onSelect(SampleFeature.TextToSpeech) },
-            label = { Text("Text to speech") },
-        )
-        FilterChip(
-            selected = feature == SampleFeature.SpeechToText,
-            onClick = { onSelect(SampleFeature.SpeechToText) },
-            label = { Text("Speech to text") },
-        )
-    }
-}
+private val MAX_CONTENT_WIDTH = 640.dp

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Window theme shown before Compose draws. Matches the Compose light surface. -->
+    <style name="Theme.ElevenLabs" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@color/window_background</item>
+    </style>
+
+    <color name="window_background">#FFFFFFFF</color>
+</resources>

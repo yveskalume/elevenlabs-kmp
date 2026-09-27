@@ -5,12 +5,12 @@ import android.media.AudioAttributes
 import android.media.AudioFormat
 import android.media.AudioTrack
 import android.media.MediaPlayer
-import dev.yveskalume.elevenlabs.AndroidAudioPlayer
+import dev.yveskalume.elevenlabs.AudioPlayer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
 
-internal class AndroidAudioPlayerImpl(context: Context) : AndroidAudioPlayer {
+internal class AndroidAudioPlayerImpl(context: Context) : AudioPlayer {
     private val cacheDirectory = context.applicationContext.cacheDir
     private var mediaPlayer: MediaPlayer? = null
     private var streamingPlayer: AudioTrack? = null
