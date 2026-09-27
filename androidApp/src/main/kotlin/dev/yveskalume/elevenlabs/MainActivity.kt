@@ -32,9 +32,6 @@ class MainActivity : ComponentActivity() {
             val context = LocalContext.current
             val lifecycleOwner = LocalLifecycleOwner.current
 
-            val audioPlayer = remember(context) { AndroidAudioPlayerImpl(context) }
-            val microphone = remember { AndroidMicrophoneRecorderImpl() }
-
             var hasMicrophonePermission by remember {
                 mutableStateOf(
                     context.checkSelfPermission(Manifest.permission.RECORD_AUDIO) ==
@@ -42,17 +39,12 @@ class MainActivity : ComponentActivity() {
                 )
             }
 
+            var hasRequestedPermission by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf(false) }
+
             val permissionLauncher = rememberLauncherForActivityResult(
                 ActivityResultContracts.RequestPermission(),
             ) { granted ->
                 hasMicrophonePermission = granted
-            }
-
-            DisposableEffect(audioPlayer, microphone) {
-                onDispose {
-                    audioPlayer.close()
-                    microphone.close()
-                }
             }
 
             DisposableEffect(lifecycleOwner) {
@@ -71,14 +63,14 @@ class MainActivity : ComponentActivity() {
             App(
                 sampleViewModel = viewModel {
                     SampleViewModel(
-                        BuildConfig.ELEVENLABS_API_KEY,
-                        audioPlayer,
-                        microphone
+                        ElevenLabs { apiKey(BuildConfig.ELEVENLABS_API_KEY) },
+                        AndroidAudioPlayerImpl(context.applicationContext),
+                        AndroidMicrophoneRecorderImpl()
                     )
                 },
                 hasMicrophonePermission = hasMicrophonePermission,
                 onRequestMicrophonePermission = {
-                    if (!shouldShowRequestPermissionRationale(Manifest.permission.RECORD_AUDIO)) {
+                    if (hasRequestedPermission && !shouldShowRequestPermissionRationale(Manifest.permission.RECORD_AUDIO)) {
                         startActivity(
                             Intent(
                                 android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
@@ -86,6 +78,7 @@ class MainActivity : ComponentActivity() {
                             ),
                         )
                     } else {
+                        hasRequestedPermission = true
                         permissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
                     }
                 },
