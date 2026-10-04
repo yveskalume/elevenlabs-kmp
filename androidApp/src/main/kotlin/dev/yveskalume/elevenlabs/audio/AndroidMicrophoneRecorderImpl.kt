@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.media.AudioFormat
 import android.media.AudioRecord
 import android.media.MediaRecorder
+import android.media.audiofx.AcousticEchoCanceler
 import dev.yveskalume.elevenlabs.MicrophoneRecorder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -21,11 +22,12 @@ internal class AndroidMicrophoneRecorderImpl : MicrophoneRecorder {
     private val chunks = MutableSharedFlow<ByteArray>(extraBufferCapacity = 32)
     private var recorder: AudioRecord? = null
     private var captureJob: Job? = null
+    private var echoCanceler: AcousticEchoCanceler? = null
 
     override val audio: Flow<ByteArray> = chunks
 
     @SuppressLint("MissingPermission")
-    override suspend fun start(sampleRate: Int) = withContext(Dispatchers.IO) {
+    override suspend fun start(sampleRate: Int, voiceChat: Boolean) = withContext(Dispatchers.IO) {
         stop()
         val minimumBufferSize = AudioRecord.getMinBufferSize(
             sampleRate,
@@ -35,7 +37,15 @@ internal class AndroidMicrophoneRecorderImpl : MicrophoneRecorder {
         check(minimumBufferSize > 0) { "Could not create a microphone buffer." }
 
         val audioRecord = AudioRecord.Builder()
-            .setAudioSource(MediaRecorder.AudioSource.VOICE_RECOGNITION)
+            .setAudioSource(
+                // VOICE_COMMUNICATION enables the device's echo cancellation, so the assistant's
+                // own voice from the speaker is not transcribed as user speech.
+                if (voiceChat) {
+                    MediaRecorder.AudioSource.VOICE_COMMUNICATION
+                } else {
+                    MediaRecorder.AudioSource.VOICE_RECOGNITION
+                },
+            )
             .setAudioFormat(
                 AudioFormat.Builder()
                     .setEncoding(AudioFormat.ENCODING_PCM_16BIT)
@@ -51,6 +61,9 @@ internal class AndroidMicrophoneRecorderImpl : MicrophoneRecorder {
         }
 
         recorder = audioRecord
+        if (voiceChat && AcousticEchoCanceler.isAvailable()) {
+            echoCanceler = AcousticEchoCanceler.create(audioRecord.audioSessionId)?.apply { enabled = true }
+        }
         audioRecord.startRecording()
         check(audioRecord.recordingState == AudioRecord.RECORDSTATE_RECORDING) {
             audioRecord.release()
@@ -77,6 +90,8 @@ internal class AndroidMicrophoneRecorderImpl : MicrophoneRecorder {
         runCatching { activeRecorder?.stop() }
         captureJob?.cancel()
         captureJob = null
+        runCatching { echoCanceler?.release() }
+        echoCanceler = null
         runCatching { activeRecorder?.release() }
     }
 

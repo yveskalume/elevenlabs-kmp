@@ -102,6 +102,7 @@ Choose the API based on how text becomes available:
 | `stream()` | The complete text is available, but audio should arrive incrementally over HTTP. |
 | `realtime()` | Text arrives incrementally, such as tokens from an LLM. |
 | `openRealtimeSession()` | You need explicit control over sending, flushing, or alignment events. |
+| `openMultiContextSession()` | One connection must host several independent streams, such as an agent that can be interrupted. |
 
 Stream audio over HTTP:
 
@@ -163,6 +164,28 @@ coroutineScope {
 ```
 
 Use `finish()` to complete a session gracefully or `close()` to cancel it immediately.
+
+## Text to dialogue
+
+Generate a conversation between several voices with Eleven v3, in realtime:
+
+```kotlin
+val session = elevenLabs.textToDialogue.openMultiContextSession(
+    options = MultiContextDialogueOptions(modelId = "eleven_v3"),
+)
+
+session.stream(
+    voiceIds = listOf(aliceVoiceId, bobVoiceId),
+    lines = flowOf(
+        DialogueLine(aliceVoiceId, "Did you hear that?", newTurn = true),
+        DialogueLine(bobVoiceId, "Hear what?", newTurn = true),
+    ),
+).collect { chunk -> audioPipeline.write(chunk.bytes) }
+
+session.finish()
+```
+
+See the [text-to-dialogue guide](https://yveskalume.github.io/elevenlabs-kmp/text-to-dialogue/).
 
 ## Speech to text
 
@@ -235,7 +258,8 @@ credentials issued by a trusted backend instead. See the [authentication guide](
 - Paginated voice listing and voice retrieval
 - Model listing
 - Complete and HTTP-streamed text-to-speech generation
-- Realtime text-to-speech over WebSockets
+- Realtime text-to-speech over WebSockets, including multi-context sessions
+- Realtime multi-speaker text-to-dialogue with Eleven v3
 - Batch speech-to-text transcription
 - Realtime speech-to-text over WebSockets
 - API-key and endpoint-specific token authentication

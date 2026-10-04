@@ -74,7 +74,27 @@ The common object form, such as
 ## Flows and realtime sessions
 
 HTTP and realtime flows are cold, so failures occur while collecting rather than when the flow is
-created. Realtime WebSocket protocol failures use `RealtimeServerError`; its `closeCode` and
-`responseBody` can provide additional diagnostics. Realtime transport, timeout, and decoding
+created. Realtime WebSocket protocol failures use `RealtimeServerError`; its `errorCode`,
+`closeCode`, and `responseBody` can provide additional diagnostics. `errorCode` is the
+machine-readable code ElevenLabs reported, such as `quota_exceeded` or `auth_error`, when present:
+
+```kotlin
+session.events
+    .catch { failure ->
+        when ((failure as? RealtimeServerError)?.errorCode) {
+            "quota_exceeded" -> showUpgradePrompt()
+            "auth_error" -> refreshCredentials()
+            else -> throw failure
+        }
+    }
+    .collect(::render)
+```
+
+Codes are defined by the service and can change, so always keep a fallback branch.
+
+Recognized codes also set `kind`, so realtime failures can share handling with HTTP failures:
+`auth_error` is `Authentication`, `quota_exceeded` is `Quota`, `rate_limited` is `RateLimit`,
+`transcriber_error` is `Server`, and so on. `isRetryable` follows from `kind`. Errors without a
+code, or with a code the SDK doesn't recognize, keep the `Realtime` kind. Realtime transport, timeout, and decoding
 failures use `NetworkError`, `TimeoutError`, and `SerializationError` respectively. Always rethrow
 `CancellationException` if it is caught by a broad application-level catch block.

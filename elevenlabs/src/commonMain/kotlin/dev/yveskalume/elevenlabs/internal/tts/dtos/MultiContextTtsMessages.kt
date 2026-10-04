@@ -1,112 +1,120 @@
+@file:OptIn(ExperimentalSerializationApi::class)
+
 package dev.yveskalume.elevenlabs.internal.tts.dtos
 
+import dev.yveskalume.elevenlabs.internal.error.realtimeErrorCode
 import dev.yveskalume.elevenlabs.internal.http.JSON
+import dev.yveskalume.elevenlabs.internal.realtime.MultiContextInbound
+import dev.yveskalume.elevenlabs.internal.realtime.MultiContextProtocol
 import dev.yveskalume.elevenlabs.tts.MultiContextTtsContextOptions
-import dev.yveskalume.elevenlabs.tts.MultiContextTtsEvent
 import dev.yveskalume.elevenlabs.tts.RealtimeTtsAlignment
-import dev.yveskalume.elevenlabs.tts.VoiceSettings
+import dev.yveskalume.elevenlabs.tts.RealtimeTtsEvent
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonNames
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.contentOrNull
 import kotlin.io.encoding.Base64
 
-internal sealed interface DecodedMultiContextTtsMessage {
-    data class Event(val value: MultiContextTtsEvent) : DecodedMultiContextTtsMessage
-    data class ConnectionError(val message: String) : DecodedMultiContextTtsMessage
-    data object Unknown : DecodedMultiContextTtsMessage
-}
+/**
+ * Wire format of `/v1/text-to-speech/{voice_id}/multi-stream-input`.
+ *
+ * Client messages use `context_id`. ElevenLabs documents server messages with both `contextId`
+ * and `context_id` (and camelCase or snake_case alignment fields), so decoding accepts either.
+ */
+internal object MultiContextTtsProtocol : MultiContextProtocol<RealtimeTtsEvent> {
+    override val finishedEvent: RealtimeTtsEvent = RealtimeTtsEvent.Finished
 
-internal object MultiContextTtsMessages {
-    fun initialize(
-        contextId: String,
-        options: MultiContextTtsContextOptions,
-    ): String = JSON.encodeToString(
-        MultiContextTextDto(
-            contextId = contextId,
-            text = " ",
-            voiceSettings = options.voiceSettings?.toDto(),
-            generationConfig = options.generationConfig?.let {
-                MultiContextGenerationConfigDto(it.chunkLengthSchedule)
-            },
-        ),
-    )
-
-    fun text(contextId: String, text: String, flush: Boolean = false): String =
+    /** The first message creates the context. A single space is the protocol's no-op text. */
+    fun initialize(contextId: String, options: MultiContextTtsContextOptions): String =
         JSON.encodeToString(
             MultiContextTextDto(
                 contextId = contextId,
-                text = text,
-                flush = flush.takeIf { it },
+                text = " ",
+                voiceSettings = options.voiceSettings?.let {
+                    TTSVoiceSettingsDto(
+                        stability = it.stability,
+                        similarityBoost = it.similarityBoost,
+                        style = it.style,
+                        useSpeakerBoost = it.useSpeakerBoost,
+                        speed = it.speed,
+                    )
+                },
+                generationConfig = options.generationConfig?.let {
+                    MultiContextGenerationConfigDto(it.chunkLengthSchedule)
+                },
+                pronunciationDictionaryLocators = options.pronunciationDictionaries
+                    .takeIf { it.isNotEmpty() }
+                    ?.map { PronunciationDictionaryLocatorDto(it.dictionaryId, it.versionId) },
             ),
         )
 
-    fun flush(contextId: String): String = JSON.encodeToString(
-        MultiContextControlDto(contextId = contextId, flush = true),
+    fun text(contextId: String, text: String, flush: Boolean): String = JSON.encodeToString(
+        MultiContextTextDto(contextId = contextId, text = text, flush = flush.takeIf { it }),
     )
 
-    fun keepAlive(contextId: String): String = JSON.encodeToString(
+    override fun flush(contextId: String): String = JSON.encodeToString(
+        MultiContextTextDto(contextId = contextId, text = "", flush = true),
+    )
+
+    /** An empty text resets the context's inactivity timer without generating audio. */
+    override fun keepAlive(contextId: String): String = JSON.encodeToString(
         MultiContextTextDto(contextId = contextId, text = ""),
     )
 
-    fun closeContext(contextId: String): String = JSON.encodeToString(
-        MultiContextControlDto(contextId = contextId, closeContext = true),
+    override fun closeContext(contextId: String): String = JSON.encodeToString(
+        MultiContextCloseContextDto(contextId = contextId, closeContext = true),
     )
 
-    fun closeSocket(): String = JSON.encodeToString(
+    override fun closeSocket(): String = JSON.encodeToString(
         MultiContextCloseSocketDto(closeSocket = true),
     )
 
-    fun decode(value: String): DecodedMultiContextTtsMessage {
-        val message = JSON.decodeFromString<MultiContextIncomingDto>(value)
+    override fun decode(raw: String): List<MultiContextInbound<RealtimeTtsEvent>> {
+        val message = JSON.decodeFromString<MultiContextIncomingDto>(raw)
         val contextId = message.contextId
-
-        if (message.isFinal && contextId != null) {
-            return DecodedMultiContextTtsMessage.Event(
-                MultiContextTtsEvent.ContextFinished(contextId),
-            )
-        }
-
-        if (message.audio != null && contextId != null) {
-            return DecodedMultiContextTtsMessage.Event(
-                MultiContextTtsEvent.Audio(
-                    contextId = contextId,
-                    bytes = Base64.decode(message.audio),
-                    alignment = message.alignment?.toPublic(),
-                    normalizedAlignment = message.normalizedAlignment?.toPublic(),
-                ),
-            )
-        }
-
         val error = message.error?.findMessage()
             ?: message.detail?.findMessage()
             ?: message.message?.findMessage()
-        return when {
-            error == null -> DecodedMultiContextTtsMessage.Unknown
-            contextId != null -> DecodedMultiContextTtsMessage.Event(
-                MultiContextTtsEvent.ContextError(contextId, error),
+
+        if (error != null) {
+            val errorCode = realtimeErrorCode(raw)
+            return listOf(
+                if (contextId == null) {
+                    MultiContextInbound.ConnectionError(error, errorCode)
+                } else {
+                    MultiContextInbound.ContextError(contextId, error, errorCode)
+                },
             )
-            else -> DecodedMultiContextTtsMessage.ConnectionError(error)
+        }
+        if (contextId == null) return emptyList()
+
+        return buildList {
+            message.audio?.takeIf { it.isNotEmpty() }?.let { audio ->
+                add(
+                    MultiContextInbound.Event(
+                        contextId = contextId,
+                        event = RealtimeTtsEvent.Audio(
+                            bytes = Base64.decode(audio),
+                            alignment = message.alignment?.toPublic(),
+                            normalizedAlignment = message.normalizedAlignment?.toPublic(),
+                        ),
+                    ),
+                )
+            }
+            if (message.isFinal == true) add(MultiContextInbound.ContextFinished(contextId))
         }
     }
 
-    private fun VoiceSettings.toDto() = TTSVoiceSettingsDto(
-        stability = stability,
-        similarityBoost = similarityBoost,
-        style = style,
-        useSpeakerBoost = useSpeakerBoost,
-        speed = speed,
-    )
-
     private fun JsonElement.findMessage(): String? = when (this) {
         is JsonPrimitive -> contentOrNull
-        is JsonObject -> {
-            this["message"]?.findMessage()
-                ?: this["detail"]?.findMessage()
-                ?: this["error"]?.findMessage()
-        }
+        is JsonObject -> this["message"]?.findMessage()
+            ?: this["detail"]?.findMessage()
+            ?: this["error"]?.findMessage()
+
         else -> null
     }
 }
@@ -123,6 +131,8 @@ private data class MultiContextTextDto(
     val voiceSettings: TTSVoiceSettingsDto? = null,
     @SerialName("generation_config")
     val generationConfig: MultiContextGenerationConfigDto? = null,
+    @SerialName("pronunciation_dictionary_locators")
+    val pronunciationDictionaryLocators: List<PronunciationDictionaryLocatorDto>? = null,
 )
 
 @Serializable
@@ -132,13 +142,19 @@ private data class MultiContextGenerationConfigDto(
 )
 
 @Serializable
-private data class MultiContextControlDto(
+private data class PronunciationDictionaryLocatorDto(
+    @SerialName("pronunciation_dictionary_id")
+    val dictionaryId: String,
+    @SerialName("version_id")
+    val versionId: String,
+)
+
+@Serializable
+private data class MultiContextCloseContextDto(
     @SerialName("context_id")
     val contextId: String,
-    @SerialName("flush")
-    val flush: Boolean? = null,
     @SerialName("close_context")
-    val closeContext: Boolean? = null,
+    val closeContext: Boolean,
 )
 
 @Serializable
@@ -149,16 +165,19 @@ private data class MultiContextCloseSocketDto(
 
 @Serializable
 private data class MultiContextIncomingDto(
-    @SerialName("context_id")
+    @SerialName("contextId")
+    @JsonNames("context_id")
     val contextId: String? = null,
     @SerialName("audio")
     val audio: String? = null,
     @SerialName("alignment")
     val alignment: MultiContextAlignmentDto? = null,
-    @SerialName("normalized_alignment")
+    @SerialName("normalizedAlignment")
+    @JsonNames("normalized_alignment")
     val normalizedAlignment: MultiContextAlignmentDto? = null,
-    @SerialName("is_final")
-    val isFinal: Boolean = false,
+    @SerialName("isFinal")
+    @JsonNames("is_final")
+    val isFinal: Boolean? = null,
     @SerialName("message")
     val message: JsonElement? = null,
     @SerialName("error")
@@ -171,9 +190,11 @@ private data class MultiContextIncomingDto(
 private data class MultiContextAlignmentDto(
     @SerialName("chars")
     val characters: List<String> = emptyList(),
-    @SerialName("char_start_times_ms")
+    @SerialName("charStartTimesMs")
+    @JsonNames("char_start_times_ms")
     val characterStartTimesMs: List<Int> = emptyList(),
-    @SerialName("char_durations_ms")
+    @SerialName("charsDurationsMs")
+    @JsonNames("charDurationsMs", "char_durations_ms")
     val characterDurationsMs: List<Int> = emptyList(),
 ) {
     fun toPublic() = RealtimeTtsAlignment(

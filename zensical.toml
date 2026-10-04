@@ -12,6 +12,7 @@ nav = [
         { "Authentication" = "authentication.md" },
         { "Error handling" = "error-handling.md" },
         { "Text to speech" = "text-to-speech.md" },
+        { "Text to dialogue" = "text-to-dialogue.md" },
         { "Speech to text" = "speech-to-text.md" },
     ] },
     { "API reference" = "https://yveskalume.github.io/elevenlabs-kmp/api/" },

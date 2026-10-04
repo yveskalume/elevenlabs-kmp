@@ -146,10 +146,7 @@ internal class TextToSpeechApiImpl(
         } catch (exception: ElevenLabsException) {
             throw exception
         } catch (throwable: Throwable) {
-            throw ElevenLabsException.Realtime(
-                message = throwable.message ?: "Could not open the multi-context TTS connection.",
-                cause = throwable,
-            )
+            throw throwable.toRealtimeFailure()
         }
     }
 

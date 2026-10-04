@@ -128,6 +128,7 @@ internal class RealtimeSttSessionImpl(
             is DecodedRealtimeSttMessage.Error -> throw RealtimeServerError(
                 message = decoded.message,
                 rawResponseBody = rawMessage,
+                errorCode = decoded.errorCode,
             )
         }
     }

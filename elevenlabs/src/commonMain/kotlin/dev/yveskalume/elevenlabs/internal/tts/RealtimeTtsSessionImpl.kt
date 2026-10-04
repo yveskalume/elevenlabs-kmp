@@ -455,6 +455,7 @@ internal class RealtimeTtsSessionImpl private constructor(
             is DecodedRealtimeTtsMessage.Error -> throw RealtimeServerError(
                 message = decoded.message,
                 rawResponseBody = rawMessage,
+                errorCode = decoded.errorCode,
             )
             DecodedRealtimeTtsMessage.Unknown -> Unit
         }

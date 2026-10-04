@@ -1,5 +1,7 @@
 package dev.yveskalume.elevenlabs
 
+import dev.yveskalume.elevenlabs.dialogue.TextToDialogueApi
+import dev.yveskalume.elevenlabs.internal.dialogue.TextToDialogueApiImpl
 import dev.yveskalume.elevenlabs.models.ModelsApi
 import dev.yveskalume.elevenlabs.tts.TextToSpeechApi
 import dev.yveskalume.elevenlabs.voices.VoicesApi
@@ -32,6 +34,9 @@ public class ElevenLabs private constructor(
 
     /** Batch, HTTP-streamed, and realtime text-to-speech APIs. */
     public val textToSpeech: TextToSpeechApi = TextToSpeechApiImpl(http)
+
+    /** Realtime multi-speaker dialogue with Eleven v3 models. */
+    public val textToDialogue: TextToDialogueApi = TextToDialogueApiImpl(http)
 
     /** Batch and realtime speech-to-text APIs. */
     public val speechToText: SpeechToTextApi = SpeechToTextApiImpl(http)

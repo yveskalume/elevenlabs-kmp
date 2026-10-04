@@ -24,11 +24,3 @@ or closing a connection.
 !!! important
 
     This is an unofficial community SDK. It is not affiliated with or endorsed by ElevenLabs.
-
-## Supported targets
-
-| Target | Runtime |
-| --- | --- |
-| Android | OkHttp |
-| iOS device and Apple silicon simulator | Darwin |
-| JVM | CIO |

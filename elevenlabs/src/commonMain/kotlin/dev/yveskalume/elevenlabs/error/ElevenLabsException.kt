@@ -1,5 +1,7 @@
 package dev.yveskalume.elevenlabs.error
 
+import dev.yveskalume.elevenlabs.internal.error.realtimeErrorKind
+
 /** One field-level validation failure returned by ElevenLabs. */
 public data class ElevenLabsValidationError(
     /** Location components such as `body.text`. */
@@ -117,9 +119,22 @@ public open class RealtimeServerError internal constructor(
     /** Capped diagnostic server payload, which may contain sensitive information. */
     rawResponseBody: String? = null,
     cause: Throwable? = null,
+    /**
+     * Machine-readable code reported by ElevenLabs, such as `quota_exceeded` or `auth_error`, when
+     * present. Codes are defined by the service and may change; use them for logging and targeted
+     * handling, with a fallback for unknown values.
+     */
+    public val errorCode: String? = null,
 ) : ElevenLabsException(message, cause) {
     public val responseBody: String? = rawResponseBody.truncateDiagnosticBody()
-    override val kind: ElevenLabsErrorKind = ElevenLabsErrorKind.Realtime
+
+    /**
+     * The category of a recognized [errorCode], such as [ElevenLabsErrorKind.Quota] for
+     * `quota_exceeded` or [ElevenLabsErrorKind.Authentication] for `auth_error`, so realtime
+     * failures can be handled like HTTP ones. [ElevenLabsErrorKind.Realtime] when there is no code
+     * or it is not recognized.
+     */
+    override val kind: ElevenLabsErrorKind = realtimeErrorKind(errorCode)
 }
 
 /** An unexpected SDK or transport failure that could not be classified more precisely. */
