@@ -422,7 +422,7 @@ class MultiContextTtsSessionTest {
     // region Graceful completion
 
     @Test
-    fun `finishing a context flushes and closes it, then emits Finished`() = runTest {
+    fun `finishing a context flushes and closes it then emits Finished`() = runTest {
         val connection = FakeConnection()
         val session = openSession(connection)
         val context = session.openContext(contextId = "a")

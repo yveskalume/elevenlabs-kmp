@@ -148,7 +148,7 @@ class MultiContextDialogueSessionTest {
     }
 
     @Test
-    fun `audio, turn boundaries and completion are routed per context`() = runTest {
+    fun `audio turn boundaries and completion are routed per context`() = runTest {
         val connection = FakeConnection()
         val session = openSession(connection)
         val first = session.openContext(listOf("alice"), contextId = "first")
@@ -202,7 +202,7 @@ class MultiContextDialogueSessionTest {
     }
 
     @Test
-    fun `stream sends lines, finishes, and emits audio`() = runTest {
+    fun `stream sends lines finishes and emits audio`() = runTest {
         val connection = FakeConnection()
         connection.onSend = { message ->
             val json = Json.parseToJsonElement(message).jsonObject
