@@ -14,7 +14,5 @@ sealed interface MultiContextAction {
     data class JumpTo(val line: Int) : MultiContextAction
     data object Previous : MultiContextAction
     data object Next : MultiContextAction
-
-    data class SetLookAhead(val paragraphs: Int) : MultiContextAction
     data object ClearError : MultiContextAction
 }

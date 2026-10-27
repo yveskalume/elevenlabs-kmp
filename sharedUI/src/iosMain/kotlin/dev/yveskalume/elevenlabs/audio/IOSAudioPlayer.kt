@@ -44,9 +44,9 @@ internal class IOSAudioPlayer : AudioPlayer {
         player = next
     }
 
-    override suspend fun startStream(sampleRate: Int, voiceChat: Boolean) {
+    override suspend fun startStream(sampleRate: Int) {
         stop()
-        if (voiceChat) activateVoiceChat() else activatePlayback()
+        activatePlayback()
         val next = AVAudioFormat(AVAudioPCMFormatFloat32, sampleRate.toDouble(), 1u, false)
         if (node.engine == null) engine.attachNode(node)
         engine.connect(node, engine.mainMixerNode, next)
@@ -127,20 +127,6 @@ internal class IOSAudioPlayer : AudioPlayer {
     override fun close() = stop()
 
     private fun nowNanos(): Long = clock.elapsedNow().inWholeNanoseconds
-
-    /** Play and record at the same time, as the microphone is also running in voice chat. */
-    private fun activateVoiceChat() {
-        val session = AVAudioSession.sharedInstance()
-        check(
-            session.setCategory(
-                AVAudioSessionCategoryPlayAndRecord,
-                mode = AVAudioSessionModeVoiceChat,
-                options = AVAudioSessionCategoryOptionDefaultToSpeaker,
-                error = null,
-            ),
-        )
-        check(session.setActive(true, error = null))
-    }
 
     private fun activatePlayback() {
         val session = AVAudioSession.sharedInstance()

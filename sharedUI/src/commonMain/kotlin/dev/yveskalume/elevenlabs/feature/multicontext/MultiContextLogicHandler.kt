@@ -33,14 +33,14 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeoutOrNull
 import kotlin.time.Duration.Companion.milliseconds
-import kotlin.time.TimeSource
 
 /**
  * An audiobook you can jump around in, read over a single multi-context connection.
  *
  * Each paragraph is generated in its own context. While one plays, the next
- * [MultiContextUiState.lookAhead] paragraphs are generated in theirs, one after the other, so
+ * [LOOK_AHEAD] paragraphs are generated in theirs, one after the other, so
  * moving on to them is instant. Jumping to a line closes the contexts that are no longer useful
  * and, unless the line starts a paragraph that is already generated, opens a context from that
  * line. The connection stays open throughout.
@@ -97,49 +97,27 @@ internal class MultiContextLogicHandler(
     private var writtenBytes = 0L
     private var streamStarted = false
 
-    private class Mark(val atMillis: Long, val line: Int)
-
-    /** A paragraph generated in its own context. Its audio waits in [audio] until it is played. */
-    private class Prepared(
-        val paragraph: Int,
-        val fromLine: Int,
-        val lines: List<BookLine>,
-        val context: MultiContextTtsContext,
-    ) {
-        val audio = Channel<RealtimeTtsEvent.Audio>(Channel.UNLIMITED)
-        var collector: Job? = null
-        var status = ContextStatus.Generating
-        var audioBytes = 0L
-
-        /** Whether ElevenLabs finished generating, which can happen after playing started. */
-        var generated = false
-
-        val text: String = lines.joinToString(" ") { it.spoken }
-
-        /** Character offset of each line in [text]. */
-        private val lineStarts: List<Int> =
-            lines.runningFold(0) { offset, line -> offset + line.spoken.length + 1 }.dropLast(1)
-
-        fun lineAt(offset: Int): Int = lines[lineStarts.indexOfLast { it <= offset }.coerceAtLeast(0)].index
-    }
 
     override fun onAction(action: MultiContextAction) {
         when (action) {
             MultiContextAction.LoadVoices -> loadVoices()
-            is MultiContextAction.SelectVoice -> {
-                // The voice is part of the connection URL, so a new voice needs a new connection.
-                stop()
-                _uiState.update { it.copy(selectedVoiceId = action.voiceId) }
-            }
-
+            is MultiContextAction.SelectVoice -> selectVoice(action.voiceId)
             MultiContextAction.Play -> play()
             MultiContextAction.Stop -> stop()
             is MultiContextAction.JumpTo -> jumpTo(action.line)
             MultiContextAction.Previous -> jumpTo(_uiState.value.currentLine - 1)
             MultiContextAction.Next -> jumpTo(_uiState.value.currentLine + 1)
-            is MultiContextAction.SetLookAhead -> setLookAhead(action.paragraphs)
             MultiContextAction.ClearError -> _uiState.update { it.copy(error = null) }
         }
+    }
+
+    private fun selectVoice(voiceId: String) {
+        // The voice is part of the connection URL, so a new voice needs a new connection:
+        // reading starts again from the current line, on a connection for the new voice.
+        val wasReading = readingJob?.isActive == true
+        stop()
+        _uiState.update { it.copy(selectedVoiceId = voiceId) }
+        if (wasReading) play()
     }
 
     // region Controls
@@ -153,7 +131,6 @@ internal class MultiContextLogicHandler(
                 playback = Playback.Connecting,
                 currentLine = if (state.ended) 0 else state.currentLine,
                 ended = false,
-                lastJump = null,
                 error = null,
             )
         }
@@ -164,31 +141,19 @@ internal class MultiContextLogicHandler(
         }
     }
 
+    /** Cancels reading. The job is kept so that [play] waits for its cleanup to finish. */
     private fun stop() {
         readingJob?.cancel()
-        readingJob = null
     }
 
     private fun jumpTo(line: Int) {
         val target = line.coerceIn(0, book.lines.lastIndex)
         if (reading != null && session != null) {
-            seek(target, report = true)
+            seek(target)
         } else {
             // Not reading yet, or still connecting: reading starts from the current line.
             _uiState.update { it.copy(currentLine = target, ended = false) }
             play()
-        }
-    }
-
-    private fun setLookAhead(paragraphs: Int) {
-        val lookAhead = paragraphs.coerceIn(0, MAX_LOOK_AHEAD)
-        _uiState.update { it.copy(lookAhead = lookAhead) }
-        val reading = reading ?: return
-        reading.launch {
-            preparing.withLock {
-                prepared.values.filter { it.paragraph > playingParagraph + lookAhead }.forEach { discard(it) }
-            }
-            prepareAhead()
         }
     }
 
@@ -207,7 +172,7 @@ internal class MultiContextLogicHandler(
                 contextCount = 0
                 session = client.textToSpeech.openMultiContextSession(voice.id, options = TTS_OPTIONS)
                 _uiState.update { it.copy(playback = Playback.Reading) }
-                seek(_uiState.value.currentLine, report = false)
+                seek(_uiState.value.currentLine)
                 finished.await()
             }
         } catch (cancellation: CancellationException) {
@@ -226,7 +191,7 @@ internal class MultiContextLogicHandler(
             // Closing the connection closes every context on it.
             session?.let { withContext(NonCancellable) { runCatching { it.close() } } }
             session = null
-            _uiState.update { it.copy(playback = Playback.Stopped, contexts = emptyList(), bufferedParagraph = -1) }
+            _uiState.update { it.copy(playback = Playback.Stopped, generated = emptyMap(), bufferedParagraph = -1) }
         }
     }
 
@@ -234,9 +199,8 @@ internal class MultiContextLogicHandler(
      * Reads from [line]: stops what is playing, closes the contexts this position doesn't need,
      * and plays paragraph after paragraph, generating the next ones ahead.
      */
-    private fun seek(line: Int, report: Boolean) {
+    private fun seek(line: Int) {
         val reading = reading ?: return
-        val jumpedAt = TimeSource.Monotonic.markNow()
         val previous = playbackJob
         previous?.cancel()
         audioPlayer.stop() // silence now, rather than when the previous playback is torn down
@@ -250,32 +214,21 @@ internal class MultiContextLogicHandler(
             val paragraph = book.lines[line].paragraph
             playingParagraph = paragraph
 
-            val fromLookAhead = preparing.withLock {
-                val lookAhead = _uiState.value.lookAhead
+            preparing.withLock {
                 // Keep the line's paragraph if it was generated ahead, and the look-ahead
                 // paragraphs that are complete. One still generating is closed so that the paragraph
                 // to play now is the only one generating; it is generated again later.
                 prepared.values
                     .filter {
                         val target = it.paragraph == paragraph && it.fromLine == line
-                        it.status == ContextStatus.Playing ||
-                            it.paragraph !in paragraph..paragraph + lookAhead ||
+                        it.playing ||
+                            it.paragraph !in paragraph..paragraph + LOOK_AHEAD ||
                             (it.paragraph == paragraph && !target) ||
                             (!target && !it.generated)
                     }
                     .forEach { discard(it) }
-                paragraph in prepared
             }
             publish()
-
-            var onFirstAudio: (() -> Unit)? = if (report) {
-                {
-                    val millis = jumpedAt.elapsedNow().inWholeMilliseconds
-                    _uiState.update { it.copy(lastJump = JumpReport(fromLookAhead, millis)) }
-                }
-            } else {
-                null
-            }
 
             val follower = launch { followAlong() }
             var next: Int? = line
@@ -283,22 +236,21 @@ internal class MultiContextLogicHandler(
                 val current = book.lines[next].paragraph
                 playingParagraph = current
                 val item = preparing.withLock { prepared[current] ?: prepare(current, next) }
-                item.status = ContextStatus.Playing
-                publish()
+                item.playing = true
                 prepareAhead()
 
-                play(item) {
-                    onFirstAudio?.invoke()
-                    onFirstAudio = null
-                }
+                play(item)
 
                 preparing.withLock { prepared.remove(current) }
                 publish()
                 next = if (current < book.lastParagraph) book.firstLineOf(current + 1) else null
             }
 
-            // Let the end of the book play out, then end the reading.
-            while (audioPlayer.streamPositionMillis() < writtenMillis()) delay(FOLLOW_INTERVAL)
+            // Let the end of the book play out, then end the reading. The wait is bounded in case
+            // the player never reports the last of the audio as played.
+            withTimeoutOrNull(writtenMillis() - audioPlayer.streamPositionMillis() + END_GRACE_MILLIS) {
+                while (audioPlayer.streamPositionMillis() < writtenMillis()) delay(FOLLOW_INTERVAL)
+            }
             follower.cancel()
             _uiState.update { it.copy(ended = true) }
             bookRead?.complete(Unit)
@@ -315,7 +267,7 @@ internal class MultiContextLogicHandler(
     private suspend fun prepareAhead() {
         preparing.withLock {
             if (playingParagraph < 0 || prepared.values.any { !it.generated }) return@withLock
-            val last = minOf(playingParagraph + _uiState.value.lookAhead, book.lastParagraph)
+            val last = minOf(playingParagraph + LOOK_AHEAD, book.lastParagraph)
             val next = (playingParagraph + 1..last).firstOrNull { it !in prepared } ?: return@withLock
             prepare(next, book.firstLineOf(next))
         }
@@ -335,12 +287,11 @@ internal class MultiContextLogicHandler(
                 when (event) {
                     is RealtimeTtsEvent.Audio -> {
                         item.audio.send(event)
-                        item.audioBytes += event.bytes.size
+                        item.hasAudio = true
                     }
 
                     RealtimeTtsEvent.Finished -> {
                         item.generated = true
-                        if (item.status == ContextStatus.Generating) item.status = ContextStatus.Ready
                     }
                 }
                 publish()
@@ -363,7 +314,7 @@ internal class MultiContextLogicHandler(
     }
 
     /** Plays [item]'s audio and records where each of its lines starts in the stream. */
-    private suspend fun play(item: Prepared, onFirstAudio: () -> Unit) {
+    private suspend fun play(item: Prepared) {
         marks += Mark(writtenMillis(), item.fromLine)
         var offset = 0
         var received = false
@@ -391,7 +342,6 @@ internal class MultiContextLogicHandler(
                 }
             }
             writtenBytes += event.bytes.size
-            onFirstAudio()
             try {
                 audioPlayer.writeStream(event.bytes)
             } catch (throwable: Throwable) {
@@ -420,22 +370,13 @@ internal class MultiContextLogicHandler(
         }
     }
 
+    /** Tells the UI which paragraphs already have audio, so their lines can be shown as ready. */
     private fun publish() {
-        val slots = prepared.values.sortedBy { it.paragraph }.map {
-            ContextSlot(
-                contextId = it.context.id,
-                paragraph = it.paragraph,
-                fromLine = it.fromLine,
-                status = it.status,
-                audioMillis = millisOf(it.audioBytes),
-            )
-        }
-        _uiState.update { it.copy(contexts = slots) }
+        val generated = prepared.values.filter { it.hasAudio }.associate { it.paragraph to it.fromLine }
+        _uiState.update { it.copy(generated = generated) }
     }
 
-    private fun writtenMillis(): Long = millisOf(writtenBytes)
-
-    private fun millisOf(bytes: Long): Long = bytes * 1_000 / (SAMPLE_RATE * BYTES_PER_SAMPLE)
+    private fun writtenMillis(): Long = writtenBytes * 1_000 / (SAMPLE_RATE * BYTES_PER_SAMPLE)
 
     // endregion
 
@@ -455,13 +396,18 @@ internal class MultiContextLogicHandler(
     }
 
     companion object {
-        /** The playing paragraph takes one context; the others can generate ahead. */
-        const val MAX_LOOK_AHEAD = MultiContextTtsSession.MAX_CONTEXTS - 1
-        const val MODEL_ID = "eleven_flash_v2_5"
+        /**
+         * How many paragraphs after the playing one are generated ahead, at most
+         * `MultiContextTtsSession.MAX_CONTEXTS - 1`. More makes jumping ahead instant further out,
+         * but audio that is skipped is still generated and billed.
+         */
+        private const val LOOK_AHEAD = 2
+        private const val MODEL_ID = "eleven_flash_v2_5"
 
         private const val SAMPLE_RATE = 24_000
         private const val BYTES_PER_SAMPLE = 2
         private val FOLLOW_INTERVAL = 50.milliseconds
+        private const val END_GRACE_MILLIS = 2_000L
 
         private val TTS_OPTIONS = MultiContextTtsOptions(
             modelId = MODEL_ID,

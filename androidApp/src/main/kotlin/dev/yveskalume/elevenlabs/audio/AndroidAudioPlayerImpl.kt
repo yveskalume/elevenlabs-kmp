@@ -53,8 +53,7 @@ internal class AndroidAudioPlayerImpl(context: Context) : AudioPlayer {
         }
     }
 
-    // Playback is the same for voice chat; echo cancellation happens on the capture side.
-    override suspend fun startStream(sampleRate: Int, voiceChat: Boolean) {
+    override suspend fun startStream(sampleRate: Int) {
         withContext(Dispatchers.IO) {
             stop()
             val minimumBufferSize = AudioTrack.getMinBufferSize(

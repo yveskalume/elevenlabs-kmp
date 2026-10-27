@@ -18,27 +18,13 @@ internal class IOSMicrophoneRecorder : MicrophoneRecorder {
     private var chunks = Channel<ByteArray>(32)
     override val audio: Flow<ByteArray> get() = chunks.receiveAsFlow()
 
-    override suspend fun start(sampleRate: Int, voiceChat: Boolean) {
+    override suspend fun start(sampleRate: Int) {
         val session = AVAudioSession.sharedInstance()
-        if (voiceChat) {
-            // Play and record at the same time. The player uses the same category in voice chat.
-            check(
-                session.setCategory(
-                    AVAudioSessionCategoryPlayAndRecord,
-                    mode = AVAudioSessionModeVoiceChat,
-                    options = AVAudioSessionCategoryOptionDefaultToSpeaker,
-                    error = null,
-                ),
-            )
-        } else {
-            check(session.setCategory(AVAudioSessionCategoryRecord, mode = AVAudioSessionModeMeasurement, options = 0u, error = null))
-        }
+        check(session.setCategory(AVAudioSessionCategoryRecord, mode = AVAudioSessionModeMeasurement, options = 0u, error = null))
         check(session.setPreferredSampleRate(sampleRate.toDouble(), null))
         check(session.setActive(true, error = null))
         active = true
         val input = engine.inputNode
-        // Voice processing adds echo cancellation. It must be set before the input format is read.
-        input.setVoiceProcessingEnabled(voiceChat, null)
         val inputFormat = input.outputFormatForBus(0u)
         check(inputFormat.sampleRate > 0 && inputFormat.channelCount > 0u) { "Microphone is unavailable." }
         val outputFormat = AVAudioFormat(AVAudioPCMFormatInt16, sampleRate.toDouble(), 1u, true)

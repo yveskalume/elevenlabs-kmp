@@ -33,13 +33,6 @@ internal object AppIcons {
     val Stop: ImageVector by lazy { icon("Stop", "M6,6h12v12H6z") }
     val PlayArrow: ImageVector by lazy { icon("PlayArrow", "M8,5v14l11,-7z") }
     val SkipPrevious: ImageVector by lazy { icon("SkipPrevious", "M6,6h2v12L6,18zM9.5,12l8.5,6L18,6z") }
-    val Tune: ImageVector by lazy {
-        icon(
-            "Tune",
-            "M3,17v2h6v-2L3,17zM3,5v2h10L13,5L3,5zM13,21v-2h8v-2h-8v-2h-2v6h2zM7,9v2L3,11v2h4v2h2L9,9L7,9z" +
-                "M21,13v-2L11,11v2h10zM15,9h2L17,7h4L21,5h-4L17,3h-2v6z",
-        )
-    }
     val SkipNext: ImageVector by lazy { icon("SkipNext", "M6,18l8.5,-6L6,6v12zM16,6v12h2L18,6h-2z") }
     val Close: ImageVector by lazy {
         icon(
