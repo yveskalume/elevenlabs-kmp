@@ -14,6 +14,8 @@ nav = [
         { "Text to speech" = "text-to-speech.md" },
         { "Text to dialogue" = "text-to-dialogue.md" },
         { "Speech to text" = "speech-to-text.md" },
+        { "Voices and models" = "voices-and-models.md" },
+        { "Realtime connections" = "realtime-connections.md" },
     ] },
     { "API reference" = "https://yveskalume.github.io/elevenlabs-kmp/api/" },
 ]

@@ -1,26 +1,44 @@
 # ElevenLabs for Kotlin Multiplatform
 
-ElevenLabs KMP is a Kotlin-first client for the ElevenLabs API. It provides coroutine and
-`Flow`-based APIs from common code on Android, iOS, and JVM.
+ElevenLabs KMP is a Kotlin client for the ElevenLabs API. You call it from common code, and it runs on
+Android, iOS, and the JVM.
 
 [Get started](getting-started.md){ .md-button .md-button--primary }
 [API reference](https://yveskalume.github.io/elevenlabs-kmp/api/){ .md-button }
 
-## What you can build
-
-- Generate complete audio from text.
-- Stream audio over HTTP as it arrives.
-- Stream partial text into realtime text-to-speech sessions.
-- Transcribe complete audio and video files.
-- Transcribe live microphone audio over WebSockets.
-- Discover the voices and models available to your account.
-
-## Designed for Kotlin
-
-The SDK exposes suspend functions for one-shot operations and cold `Flow` values for streaming.
-Realtime sessions are available when you need explicit control over sending, flushing, committing,
-or closing a connection.
-
-!!! important
+!!! note
 
     This is an unofficial community SDK. It is not affiliated with or endorsed by ElevenLabs.
+
+## What it covers
+
+| You want to | Use | Guide |
+| --- | --- | --- |
+| Turn text into an audio file | `textToSpeech.generate()` | [Text to speech](text-to-speech.md) |
+| Start playback before the whole file is ready | `textToSpeech.stream()` | [Text to speech](text-to-speech.md) |
+| Speak an LLM reply while it's still being written | `textToSpeech.realtime()` | [Text to speech](text-to-speech.md) |
+| Run several interruptible streams on one connection | `textToSpeech.openMultiContextSession()` | [Text to speech](text-to-speech.md) |
+| Voice a conversation between several speakers | `textToDialogue.openMultiContextSession()` | [Text to dialogue](text-to-dialogue.md) |
+| Transcribe a recording | `speechToText.transcribe()` | [Speech to text](speech-to-text.md) |
+| Show live captions from the microphone | `speechToText.openRealtimeSession()` | [Speech to text](speech-to-text.md) |
+| Let users pick a voice | `voices.list()` | [Voices and models](voices-and-models.md) |
+
+## How the API is shaped
+
+One-shot calls are `suspend` functions. Streaming calls return cold `Flow`s, so nothing is sent until
+you collect, and cancelling the collector cancels the request.
+
+When you need to drive a WebSocket yourself, for example to flush text at sentence boundaries or
+commit audio at the end of an utterance, you open a session. Sessions are yours to close. See
+[Realtime connections](realtime-connections.md).
+
+## Supported targets
+
+| Target | Ktor engine |
+| --- | --- |
+| Android (API 24+) | OkHttp |
+| iOS devices (`iosArm64`) | Darwin |
+| iOS simulator on Apple silicon (`iosSimulatorArm64`) | Darwin |
+| JVM (11+) | CIO |
+
+There is no `iosX64` target, so the library doesn't run in the iOS simulator on Intel Macs.

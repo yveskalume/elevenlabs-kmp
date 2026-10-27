@@ -2,10 +2,9 @@
 
 ## Installation
 
-ElevenLabs KMP is available from
-[Maven Central](https://central.sonatype.com/artifact/io.github.yveskalume/elevenlabs-kmp/0.1.0).
-Then add the SDK to the shared source
-set of your Kotlin Multiplatform project:
+The SDK is published to
+[Maven Central](https://central.sonatype.com/artifact/io.github.yveskalume/elevenlabs-kmp). Make sure
+Maven Central is in your repositories:
 
 ```kotlin
 // settings.gradle.kts
@@ -16,8 +15,10 @@ dependencyResolutionManagement {
 }
 ```
 
+Then add the dependency to the common source set of your shared module:
+
 ```kotlin
-// Shared module's build.gradle.kts
+// shared/build.gradle.kts
 kotlin {
     sourceSets {
         commonMain.dependencies {
@@ -29,7 +30,8 @@ kotlin {
 
 ### Snapshots
 
-Development snapshots are also published to the Central Portal snapshots repository:
+Development snapshots go to the Central Portal snapshots repository. Add it before Maven Central and
+use `0.1.0-SNAPSHOT` as the version:
 
 ```kotlin
 // settings.gradle.kts
@@ -46,11 +48,10 @@ dependencyResolutionManagement {
 }
 ```
 
-Then use `0.1.0-SNAPSHOT` as the dependency version.
-
 ## Create a client
 
-Create one client and reuse it across concurrent operations:
+You'll need an API key from your
+[ElevenLabs account settings](https://elevenlabs.io/app/settings/api-keys).
 
 ```kotlin
 val elevenLabs = ElevenLabs {
@@ -58,9 +59,12 @@ val elevenLabs = ElevenLabs {
 }
 ```
 
-The configured key is used automatically by every service.
+The examples on this page use JVM APIs such as `System.getenv` and `File` to stay short, so they fit
+a server or a desktop tool. Mobile apps shouldn't hold an API key at all;
+[Authentication](authentication.md) covers what to do instead.
 
-Call `close()` when the client is no longer needed:
+Create one client and share it. It wraps a single HTTP client, and it's safe to use
+from several coroutines at once. Close it when your app or service shuts down:
 
 ```kotlin
 elevenLabs.close()
@@ -77,16 +81,22 @@ val audio = elevenLabs.textToSpeech.generate(
     ),
 )
 
-saveAudio(audio.bytes)
+// MP3 by default. Write audio.bytes to a file or pass it to a player.
+File("hello.mp3").writeBytes(audio.bytes)
 ```
+
+The voice ID belongs to one of the ElevenLabs premade voices. Use
+[`voices.list()`](voices-and-models.md) to find others.
 
 ## Transcribe audio
 
 ```kotlin
+val recording: ByteArray = File("meeting.m4a").readBytes()
+
 val transcript = elevenLabs.speechToText.transcribe(
     SpeechToTextRequest(
-        audio = recordedAudio,
-        fileName = "recording.m4a",
+        audio = recording,
+        fileName = "meeting.m4a",
         contentType = "audio/mp4",
         diarize = true,
     ),
@@ -95,5 +105,10 @@ val transcript = elevenLabs.speechToText.transcribe(
 println(transcript.text)
 ```
 
-Continue with [authentication](authentication.md), [text to speech](text-to-speech.md), or
-[speech to text](speech-to-text.md).
+`diarize = true` labels each word with a speaker ID, which helps when more than one person is talking.
+
+## Next steps
+
+- [Text to speech](text-to-speech.md) covers streaming and speaking text as it's generated.
+- [Speech to text](speech-to-text.md) covers live transcription from a microphone.
+- [Error handling](error-handling.md) lists what each call can throw.
