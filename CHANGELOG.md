@@ -6,6 +6,18 @@ The project follows [Semantic Versioning](https://semver.org/).
 
 ## Unreleased
 
+### Added
+
+- Multi-context realtime text-to-speech with `TextToSpeechApi.openMultiContextSession()`: up to five independent contexts share one WebSocket, each with its own voice settings, generation config, pronunciation dictionaries, and audio stream.
+- `MultiContextTtsSession.stream()` speaks a `Flow<String>` in a new context; cancelling the collection interrupts only that context.
+- `MultiContextTtsContext` extends `RealtimeTtsSession`, so code written for a single realtime session also works with one context.
+- Realtime text-to-dialogue with `ElevenLabs.textToDialogue.openMultiContextSession()`: multi-speaker Eleven v3 dialogue over one WebSocket, with voices registered per context, `DialogueLine` inputs with speaker turns, and `DialogueEvent.TurnFinished` boundaries. It shares its engine with multi-context text-to-speech.
+- `RealtimeServerError.errorCode` exposes the machine-readable code ElevenLabs reports for realtime TTS, multi-context TTS, and realtime STT errors, such as `quota_exceeded` or `auth_error`.
+
+### Changed
+
+- `RealtimeServerError.kind` now reflects a recognized `errorCode` (for example `Authentication`, `Quota`, `RateLimit`, `Server`) instead of always being `Realtime`. As a result, `isRetryable` is `true` for realtime rate-limit and server errors. Errors without a recognized code are unchanged.
+
 ## 0.1.1 - 2026-08-22
 
 ### Added

@@ -16,11 +16,10 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.PrimaryScrollableTabRow
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SegmentedButton
-import androidx.compose.material3.SegmentedButtonDefaults
-import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -34,6 +33,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dev.yveskalume.elevenlabs.feature.multicontext.MultiContextAction
+import dev.yveskalume.elevenlabs.feature.multicontext.MultiContextContent
+import dev.yveskalume.elevenlabs.feature.multicontext.MultiContextUiState
 import dev.yveskalume.elevenlabs.feature.stt.STTAction
 import dev.yveskalume.elevenlabs.feature.stt.STTUiState
 import dev.yveskalume.elevenlabs.feature.stt.SpeechToTextContent
@@ -62,6 +64,7 @@ fun App(
 
     val ttsState by sampleViewModel.ttsState.collectAsStateWithLifecycle()
     val sttState by sampleViewModel.sttState.collectAsStateWithLifecycle()
+    val multiContextState by sampleViewModel.multiContextState.collectAsStateWithLifecycle()
 
     ElevenLabsTheme {
         SampleScreen(
@@ -69,8 +72,10 @@ fun App(
             onFeatureSelected = sampleViewModel::selectFeature,
             ttsState = ttsState,
             sttState = sttState,
+            multiContextState = multiContextState,
             onTtsAction = sampleViewModel::onTtsAction,
             onSttAction = sampleViewModel::onSttAction,
+            onMultiContextAction = sampleViewModel::onMultiContextAction,
             hasMicrophonePermission = hasMicrophonePermission,
             onRequestMicrophonePermission = onRequestMicrophonePermission,
         )
@@ -84,8 +89,10 @@ private fun SampleScreen(
     onFeatureSelected: (SampleFeature) -> Unit,
     ttsState: TTSUiState,
     sttState: STTUiState,
+    multiContextState: MultiContextUiState,
     onTtsAction: (TTSAction) -> Unit,
     onSttAction: (STTAction) -> Unit,
+    onMultiContextAction: (MultiContextAction) -> Unit,
     hasMicrophonePermission: Boolean,
     onRequestMicrophonePermission: () -> Unit,
 ) {
@@ -103,15 +110,12 @@ private fun SampleScreen(
                         containerColor = MaterialTheme.colorScheme.surface,
                     ),
                 )
-                FeatureSelector(
+                FeatureTabs(
                     feature = feature,
                     onSelect = onFeatureSelected,
                     modifier = Modifier
                         .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
-                        .align(Alignment.CenterHorizontally)
-                        .widthIn(max = MAX_CONTENT_WIDTH)
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                        .fillMaxWidth(),
                 )
             }
         },
@@ -141,6 +145,11 @@ private fun SampleScreen(
                             hasPermission = hasMicrophonePermission,
                             onRequestPermission = onRequestMicrophonePermission,
                         )
+
+                        SampleFeature.MultiContext -> MultiContextContent(
+                            state = multiContextState,
+                            onAction = onMultiContextAction,
+                        )
                     }
                 }
             }
@@ -148,28 +157,39 @@ private fun SampleScreen(
     }
 }
 
+/**
+ * Top-level navigation between features. Tabs (rather than segmented buttons) because selecting
+ * one switches the whole screen, and a scrollable row keeps labels on one line as features are added.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun FeatureSelector(
+private fun FeatureTabs(
     feature: SampleFeature,
     onSelect: (SampleFeature) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val features = SampleFeature.entries
-    SingleChoiceSegmentedButtonRow(modifier) {
-        features.forEachIndexed { index, item ->
-            SegmentedButton(
+    PrimaryScrollableTabRow(
+        selectedTabIndex = features.indexOf(feature),
+        modifier = modifier,
+        containerColor = MaterialTheme.colorScheme.surface,
+        edgePadding = 16.dp,
+    ) {
+        features.forEach { item ->
+            Tab(
                 selected = item == feature,
                 onClick = { onSelect(item) },
-                shape = SegmentedButtonDefaults.itemShape(index = index, count = features.size),
-                label = {
+                text = {
                     Text(
-                        when (item) {
+                        text = when (item) {
                             SampleFeature.TextToSpeech -> "Text to speech"
                             SampleFeature.SpeechToText -> "Speech to text"
+                            SampleFeature.MultiContext -> "Multi-context"
                         },
+                        maxLines = 1,
                     )
                 },
+                unselectedContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
     }

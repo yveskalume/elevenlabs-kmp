@@ -1,5 +1,6 @@
 package dev.yveskalume.elevenlabs.internal.stt.dtos
 
+import dev.yveskalume.elevenlabs.internal.error.realtimeErrorCode
 import dev.yveskalume.elevenlabs.internal.http.JSON
 import dev.yveskalume.elevenlabs.stt.RealtimeSttEvent
 import kotlinx.serialization.SerialName
@@ -11,7 +12,7 @@ import kotlin.io.encoding.Base64
 
 internal sealed interface DecodedRealtimeSttMessage {
     data class Event(val value: RealtimeSttEvent) : DecodedRealtimeSttMessage
-    data class Error(val message: String) : DecodedRealtimeSttMessage
+    data class Error(val message: String, val errorCode: String? = null) : DecodedRealtimeSttMessage
 }
 
 internal object RealtimeSttMessages {
@@ -37,7 +38,9 @@ internal object RealtimeSttMessages {
                     ?.contentOrNull
             }.getOrNull()
             return DecodedRealtimeSttMessage.Error(
-                dto.error ?: fallback ?: "ElevenLabs realtime STT returned $type.",
+                message = dto.error ?: fallback ?: "ElevenLabs realtime STT returned $type.",
+                // Realtime STT reports the error category as its message type, e.g. "quota_exceeded".
+                errorCode = type?.takeUnless { it == "error" } ?: realtimeErrorCode(rawMessage),
             )
         }
 

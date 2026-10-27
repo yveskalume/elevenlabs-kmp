@@ -1,5 +1,6 @@
 package dev.yveskalume.elevenlabs.internal.tts.dtos
 
+import dev.yveskalume.elevenlabs.internal.error.realtimeErrorCode
 import dev.yveskalume.elevenlabs.internal.http.JSON
 import dev.yveskalume.elevenlabs.tts.RealtimeTtsAlignment
 import dev.yveskalume.elevenlabs.tts.RealtimeTtsEvent
@@ -14,7 +15,7 @@ import kotlin.io.encoding.Base64
 
 internal sealed interface DecodedRealtimeTtsMessage {
     data class Event(val value: RealtimeTtsEvent) : DecodedRealtimeTtsMessage
-    data class Error(val message: String) : DecodedRealtimeTtsMessage
+    data class Error(val message: String, val errorCode: String? = null) : DecodedRealtimeTtsMessage
     data object Unknown : DecodedRealtimeTtsMessage
 }
 
@@ -66,7 +67,7 @@ internal object RealtimeTtsMessages {
         return if (error == null) {
             DecodedRealtimeTtsMessage.Unknown
         } else {
-            DecodedRealtimeTtsMessage.Error(error)
+            DecodedRealtimeTtsMessage.Error(error, realtimeErrorCode(value))
         }
     }
 

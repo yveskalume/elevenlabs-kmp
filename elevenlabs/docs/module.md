@@ -3,7 +3,7 @@
 A coroutine-based Kotlin Multiplatform client for the ElevenLabs API.
 
 Create an [ElevenLabs][dev.yveskalume.elevenlabs.ElevenLabs] client, configure authentication,
-and use its voices, models, text-to-speech, and speech-to-text APIs. The client owns network
+and use its voices, models, text-to-speech, text-to-dialogue, and speech-to-text APIs. The client owns network
 resources and must be closed when it is no longer needed.
 
 # Package dev.yveskalume.elevenlabs
@@ -21,6 +21,10 @@ Voice discovery APIs, pagination, and response types.
 # Package dev.yveskalume.elevenlabs.tts
 
 Batch, HTTP-streamed, and realtime text-to-speech APIs.
+
+# Package dev.yveskalume.elevenlabs.dialogue
+
+Realtime multi-speaker dialogue with Eleven v3 models.
 
 # Package dev.yveskalume.elevenlabs.stt
 

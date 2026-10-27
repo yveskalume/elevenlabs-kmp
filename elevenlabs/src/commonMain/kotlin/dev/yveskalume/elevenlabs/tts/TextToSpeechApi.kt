@@ -63,4 +63,28 @@ public interface TextToSpeechApi {
         options: RealtimeTtsOptions = RealtimeTtsOptions(),
         authorization: RealtimeTtsAuthorization = RealtimeTtsAuthorization.ConfiguredApiKey,
     ): RealtimeTtsSession
+
+    /**
+     * Opens one realtime WebSocket for [voiceId] that can host up to
+     * [MultiContextTtsSession.MAX_CONTEXTS] independent generation contexts.
+     *
+     * Use it for conversational agents that need to interrupt speech, prepare the next utterance
+     * while the current one is playing, or speak several streams with different voice settings,
+     * without opening a new connection each time. For a single stream of text, prefer
+     * [openRealtimeSession] or [realtime].
+     *
+     * The caller owns the returned session and must call [MultiContextTtsSession.finish] or
+     * [MultiContextTtsSession.close].
+     *
+     * @throws IllegalArgumentException if [voiceId] is blank.
+     * @throws dev.yveskalume.elevenlabs.error.RealtimeServerError for a realtime protocol failure.
+     * @throws NetworkError for a transport failure.
+     * @throws TimeoutError when opening times out.
+     */
+    @Throws(ElevenLabsException::class, CancellationException::class)
+    public suspend fun openMultiContextSession(
+        voiceId: String,
+        options: MultiContextTtsOptions = MultiContextTtsOptions(),
+        authorization: RealtimeTtsAuthorization = RealtimeTtsAuthorization.ConfiguredApiKey,
+    ): MultiContextTtsSession
 }

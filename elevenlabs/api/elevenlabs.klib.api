@@ -78,6 +78,18 @@ final enum class dev.yveskalume.elevenlabs.stt/TimestampsGranularity : kotlin/En
     final fun values(): kotlin/Array<dev.yveskalume.elevenlabs.stt/TimestampsGranularity> // dev.yveskalume.elevenlabs.stt/TimestampsGranularity.values|values#static(){}[0]
 }
 
+final enum class dev.yveskalume.elevenlabs.tts/TextNormalization : kotlin/Enum<dev.yveskalume.elevenlabs.tts/TextNormalization> { // dev.yveskalume.elevenlabs.tts/TextNormalization|null[0]
+    enum entry Auto // dev.yveskalume.elevenlabs.tts/TextNormalization.Auto|null[0]
+    enum entry Off // dev.yveskalume.elevenlabs.tts/TextNormalization.Off|null[0]
+    enum entry On // dev.yveskalume.elevenlabs.tts/TextNormalization.On|null[0]
+
+    final val entries // dev.yveskalume.elevenlabs.tts/TextNormalization.entries|#static{}entries[0]
+        final fun <get-entries>(): kotlin.enums/EnumEntries<dev.yveskalume.elevenlabs.tts/TextNormalization> // dev.yveskalume.elevenlabs.tts/TextNormalization.entries.<get-entries>|<get-entries>#static(){}[0]
+
+    final fun valueOf(kotlin/String): dev.yveskalume.elevenlabs.tts/TextNormalization // dev.yveskalume.elevenlabs.tts/TextNormalization.valueOf|valueOf#static(kotlin.String){}[0]
+    final fun values(): kotlin/Array<dev.yveskalume.elevenlabs.tts/TextNormalization> // dev.yveskalume.elevenlabs.tts/TextNormalization.values|values#static(){}[0]
+}
+
 abstract fun interface dev.yveskalume.elevenlabs.stt/SpeechToTextTokenProvider { // dev.yveskalume.elevenlabs.stt/SpeechToTextTokenProvider|null[0]
     abstract suspend fun getToken(): kotlin/String // dev.yveskalume.elevenlabs.stt/SpeechToTextTokenProvider.getToken|getToken(){}[0]
 }
@@ -88,6 +100,40 @@ abstract fun interface dev.yveskalume.elevenlabs.tts/RealtimeTokenProvider { // 
 
 abstract fun interface dev.yveskalume.elevenlabs/ApiKeyProvider { // dev.yveskalume.elevenlabs/ApiKeyProvider|null[0]
     abstract suspend fun getApiKey(): kotlin/String // dev.yveskalume.elevenlabs/ApiKeyProvider.getApiKey|getApiKey(){}[0]
+}
+
+abstract interface dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueContext { // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueContext|null[0]
+    abstract val events // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueContext.events|{}events[0]
+        abstract fun <get-events>(): kotlinx.coroutines.flow/Flow<dev.yveskalume.elevenlabs.dialogue/DialogueEvent> // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueContext.events.<get-events>|<get-events>(){}[0]
+    abstract val id // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueContext.id|{}id[0]
+        abstract fun <get-id>(): kotlin/String // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueContext.id.<get-id>|<get-id>(){}[0]
+    abstract val voiceIds // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueContext.voiceIds|{}voiceIds[0]
+        abstract fun <get-voiceIds>(): kotlin.collections/List<kotlin/String> // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueContext.voiceIds.<get-voiceIds>|<get-voiceIds>(){}[0]
+
+    abstract suspend fun close() // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueContext.close|close(){}[0]
+    abstract suspend fun finish() // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueContext.finish|finish(){}[0]
+    abstract suspend fun flush() // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueContext.flush|flush(){}[0]
+    abstract suspend fun keepAlive() // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueContext.keepAlive|keepAlive(){}[0]
+    abstract suspend fun send(dev.yveskalume.elevenlabs.dialogue/DialogueLine) // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueContext.send|send(dev.yveskalume.elevenlabs.dialogue.DialogueLine){}[0]
+    abstract suspend fun send(kotlin.collections/List<dev.yveskalume.elevenlabs.dialogue/DialogueLine>) // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueContext.send|send(kotlin.collections.List<dev.yveskalume.elevenlabs.dialogue.DialogueLine>){}[0]
+}
+
+abstract interface dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueSession { // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueSession|null[0]
+    abstract fun stream(kotlin.collections/List<kotlin/String>, kotlinx.coroutines.flow/Flow<dev.yveskalume.elevenlabs.dialogue/DialogueLine>, dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueContextOptions = ...): kotlinx.coroutines.flow/Flow<dev.yveskalume.elevenlabs.tts/AudioChunk> // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueSession.stream|stream(kotlin.collections.List<kotlin.String>;kotlinx.coroutines.flow.Flow<dev.yveskalume.elevenlabs.dialogue.DialogueLine>;dev.yveskalume.elevenlabs.dialogue.MultiContextDialogueContextOptions){}[0]
+    abstract suspend fun close() // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueSession.close|close(){}[0]
+    abstract suspend fun finish() // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueSession.finish|finish(){}[0]
+    abstract suspend fun openContext(kotlin.collections/List<kotlin/String>, dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueContextOptions = ..., kotlin/String? = ...): dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueContext // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueSession.openContext|openContext(kotlin.collections.List<kotlin.String>;dev.yveskalume.elevenlabs.dialogue.MultiContextDialogueContextOptions;kotlin.String?){}[0]
+
+    final object Companion { // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueSession.Companion|null[0]
+        final const val MAX_CONTEXTS // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueSession.Companion.MAX_CONTEXTS|{}MAX_CONTEXTS[0]
+            final fun <get-MAX_CONTEXTS>(): kotlin/Int // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueSession.Companion.MAX_CONTEXTS.<get-MAX_CONTEXTS>|<get-MAX_CONTEXTS>(){}[0]
+        final const val MAX_VOICES_PER_CONTEXT // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueSession.Companion.MAX_VOICES_PER_CONTEXT|{}MAX_VOICES_PER_CONTEXT[0]
+            final fun <get-MAX_VOICES_PER_CONTEXT>(): kotlin/Int // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueSession.Companion.MAX_VOICES_PER_CONTEXT.<get-MAX_VOICES_PER_CONTEXT>|<get-MAX_VOICES_PER_CONTEXT>(){}[0]
+    }
+}
+
+abstract interface dev.yveskalume.elevenlabs.dialogue/TextToDialogueApi { // dev.yveskalume.elevenlabs.dialogue/TextToDialogueApi|null[0]
+    abstract suspend fun openMultiContextSession(dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueOptions = ..., dev.yveskalume.elevenlabs.tts/RealtimeTtsAuthorization = ...): dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueSession // dev.yveskalume.elevenlabs.dialogue/TextToDialogueApi.openMultiContextSession|openMultiContextSession(dev.yveskalume.elevenlabs.dialogue.MultiContextDialogueOptions;dev.yveskalume.elevenlabs.tts.RealtimeTtsAuthorization){}[0]
 }
 
 abstract interface dev.yveskalume.elevenlabs.models/ModelsApi { // dev.yveskalume.elevenlabs.models/ModelsApi|null[0]
@@ -108,6 +154,29 @@ abstract interface dev.yveskalume.elevenlabs.stt/SpeechToTextApi { // dev.yveska
     abstract suspend fun transcribe(dev.yveskalume.elevenlabs.stt/SpeechToTextRequest, dev.yveskalume.elevenlabs.stt/SpeechToTextAuthorization = ...): dev.yveskalume.elevenlabs.stt/Transcription // dev.yveskalume.elevenlabs.stt/SpeechToTextApi.transcribe|transcribe(dev.yveskalume.elevenlabs.stt.SpeechToTextRequest;dev.yveskalume.elevenlabs.stt.SpeechToTextAuthorization){}[0]
 }
 
+abstract interface dev.yveskalume.elevenlabs.tts/MultiContextTtsContext : dev.yveskalume.elevenlabs.tts/RealtimeTtsSession { // dev.yveskalume.elevenlabs.tts/MultiContextTtsContext|null[0]
+    abstract val events // dev.yveskalume.elevenlabs.tts/MultiContextTtsContext.events|{}events[0]
+        abstract fun <get-events>(): kotlinx.coroutines.flow/Flow<dev.yveskalume.elevenlabs.tts/RealtimeTtsEvent> // dev.yveskalume.elevenlabs.tts/MultiContextTtsContext.events.<get-events>|<get-events>(){}[0]
+    abstract val id // dev.yveskalume.elevenlabs.tts/MultiContextTtsContext.id|{}id[0]
+        abstract fun <get-id>(): kotlin/String // dev.yveskalume.elevenlabs.tts/MultiContextTtsContext.id.<get-id>|<get-id>(){}[0]
+
+    abstract suspend fun close() // dev.yveskalume.elevenlabs.tts/MultiContextTtsContext.close|close(){}[0]
+    abstract suspend fun finish() // dev.yveskalume.elevenlabs.tts/MultiContextTtsContext.finish|finish(){}[0]
+    abstract suspend fun keepAlive() // dev.yveskalume.elevenlabs.tts/MultiContextTtsContext.keepAlive|keepAlive(){}[0]
+}
+
+abstract interface dev.yveskalume.elevenlabs.tts/MultiContextTtsSession { // dev.yveskalume.elevenlabs.tts/MultiContextTtsSession|null[0]
+    abstract fun stream(kotlinx.coroutines.flow/Flow<kotlin/String>, dev.yveskalume.elevenlabs.tts/MultiContextTtsContextOptions = ...): kotlinx.coroutines.flow/Flow<dev.yveskalume.elevenlabs.tts/AudioChunk> // dev.yveskalume.elevenlabs.tts/MultiContextTtsSession.stream|stream(kotlinx.coroutines.flow.Flow<kotlin.String>;dev.yveskalume.elevenlabs.tts.MultiContextTtsContextOptions){}[0]
+    abstract suspend fun close() // dev.yveskalume.elevenlabs.tts/MultiContextTtsSession.close|close(){}[0]
+    abstract suspend fun finish() // dev.yveskalume.elevenlabs.tts/MultiContextTtsSession.finish|finish(){}[0]
+    abstract suspend fun openContext(dev.yveskalume.elevenlabs.tts/MultiContextTtsContextOptions = ..., kotlin/String? = ...): dev.yveskalume.elevenlabs.tts/MultiContextTtsContext // dev.yveskalume.elevenlabs.tts/MultiContextTtsSession.openContext|openContext(dev.yveskalume.elevenlabs.tts.MultiContextTtsContextOptions;kotlin.String?){}[0]
+
+    final object Companion { // dev.yveskalume.elevenlabs.tts/MultiContextTtsSession.Companion|null[0]
+        final const val MAX_CONTEXTS // dev.yveskalume.elevenlabs.tts/MultiContextTtsSession.Companion.MAX_CONTEXTS|{}MAX_CONTEXTS[0]
+            final fun <get-MAX_CONTEXTS>(): kotlin/Int // dev.yveskalume.elevenlabs.tts/MultiContextTtsSession.Companion.MAX_CONTEXTS.<get-MAX_CONTEXTS>|<get-MAX_CONTEXTS>(){}[0]
+    }
+}
+
 abstract interface dev.yveskalume.elevenlabs.tts/RealtimeTtsSession { // dev.yveskalume.elevenlabs.tts/RealtimeTtsSession|null[0]
     abstract val events // dev.yveskalume.elevenlabs.tts/RealtimeTtsSession.events|{}events[0]
         abstract fun <get-events>(): kotlinx.coroutines.flow/Flow<dev.yveskalume.elevenlabs.tts/RealtimeTtsEvent> // dev.yveskalume.elevenlabs.tts/RealtimeTtsSession.events.<get-events>|<get-events>(){}[0]
@@ -122,12 +191,38 @@ abstract interface dev.yveskalume.elevenlabs.tts/TextToSpeechApi { // dev.yveska
     abstract fun realtime(kotlin/String, kotlinx.coroutines.flow/Flow<kotlin/String>, dev.yveskalume.elevenlabs.tts/RealtimeTtsOptions = ..., dev.yveskalume.elevenlabs.tts/RealtimeTtsAuthorization = ...): kotlinx.coroutines.flow/Flow<dev.yveskalume.elevenlabs.tts/AudioChunk> // dev.yveskalume.elevenlabs.tts/TextToSpeechApi.realtime|realtime(kotlin.String;kotlinx.coroutines.flow.Flow<kotlin.String>;dev.yveskalume.elevenlabs.tts.RealtimeTtsOptions;dev.yveskalume.elevenlabs.tts.RealtimeTtsAuthorization){}[0]
     abstract fun stream(dev.yveskalume.elevenlabs.tts/TextToSpeechRequest): kotlinx.coroutines.flow/Flow<dev.yveskalume.elevenlabs.tts/AudioChunk> // dev.yveskalume.elevenlabs.tts/TextToSpeechApi.stream|stream(dev.yveskalume.elevenlabs.tts.TextToSpeechRequest){}[0]
     abstract suspend fun generate(dev.yveskalume.elevenlabs.tts/TextToSpeechRequest): dev.yveskalume.elevenlabs.tts/Audio // dev.yveskalume.elevenlabs.tts/TextToSpeechApi.generate|generate(dev.yveskalume.elevenlabs.tts.TextToSpeechRequest){}[0]
+    abstract suspend fun openMultiContextSession(kotlin/String, dev.yveskalume.elevenlabs.tts/MultiContextTtsOptions = ..., dev.yveskalume.elevenlabs.tts/RealtimeTtsAuthorization = ...): dev.yveskalume.elevenlabs.tts/MultiContextTtsSession // dev.yveskalume.elevenlabs.tts/TextToSpeechApi.openMultiContextSession|openMultiContextSession(kotlin.String;dev.yveskalume.elevenlabs.tts.MultiContextTtsOptions;dev.yveskalume.elevenlabs.tts.RealtimeTtsAuthorization){}[0]
     abstract suspend fun openRealtimeSession(kotlin/String, dev.yveskalume.elevenlabs.tts/RealtimeTtsOptions = ..., dev.yveskalume.elevenlabs.tts/RealtimeTtsAuthorization = ...): dev.yveskalume.elevenlabs.tts/RealtimeTtsSession // dev.yveskalume.elevenlabs.tts/TextToSpeechApi.openRealtimeSession|openRealtimeSession(kotlin.String;dev.yveskalume.elevenlabs.tts.RealtimeTtsOptions;dev.yveskalume.elevenlabs.tts.RealtimeTtsAuthorization){}[0]
 }
 
 abstract interface dev.yveskalume.elevenlabs.voices/VoicesApi { // dev.yveskalume.elevenlabs.voices/VoicesApi|null[0]
     abstract suspend fun get(kotlin/String): dev.yveskalume.elevenlabs.voices/Voice // dev.yveskalume.elevenlabs.voices/VoicesApi.get|get(kotlin.String){}[0]
     abstract suspend fun list(dev.yveskalume.elevenlabs.voices/ListVoicesRequest = ...): dev.yveskalume.elevenlabs.voices/VoicePage // dev.yveskalume.elevenlabs.voices/VoicesApi.list|list(dev.yveskalume.elevenlabs.voices.ListVoicesRequest){}[0]
+}
+
+sealed interface dev.yveskalume.elevenlabs.dialogue/DialogueEvent { // dev.yveskalume.elevenlabs.dialogue/DialogueEvent|null[0]
+    final class Audio : dev.yveskalume.elevenlabs.dialogue/DialogueEvent { // dev.yveskalume.elevenlabs.dialogue/DialogueEvent.Audio|null[0]
+        final val alignment // dev.yveskalume.elevenlabs.dialogue/DialogueEvent.Audio.alignment|{}alignment[0]
+            final fun <get-alignment>(): dev.yveskalume.elevenlabs.tts/RealtimeTtsAlignment? // dev.yveskalume.elevenlabs.dialogue/DialogueEvent.Audio.alignment.<get-alignment>|<get-alignment>(){}[0]
+        final val bytes // dev.yveskalume.elevenlabs.dialogue/DialogueEvent.Audio.bytes|{}bytes[0]
+            final fun <get-bytes>(): kotlin/ByteArray // dev.yveskalume.elevenlabs.dialogue/DialogueEvent.Audio.bytes.<get-bytes>|<get-bytes>(){}[0]
+
+        final fun equals(kotlin/Any?): kotlin/Boolean // dev.yveskalume.elevenlabs.dialogue/DialogueEvent.Audio.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // dev.yveskalume.elevenlabs.dialogue/DialogueEvent.Audio.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // dev.yveskalume.elevenlabs.dialogue/DialogueEvent.Audio.toString|toString(){}[0]
+    }
+
+    final object Finished : dev.yveskalume.elevenlabs.dialogue/DialogueEvent { // dev.yveskalume.elevenlabs.dialogue/DialogueEvent.Finished|null[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // dev.yveskalume.elevenlabs.dialogue/DialogueEvent.Finished.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // dev.yveskalume.elevenlabs.dialogue/DialogueEvent.Finished.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // dev.yveskalume.elevenlabs.dialogue/DialogueEvent.Finished.toString|toString(){}[0]
+    }
+
+    final object TurnFinished : dev.yveskalume.elevenlabs.dialogue/DialogueEvent { // dev.yveskalume.elevenlabs.dialogue/DialogueEvent.TurnFinished|null[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // dev.yveskalume.elevenlabs.dialogue/DialogueEvent.TurnFinished.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // dev.yveskalume.elevenlabs.dialogue/DialogueEvent.TurnFinished.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // dev.yveskalume.elevenlabs.dialogue/DialogueEvent.TurnFinished.toString|toString(){}[0]
+    }
 }
 
 sealed interface dev.yveskalume.elevenlabs.stt/RealtimeSttEvent { // dev.yveskalume.elevenlabs.stt/RealtimeSttEvent|null[0]
@@ -335,6 +430,97 @@ sealed interface dev.yveskalume.elevenlabs.tts/RealtimeTtsReconnectPolicy { // d
         final fun hashCode(): kotlin/Int // dev.yveskalume.elevenlabs.tts/RealtimeTtsReconnectPolicy.Never.hashCode|hashCode(){}[0]
         final fun toString(): kotlin/String // dev.yveskalume.elevenlabs.tts/RealtimeTtsReconnectPolicy.Never.toString|toString(){}[0]
     }
+}
+
+final class dev.yveskalume.elevenlabs.dialogue/DialogueLine { // dev.yveskalume.elevenlabs.dialogue/DialogueLine|null[0]
+    constructor <init>(kotlin/String, kotlin/String, kotlin/Boolean = ...) // dev.yveskalume.elevenlabs.dialogue/DialogueLine.<init>|<init>(kotlin.String;kotlin.String;kotlin.Boolean){}[0]
+
+    final val newTurn // dev.yveskalume.elevenlabs.dialogue/DialogueLine.newTurn|{}newTurn[0]
+        final fun <get-newTurn>(): kotlin/Boolean // dev.yveskalume.elevenlabs.dialogue/DialogueLine.newTurn.<get-newTurn>|<get-newTurn>(){}[0]
+    final val text // dev.yveskalume.elevenlabs.dialogue/DialogueLine.text|{}text[0]
+        final fun <get-text>(): kotlin/String // dev.yveskalume.elevenlabs.dialogue/DialogueLine.text.<get-text>|<get-text>(){}[0]
+    final val voiceId // dev.yveskalume.elevenlabs.dialogue/DialogueLine.voiceId|{}voiceId[0]
+        final fun <get-voiceId>(): kotlin/String // dev.yveskalume.elevenlabs.dialogue/DialogueLine.voiceId.<get-voiceId>|<get-voiceId>(){}[0]
+
+    final fun component1(): kotlin/String // dev.yveskalume.elevenlabs.dialogue/DialogueLine.component1|component1(){}[0]
+    final fun component2(): kotlin/String // dev.yveskalume.elevenlabs.dialogue/DialogueLine.component2|component2(){}[0]
+    final fun component3(): kotlin/Boolean // dev.yveskalume.elevenlabs.dialogue/DialogueLine.component3|component3(){}[0]
+    final fun copy(kotlin/String = ..., kotlin/String = ..., kotlin/Boolean = ...): dev.yveskalume.elevenlabs.dialogue/DialogueLine // dev.yveskalume.elevenlabs.dialogue/DialogueLine.copy|copy(kotlin.String;kotlin.String;kotlin.Boolean){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // dev.yveskalume.elevenlabs.dialogue/DialogueLine.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // dev.yveskalume.elevenlabs.dialogue/DialogueLine.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // dev.yveskalume.elevenlabs.dialogue/DialogueLine.toString|toString(){}[0]
+}
+
+final class dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueContextOptions { // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueContextOptions|null[0]
+    constructor <init>(kotlin/Double? = ..., kotlin.collections/List<dev.yveskalume.elevenlabs.tts/PronunciationDictionaryLocator> = ...) // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueContextOptions.<init>|<init>(kotlin.Double?;kotlin.collections.List<dev.yveskalume.elevenlabs.tts.PronunciationDictionaryLocator>){}[0]
+
+    final val pronunciationDictionaries // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueContextOptions.pronunciationDictionaries|{}pronunciationDictionaries[0]
+        final fun <get-pronunciationDictionaries>(): kotlin.collections/List<dev.yveskalume.elevenlabs.tts/PronunciationDictionaryLocator> // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueContextOptions.pronunciationDictionaries.<get-pronunciationDictionaries>|<get-pronunciationDictionaries>(){}[0]
+    final val stability // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueContextOptions.stability|{}stability[0]
+        final fun <get-stability>(): kotlin/Double? // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueContextOptions.stability.<get-stability>|<get-stability>(){}[0]
+
+    final fun component1(): kotlin/Double? // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueContextOptions.component1|component1(){}[0]
+    final fun component2(): kotlin.collections/List<dev.yveskalume.elevenlabs.tts/PronunciationDictionaryLocator> // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueContextOptions.component2|component2(){}[0]
+    final fun copy(kotlin/Double? = ..., kotlin.collections/List<dev.yveskalume.elevenlabs.tts/PronunciationDictionaryLocator> = ...): dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueContextOptions // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueContextOptions.copy|copy(kotlin.Double?;kotlin.collections.List<dev.yveskalume.elevenlabs.tts.PronunciationDictionaryLocator>){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueContextOptions.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueContextOptions.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueContextOptions.toString|toString(){}[0]
+}
+
+final class dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueOptions { // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueOptions|null[0]
+    constructor <init>(kotlin/String? = ..., kotlin/String? = ..., dev.yveskalume.elevenlabs.tts/OutputFormat = ..., kotlin/Boolean = ..., kotlin/Boolean = ..., dev.yveskalume.elevenlabs.tts/TextNormalization? = ..., kotlin/Long? = ..., dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueTimeouts = ..., dev.yveskalume.elevenlabs.tts/RealtimeTtsKeepAlive = ...) // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueOptions.<init>|<init>(kotlin.String?;kotlin.String?;dev.yveskalume.elevenlabs.tts.OutputFormat;kotlin.Boolean;kotlin.Boolean;dev.yveskalume.elevenlabs.tts.TextNormalization?;kotlin.Long?;dev.yveskalume.elevenlabs.dialogue.MultiContextDialogueTimeouts;dev.yveskalume.elevenlabs.tts.RealtimeTtsKeepAlive){}[0]
+
+    final val enableLogging // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueOptions.enableLogging|{}enableLogging[0]
+        final fun <get-enableLogging>(): kotlin/Boolean // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueOptions.enableLogging.<get-enableLogging>|<get-enableLogging>(){}[0]
+    final val keepAlive // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueOptions.keepAlive|{}keepAlive[0]
+        final fun <get-keepAlive>(): dev.yveskalume.elevenlabs.tts/RealtimeTtsKeepAlive // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueOptions.keepAlive.<get-keepAlive>|<get-keepAlive>(){}[0]
+    final val languageCode // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueOptions.languageCode|{}languageCode[0]
+        final fun <get-languageCode>(): kotlin/String? // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueOptions.languageCode.<get-languageCode>|<get-languageCode>(){}[0]
+    final val modelId // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueOptions.modelId|{}modelId[0]
+        final fun <get-modelId>(): kotlin/String? // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueOptions.modelId.<get-modelId>|<get-modelId>(){}[0]
+    final val outputFormat // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueOptions.outputFormat|{}outputFormat[0]
+        final fun <get-outputFormat>(): dev.yveskalume.elevenlabs.tts/OutputFormat // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueOptions.outputFormat.<get-outputFormat>|<get-outputFormat>(){}[0]
+    final val seed // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueOptions.seed|{}seed[0]
+        final fun <get-seed>(): kotlin/Long? // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueOptions.seed.<get-seed>|<get-seed>(){}[0]
+    final val syncAlignment // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueOptions.syncAlignment|{}syncAlignment[0]
+        final fun <get-syncAlignment>(): kotlin/Boolean // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueOptions.syncAlignment.<get-syncAlignment>|<get-syncAlignment>(){}[0]
+    final val textNormalization // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueOptions.textNormalization|{}textNormalization[0]
+        final fun <get-textNormalization>(): dev.yveskalume.elevenlabs.tts/TextNormalization? // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueOptions.textNormalization.<get-textNormalization>|<get-textNormalization>(){}[0]
+    final val timeouts // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueOptions.timeouts|{}timeouts[0]
+        final fun <get-timeouts>(): dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueTimeouts // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueOptions.timeouts.<get-timeouts>|<get-timeouts>(){}[0]
+
+    final fun component1(): kotlin/String? // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueOptions.component1|component1(){}[0]
+    final fun component2(): kotlin/String? // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueOptions.component2|component2(){}[0]
+    final fun component3(): dev.yveskalume.elevenlabs.tts/OutputFormat // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueOptions.component3|component3(){}[0]
+    final fun component4(): kotlin/Boolean // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueOptions.component4|component4(){}[0]
+    final fun component5(): kotlin/Boolean // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueOptions.component5|component5(){}[0]
+    final fun component6(): dev.yveskalume.elevenlabs.tts/TextNormalization? // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueOptions.component6|component6(){}[0]
+    final fun component7(): kotlin/Long? // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueOptions.component7|component7(){}[0]
+    final fun component8(): dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueTimeouts // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueOptions.component8|component8(){}[0]
+    final fun component9(): dev.yveskalume.elevenlabs.tts/RealtimeTtsKeepAlive // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueOptions.component9|component9(){}[0]
+    final fun copy(kotlin/String? = ..., kotlin/String? = ..., dev.yveskalume.elevenlabs.tts/OutputFormat = ..., kotlin/Boolean = ..., kotlin/Boolean = ..., dev.yveskalume.elevenlabs.tts/TextNormalization? = ..., kotlin/Long? = ..., dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueTimeouts = ..., dev.yveskalume.elevenlabs.tts/RealtimeTtsKeepAlive = ...): dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueOptions // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueOptions.copy|copy(kotlin.String?;kotlin.String?;dev.yveskalume.elevenlabs.tts.OutputFormat;kotlin.Boolean;kotlin.Boolean;dev.yveskalume.elevenlabs.tts.TextNormalization?;kotlin.Long?;dev.yveskalume.elevenlabs.dialogue.MultiContextDialogueTimeouts;dev.yveskalume.elevenlabs.tts.RealtimeTtsKeepAlive){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueOptions.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueOptions.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueOptions.toString|toString(){}[0]
+}
+
+final class dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueTimeouts { // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueTimeouts|null[0]
+    constructor <init>(kotlin/Long = ..., kotlin/Long = ..., kotlin/Long = ...) // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueTimeouts.<init>|<init>(kotlin.Long;kotlin.Long;kotlin.Long){}[0]
+
+    final val connectTimeoutMillis // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueTimeouts.connectTimeoutMillis|{}connectTimeoutMillis[0]
+        final fun <get-connectTimeoutMillis>(): kotlin/Long // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueTimeouts.connectTimeoutMillis.<get-connectTimeoutMillis>|<get-connectTimeoutMillis>(){}[0]
+    final val finishTimeoutMillis // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueTimeouts.finishTimeoutMillis|{}finishTimeoutMillis[0]
+        final fun <get-finishTimeoutMillis>(): kotlin/Long // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueTimeouts.finishTimeoutMillis.<get-finishTimeoutMillis>|<get-finishTimeoutMillis>(){}[0]
+    final val sendTimeoutMillis // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueTimeouts.sendTimeoutMillis|{}sendTimeoutMillis[0]
+        final fun <get-sendTimeoutMillis>(): kotlin/Long // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueTimeouts.sendTimeoutMillis.<get-sendTimeoutMillis>|<get-sendTimeoutMillis>(){}[0]
+
+    final fun component1(): kotlin/Long // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueTimeouts.component1|component1(){}[0]
+    final fun component2(): kotlin/Long // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueTimeouts.component2|component2(){}[0]
+    final fun component3(): kotlin/Long // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueTimeouts.component3|component3(){}[0]
+    final fun copy(kotlin/Long = ..., kotlin/Long = ..., kotlin/Long = ...): dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueTimeouts // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueTimeouts.copy|copy(kotlin.Long;kotlin.Long;kotlin.Long){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueTimeouts.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueTimeouts.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueTimeouts.toString|toString(){}[0]
 }
 
 final class dev.yveskalume.elevenlabs.error/ElevenLabsErrorDetails { // dev.yveskalume.elevenlabs.error/ElevenLabsErrorDetails|null[0]
@@ -609,6 +795,68 @@ final class dev.yveskalume.elevenlabs.tts/AudioChunk { // dev.yveskalume.elevenl
         final fun <get-bytes>(): kotlin/ByteArray // dev.yveskalume.elevenlabs.tts/AudioChunk.bytes.<get-bytes>|<get-bytes>(){}[0]
 }
 
+final class dev.yveskalume.elevenlabs.tts/MultiContextTtsContextOptions { // dev.yveskalume.elevenlabs.tts/MultiContextTtsContextOptions|null[0]
+    constructor <init>(dev.yveskalume.elevenlabs.tts/VoiceSettings? = ..., dev.yveskalume.elevenlabs.tts/RealtimeTtsGenerationConfig? = ..., kotlin.collections/List<dev.yveskalume.elevenlabs.tts/PronunciationDictionaryLocator> = ...) // dev.yveskalume.elevenlabs.tts/MultiContextTtsContextOptions.<init>|<init>(dev.yveskalume.elevenlabs.tts.VoiceSettings?;dev.yveskalume.elevenlabs.tts.RealtimeTtsGenerationConfig?;kotlin.collections.List<dev.yveskalume.elevenlabs.tts.PronunciationDictionaryLocator>){}[0]
+
+    final val generationConfig // dev.yveskalume.elevenlabs.tts/MultiContextTtsContextOptions.generationConfig|{}generationConfig[0]
+        final fun <get-generationConfig>(): dev.yveskalume.elevenlabs.tts/RealtimeTtsGenerationConfig? // dev.yveskalume.elevenlabs.tts/MultiContextTtsContextOptions.generationConfig.<get-generationConfig>|<get-generationConfig>(){}[0]
+    final val pronunciationDictionaries // dev.yveskalume.elevenlabs.tts/MultiContextTtsContextOptions.pronunciationDictionaries|{}pronunciationDictionaries[0]
+        final fun <get-pronunciationDictionaries>(): kotlin.collections/List<dev.yveskalume.elevenlabs.tts/PronunciationDictionaryLocator> // dev.yveskalume.elevenlabs.tts/MultiContextTtsContextOptions.pronunciationDictionaries.<get-pronunciationDictionaries>|<get-pronunciationDictionaries>(){}[0]
+    final val voiceSettings // dev.yveskalume.elevenlabs.tts/MultiContextTtsContextOptions.voiceSettings|{}voiceSettings[0]
+        final fun <get-voiceSettings>(): dev.yveskalume.elevenlabs.tts/VoiceSettings? // dev.yveskalume.elevenlabs.tts/MultiContextTtsContextOptions.voiceSettings.<get-voiceSettings>|<get-voiceSettings>(){}[0]
+
+    final fun component1(): dev.yveskalume.elevenlabs.tts/VoiceSettings? // dev.yveskalume.elevenlabs.tts/MultiContextTtsContextOptions.component1|component1(){}[0]
+    final fun component2(): dev.yveskalume.elevenlabs.tts/RealtimeTtsGenerationConfig? // dev.yveskalume.elevenlabs.tts/MultiContextTtsContextOptions.component2|component2(){}[0]
+    final fun component3(): kotlin.collections/List<dev.yveskalume.elevenlabs.tts/PronunciationDictionaryLocator> // dev.yveskalume.elevenlabs.tts/MultiContextTtsContextOptions.component3|component3(){}[0]
+    final fun copy(dev.yveskalume.elevenlabs.tts/VoiceSettings? = ..., dev.yveskalume.elevenlabs.tts/RealtimeTtsGenerationConfig? = ..., kotlin.collections/List<dev.yveskalume.elevenlabs.tts/PronunciationDictionaryLocator> = ...): dev.yveskalume.elevenlabs.tts/MultiContextTtsContextOptions // dev.yveskalume.elevenlabs.tts/MultiContextTtsContextOptions.copy|copy(dev.yveskalume.elevenlabs.tts.VoiceSettings?;dev.yveskalume.elevenlabs.tts.RealtimeTtsGenerationConfig?;kotlin.collections.List<dev.yveskalume.elevenlabs.tts.PronunciationDictionaryLocator>){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // dev.yveskalume.elevenlabs.tts/MultiContextTtsContextOptions.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // dev.yveskalume.elevenlabs.tts/MultiContextTtsContextOptions.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // dev.yveskalume.elevenlabs.tts/MultiContextTtsContextOptions.toString|toString(){}[0]
+}
+
+final class dev.yveskalume.elevenlabs.tts/MultiContextTtsOptions { // dev.yveskalume.elevenlabs.tts/MultiContextTtsOptions|null[0]
+    constructor <init>(kotlin/String? = ..., kotlin/String? = ..., dev.yveskalume.elevenlabs.tts/OutputFormat = ..., kotlin/Boolean = ..., kotlin/Boolean = ..., kotlin/Boolean = ..., dev.yveskalume.elevenlabs.tts/TextNormalization? = ..., kotlin/Long? = ..., kotlin/Boolean = ..., dev.yveskalume.elevenlabs.tts/RealtimeTtsTimeouts = ..., dev.yveskalume.elevenlabs.tts/RealtimeTtsKeepAlive = ...) // dev.yveskalume.elevenlabs.tts/MultiContextTtsOptions.<init>|<init>(kotlin.String?;kotlin.String?;dev.yveskalume.elevenlabs.tts.OutputFormat;kotlin.Boolean;kotlin.Boolean;kotlin.Boolean;dev.yveskalume.elevenlabs.tts.TextNormalization?;kotlin.Long?;kotlin.Boolean;dev.yveskalume.elevenlabs.tts.RealtimeTtsTimeouts;dev.yveskalume.elevenlabs.tts.RealtimeTtsKeepAlive){}[0]
+
+    final val autoMode // dev.yveskalume.elevenlabs.tts/MultiContextTtsOptions.autoMode|{}autoMode[0]
+        final fun <get-autoMode>(): kotlin/Boolean // dev.yveskalume.elevenlabs.tts/MultiContextTtsOptions.autoMode.<get-autoMode>|<get-autoMode>(){}[0]
+    final val enableLogging // dev.yveskalume.elevenlabs.tts/MultiContextTtsOptions.enableLogging|{}enableLogging[0]
+        final fun <get-enableLogging>(): kotlin/Boolean // dev.yveskalume.elevenlabs.tts/MultiContextTtsOptions.enableLogging.<get-enableLogging>|<get-enableLogging>(){}[0]
+    final val enableSsmlParsing // dev.yveskalume.elevenlabs.tts/MultiContextTtsOptions.enableSsmlParsing|{}enableSsmlParsing[0]
+        final fun <get-enableSsmlParsing>(): kotlin/Boolean // dev.yveskalume.elevenlabs.tts/MultiContextTtsOptions.enableSsmlParsing.<get-enableSsmlParsing>|<get-enableSsmlParsing>(){}[0]
+    final val keepAlive // dev.yveskalume.elevenlabs.tts/MultiContextTtsOptions.keepAlive|{}keepAlive[0]
+        final fun <get-keepAlive>(): dev.yveskalume.elevenlabs.tts/RealtimeTtsKeepAlive // dev.yveskalume.elevenlabs.tts/MultiContextTtsOptions.keepAlive.<get-keepAlive>|<get-keepAlive>(){}[0]
+    final val languageCode // dev.yveskalume.elevenlabs.tts/MultiContextTtsOptions.languageCode|{}languageCode[0]
+        final fun <get-languageCode>(): kotlin/String? // dev.yveskalume.elevenlabs.tts/MultiContextTtsOptions.languageCode.<get-languageCode>|<get-languageCode>(){}[0]
+    final val modelId // dev.yveskalume.elevenlabs.tts/MultiContextTtsOptions.modelId|{}modelId[0]
+        final fun <get-modelId>(): kotlin/String? // dev.yveskalume.elevenlabs.tts/MultiContextTtsOptions.modelId.<get-modelId>|<get-modelId>(){}[0]
+    final val outputFormat // dev.yveskalume.elevenlabs.tts/MultiContextTtsOptions.outputFormat|{}outputFormat[0]
+        final fun <get-outputFormat>(): dev.yveskalume.elevenlabs.tts/OutputFormat // dev.yveskalume.elevenlabs.tts/MultiContextTtsOptions.outputFormat.<get-outputFormat>|<get-outputFormat>(){}[0]
+    final val seed // dev.yveskalume.elevenlabs.tts/MultiContextTtsOptions.seed|{}seed[0]
+        final fun <get-seed>(): kotlin/Long? // dev.yveskalume.elevenlabs.tts/MultiContextTtsOptions.seed.<get-seed>|<get-seed>(){}[0]
+    final val syncAlignment // dev.yveskalume.elevenlabs.tts/MultiContextTtsOptions.syncAlignment|{}syncAlignment[0]
+        final fun <get-syncAlignment>(): kotlin/Boolean // dev.yveskalume.elevenlabs.tts/MultiContextTtsOptions.syncAlignment.<get-syncAlignment>|<get-syncAlignment>(){}[0]
+    final val textNormalization // dev.yveskalume.elevenlabs.tts/MultiContextTtsOptions.textNormalization|{}textNormalization[0]
+        final fun <get-textNormalization>(): dev.yveskalume.elevenlabs.tts/TextNormalization? // dev.yveskalume.elevenlabs.tts/MultiContextTtsOptions.textNormalization.<get-textNormalization>|<get-textNormalization>(){}[0]
+    final val timeouts // dev.yveskalume.elevenlabs.tts/MultiContextTtsOptions.timeouts|{}timeouts[0]
+        final fun <get-timeouts>(): dev.yveskalume.elevenlabs.tts/RealtimeTtsTimeouts // dev.yveskalume.elevenlabs.tts/MultiContextTtsOptions.timeouts.<get-timeouts>|<get-timeouts>(){}[0]
+
+    final fun component1(): kotlin/String? // dev.yveskalume.elevenlabs.tts/MultiContextTtsOptions.component1|component1(){}[0]
+    final fun component10(): dev.yveskalume.elevenlabs.tts/RealtimeTtsTimeouts // dev.yveskalume.elevenlabs.tts/MultiContextTtsOptions.component10|component10(){}[0]
+    final fun component11(): dev.yveskalume.elevenlabs.tts/RealtimeTtsKeepAlive // dev.yveskalume.elevenlabs.tts/MultiContextTtsOptions.component11|component11(){}[0]
+    final fun component2(): kotlin/String? // dev.yveskalume.elevenlabs.tts/MultiContextTtsOptions.component2|component2(){}[0]
+    final fun component3(): dev.yveskalume.elevenlabs.tts/OutputFormat // dev.yveskalume.elevenlabs.tts/MultiContextTtsOptions.component3|component3(){}[0]
+    final fun component4(): kotlin/Boolean // dev.yveskalume.elevenlabs.tts/MultiContextTtsOptions.component4|component4(){}[0]
+    final fun component5(): kotlin/Boolean // dev.yveskalume.elevenlabs.tts/MultiContextTtsOptions.component5|component5(){}[0]
+    final fun component6(): kotlin/Boolean // dev.yveskalume.elevenlabs.tts/MultiContextTtsOptions.component6|component6(){}[0]
+    final fun component7(): dev.yveskalume.elevenlabs.tts/TextNormalization? // dev.yveskalume.elevenlabs.tts/MultiContextTtsOptions.component7|component7(){}[0]
+    final fun component8(): kotlin/Long? // dev.yveskalume.elevenlabs.tts/MultiContextTtsOptions.component8|component8(){}[0]
+    final fun component9(): kotlin/Boolean // dev.yveskalume.elevenlabs.tts/MultiContextTtsOptions.component9|component9(){}[0]
+    final fun copy(kotlin/String? = ..., kotlin/String? = ..., dev.yveskalume.elevenlabs.tts/OutputFormat = ..., kotlin/Boolean = ..., kotlin/Boolean = ..., kotlin/Boolean = ..., dev.yveskalume.elevenlabs.tts/TextNormalization? = ..., kotlin/Long? = ..., kotlin/Boolean = ..., dev.yveskalume.elevenlabs.tts/RealtimeTtsTimeouts = ..., dev.yveskalume.elevenlabs.tts/RealtimeTtsKeepAlive = ...): dev.yveskalume.elevenlabs.tts/MultiContextTtsOptions // dev.yveskalume.elevenlabs.tts/MultiContextTtsOptions.copy|copy(kotlin.String?;kotlin.String?;dev.yveskalume.elevenlabs.tts.OutputFormat;kotlin.Boolean;kotlin.Boolean;kotlin.Boolean;dev.yveskalume.elevenlabs.tts.TextNormalization?;kotlin.Long?;kotlin.Boolean;dev.yveskalume.elevenlabs.tts.RealtimeTtsTimeouts;dev.yveskalume.elevenlabs.tts.RealtimeTtsKeepAlive){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // dev.yveskalume.elevenlabs.tts/MultiContextTtsOptions.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // dev.yveskalume.elevenlabs.tts/MultiContextTtsOptions.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // dev.yveskalume.elevenlabs.tts/MultiContextTtsOptions.toString|toString(){}[0]
+}
+
 final class dev.yveskalume.elevenlabs.tts/OutputFormat { // dev.yveskalume.elevenlabs.tts/OutputFormat|null[0]
     constructor <init>(kotlin/String) // dev.yveskalume.elevenlabs.tts/OutputFormat.<init>|<init>(kotlin.String){}[0]
 
@@ -637,6 +885,22 @@ final class dev.yveskalume.elevenlabs.tts/OutputFormat { // dev.yveskalume.eleve
         final val Wav_44100 // dev.yveskalume.elevenlabs.tts/OutputFormat.Companion.Wav_44100|{}Wav_44100[0]
             final fun <get-Wav_44100>(): dev.yveskalume.elevenlabs.tts/OutputFormat // dev.yveskalume.elevenlabs.tts/OutputFormat.Companion.Wav_44100.<get-Wav_44100>|<get-Wav_44100>(){}[0]
     }
+}
+
+final class dev.yveskalume.elevenlabs.tts/PronunciationDictionaryLocator { // dev.yveskalume.elevenlabs.tts/PronunciationDictionaryLocator|null[0]
+    constructor <init>(kotlin/String, kotlin/String) // dev.yveskalume.elevenlabs.tts/PronunciationDictionaryLocator.<init>|<init>(kotlin.String;kotlin.String){}[0]
+
+    final val dictionaryId // dev.yveskalume.elevenlabs.tts/PronunciationDictionaryLocator.dictionaryId|{}dictionaryId[0]
+        final fun <get-dictionaryId>(): kotlin/String // dev.yveskalume.elevenlabs.tts/PronunciationDictionaryLocator.dictionaryId.<get-dictionaryId>|<get-dictionaryId>(){}[0]
+    final val versionId // dev.yveskalume.elevenlabs.tts/PronunciationDictionaryLocator.versionId|{}versionId[0]
+        final fun <get-versionId>(): kotlin/String // dev.yveskalume.elevenlabs.tts/PronunciationDictionaryLocator.versionId.<get-versionId>|<get-versionId>(){}[0]
+
+    final fun component1(): kotlin/String // dev.yveskalume.elevenlabs.tts/PronunciationDictionaryLocator.component1|component1(){}[0]
+    final fun component2(): kotlin/String // dev.yveskalume.elevenlabs.tts/PronunciationDictionaryLocator.component2|component2(){}[0]
+    final fun copy(kotlin/String = ..., kotlin/String = ...): dev.yveskalume.elevenlabs.tts/PronunciationDictionaryLocator // dev.yveskalume.elevenlabs.tts/PronunciationDictionaryLocator.copy|copy(kotlin.String;kotlin.String){}[0]
+    final fun equals(kotlin/Any?): kotlin/Boolean // dev.yveskalume.elevenlabs.tts/PronunciationDictionaryLocator.equals|equals(kotlin.Any?){}[0]
+    final fun hashCode(): kotlin/Int // dev.yveskalume.elevenlabs.tts/PronunciationDictionaryLocator.hashCode|hashCode(){}[0]
+    final fun toString(): kotlin/String // dev.yveskalume.elevenlabs.tts/PronunciationDictionaryLocator.toString|toString(){}[0]
 }
 
 final class dev.yveskalume.elevenlabs.tts/RealtimeTtsAlignment { // dev.yveskalume.elevenlabs.tts/RealtimeTtsAlignment|null[0]
@@ -893,6 +1157,8 @@ final class dev.yveskalume.elevenlabs/ElevenLabs { // dev.yveskalume.elevenlabs/
         final fun <get-models>(): dev.yveskalume.elevenlabs.models/ModelsApi // dev.yveskalume.elevenlabs/ElevenLabs.models.<get-models>|<get-models>(){}[0]
     final val speechToText // dev.yveskalume.elevenlabs/ElevenLabs.speechToText|{}speechToText[0]
         final fun <get-speechToText>(): dev.yveskalume.elevenlabs.stt/SpeechToTextApi // dev.yveskalume.elevenlabs/ElevenLabs.speechToText.<get-speechToText>|<get-speechToText>(){}[0]
+    final val textToDialogue // dev.yveskalume.elevenlabs/ElevenLabs.textToDialogue|{}textToDialogue[0]
+        final fun <get-textToDialogue>(): dev.yveskalume.elevenlabs.dialogue/TextToDialogueApi // dev.yveskalume.elevenlabs/ElevenLabs.textToDialogue.<get-textToDialogue>|<get-textToDialogue>(){}[0]
     final val textToSpeech // dev.yveskalume.elevenlabs/ElevenLabs.textToSpeech|{}textToSpeech[0]
         final fun <get-textToSpeech>(): dev.yveskalume.elevenlabs.tts/TextToSpeechApi // dev.yveskalume.elevenlabs/ElevenLabs.textToSpeech.<get-textToSpeech>|<get-textToSpeech>(){}[0]
     final val voices // dev.yveskalume.elevenlabs/ElevenLabs.voices|{}voices[0]
@@ -915,6 +1181,8 @@ final class dev.yveskalume.elevenlabs/ElevenLabsConfiguration { // dev.yveskalum
 open class dev.yveskalume.elevenlabs.error/RealtimeServerError : dev.yveskalume.elevenlabs.error/ElevenLabsException { // dev.yveskalume.elevenlabs.error/RealtimeServerError|null[0]
     final val closeCode // dev.yveskalume.elevenlabs.error/RealtimeServerError.closeCode|{}closeCode[0]
         final fun <get-closeCode>(): kotlin/Short? // dev.yveskalume.elevenlabs.error/RealtimeServerError.closeCode.<get-closeCode>|<get-closeCode>(){}[0]
+    final val errorCode // dev.yveskalume.elevenlabs.error/RealtimeServerError.errorCode|{}errorCode[0]
+        final fun <get-errorCode>(): kotlin/String? // dev.yveskalume.elevenlabs.error/RealtimeServerError.errorCode.<get-errorCode>|<get-errorCode>(){}[0]
     final val responseBody // dev.yveskalume.elevenlabs.error/RealtimeServerError.responseBody|{}responseBody[0]
         final fun <get-responseBody>(): kotlin/String? // dev.yveskalume.elevenlabs.error/RealtimeServerError.responseBody.<get-responseBody>|<get-responseBody>(){}[0]
     open val kind // dev.yveskalume.elevenlabs.error/RealtimeServerError.kind|{}kind[0]

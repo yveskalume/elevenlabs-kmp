@@ -7,6 +7,7 @@ public final class dev/yveskalume/elevenlabs/ElevenLabs {
 	public final fun close ()V
 	public final fun getModels ()Ldev/yveskalume/elevenlabs/models/ModelsApi;
 	public final fun getSpeechToText ()Ldev/yveskalume/elevenlabs/stt/SpeechToTextApi;
+	public final fun getTextToDialogue ()Ldev/yveskalume/elevenlabs/dialogue/TextToDialogueApi;
 	public final fun getTextToSpeech ()Ldev/yveskalume/elevenlabs/tts/TextToSpeechApi;
 	public final fun getVoices ()Ldev/yveskalume/elevenlabs/voices/VoicesApi;
 }
@@ -17,6 +18,151 @@ public final class dev/yveskalume/elevenlabs/ElevenLabsConfiguration {
 	public final fun apiKey (Ljava/lang/String;)V
 	public final fun getBaseUrl ()Ljava/lang/String;
 	public final fun setBaseUrl (Ljava/lang/String;)V
+}
+
+public abstract interface class dev/yveskalume/elevenlabs/dialogue/DialogueEvent {
+}
+
+public final class dev/yveskalume/elevenlabs/dialogue/DialogueEvent$Audio : dev/yveskalume/elevenlabs/dialogue/DialogueEvent {
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAlignment ()Ldev/yveskalume/elevenlabs/tts/RealtimeTtsAlignment;
+	public final fun getBytes ()[B
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/yveskalume/elevenlabs/dialogue/DialogueEvent$Finished : dev/yveskalume/elevenlabs/dialogue/DialogueEvent {
+	public static final field INSTANCE Ldev/yveskalume/elevenlabs/dialogue/DialogueEvent$Finished;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/yveskalume/elevenlabs/dialogue/DialogueEvent$TurnFinished : dev/yveskalume/elevenlabs/dialogue/DialogueEvent {
+	public static final field INSTANCE Ldev/yveskalume/elevenlabs/dialogue/DialogueEvent$TurnFinished;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/yveskalume/elevenlabs/dialogue/DialogueLine {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Z)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Z
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Z)Ldev/yveskalume/elevenlabs/dialogue/DialogueLine;
+	public static synthetic fun copy$default (Ldev/yveskalume/elevenlabs/dialogue/DialogueLine;Ljava/lang/String;Ljava/lang/String;ZILjava/lang/Object;)Ldev/yveskalume/elevenlabs/dialogue/DialogueLine;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getNewTurn ()Z
+	public final fun getText ()Ljava/lang/String;
+	public final fun getVoiceId ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class dev/yveskalume/elevenlabs/dialogue/MultiContextDialogueContext {
+	public abstract fun close (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun finish (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun flush (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun getEvents ()Lkotlinx/coroutines/flow/Flow;
+	public abstract fun getId ()Ljava/lang/String;
+	public abstract fun getVoiceIds ()Ljava/util/List;
+	public abstract fun keepAlive (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun send (Ldev/yveskalume/elevenlabs/dialogue/DialogueLine;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun send (Ljava/util/List;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class dev/yveskalume/elevenlabs/dialogue/MultiContextDialogueContextOptions {
+	public fun <init> ()V
+	public fun <init> (Ljava/lang/Double;Ljava/util/List;)V
+	public synthetic fun <init> (Ljava/lang/Double;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/lang/Double;
+	public final fun component2 ()Ljava/util/List;
+	public final fun copy (Ljava/lang/Double;Ljava/util/List;)Ldev/yveskalume/elevenlabs/dialogue/MultiContextDialogueContextOptions;
+	public static synthetic fun copy$default (Ldev/yveskalume/elevenlabs/dialogue/MultiContextDialogueContextOptions;Ljava/lang/Double;Ljava/util/List;ILjava/lang/Object;)Ldev/yveskalume/elevenlabs/dialogue/MultiContextDialogueContextOptions;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getPronunciationDictionaries ()Ljava/util/List;
+	public final fun getStability ()Ljava/lang/Double;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/yveskalume/elevenlabs/dialogue/MultiContextDialogueOptions {
+	public fun <init> ()V
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ldev/yveskalume/elevenlabs/tts/OutputFormat;ZZLdev/yveskalume/elevenlabs/tts/TextNormalization;Ljava/lang/Long;Ldev/yveskalume/elevenlabs/dialogue/MultiContextDialogueTimeouts;Ldev/yveskalume/elevenlabs/tts/RealtimeTtsKeepAlive;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ldev/yveskalume/elevenlabs/tts/OutputFormat;ZZLdev/yveskalume/elevenlabs/tts/TextNormalization;Ljava/lang/Long;Ldev/yveskalume/elevenlabs/dialogue/MultiContextDialogueTimeouts;Ldev/yveskalume/elevenlabs/tts/RealtimeTtsKeepAlive;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ldev/yveskalume/elevenlabs/tts/OutputFormat;
+	public final fun component4 ()Z
+	public final fun component5 ()Z
+	public final fun component6 ()Ldev/yveskalume/elevenlabs/tts/TextNormalization;
+	public final fun component7 ()Ljava/lang/Long;
+	public final fun component8 ()Ldev/yveskalume/elevenlabs/dialogue/MultiContextDialogueTimeouts;
+	public final fun component9 ()Ldev/yveskalume/elevenlabs/tts/RealtimeTtsKeepAlive;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ldev/yveskalume/elevenlabs/tts/OutputFormat;ZZLdev/yveskalume/elevenlabs/tts/TextNormalization;Ljava/lang/Long;Ldev/yveskalume/elevenlabs/dialogue/MultiContextDialogueTimeouts;Ldev/yveskalume/elevenlabs/tts/RealtimeTtsKeepAlive;)Ldev/yveskalume/elevenlabs/dialogue/MultiContextDialogueOptions;
+	public static synthetic fun copy$default (Ldev/yveskalume/elevenlabs/dialogue/MultiContextDialogueOptions;Ljava/lang/String;Ljava/lang/String;Ldev/yveskalume/elevenlabs/tts/OutputFormat;ZZLdev/yveskalume/elevenlabs/tts/TextNormalization;Ljava/lang/Long;Ldev/yveskalume/elevenlabs/dialogue/MultiContextDialogueTimeouts;Ldev/yveskalume/elevenlabs/tts/RealtimeTtsKeepAlive;ILjava/lang/Object;)Ldev/yveskalume/elevenlabs/dialogue/MultiContextDialogueOptions;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getEnableLogging ()Z
+	public final fun getKeepAlive ()Ldev/yveskalume/elevenlabs/tts/RealtimeTtsKeepAlive;
+	public final fun getLanguageCode ()Ljava/lang/String;
+	public final fun getModelId ()Ljava/lang/String;
+	public final fun getOutputFormat ()Ldev/yveskalume/elevenlabs/tts/OutputFormat;
+	public final fun getSeed ()Ljava/lang/Long;
+	public final fun getSyncAlignment ()Z
+	public final fun getTextNormalization ()Ldev/yveskalume/elevenlabs/tts/TextNormalization;
+	public final fun getTimeouts ()Ldev/yveskalume/elevenlabs/dialogue/MultiContextDialogueTimeouts;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class dev/yveskalume/elevenlabs/dialogue/MultiContextDialogueSession {
+	public static final field Companion Ldev/yveskalume/elevenlabs/dialogue/MultiContextDialogueSession$Companion;
+	public static final field MAX_CONTEXTS I
+	public static final field MAX_VOICES_PER_CONTEXT I
+	public abstract fun close (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun finish (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun openContext (Ljava/util/List;Ldev/yveskalume/elevenlabs/dialogue/MultiContextDialogueContextOptions;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun openContext$default (Ldev/yveskalume/elevenlabs/dialogue/MultiContextDialogueSession;Ljava/util/List;Ldev/yveskalume/elevenlabs/dialogue/MultiContextDialogueContextOptions;Ljava/lang/String;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public abstract fun stream (Ljava/util/List;Lkotlinx/coroutines/flow/Flow;Ldev/yveskalume/elevenlabs/dialogue/MultiContextDialogueContextOptions;)Lkotlinx/coroutines/flow/Flow;
+	public static synthetic fun stream$default (Ldev/yveskalume/elevenlabs/dialogue/MultiContextDialogueSession;Ljava/util/List;Lkotlinx/coroutines/flow/Flow;Ldev/yveskalume/elevenlabs/dialogue/MultiContextDialogueContextOptions;ILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
+}
+
+public final class dev/yveskalume/elevenlabs/dialogue/MultiContextDialogueSession$Companion {
+	public static final field MAX_CONTEXTS I
+	public static final field MAX_VOICES_PER_CONTEXT I
+}
+
+public final class dev/yveskalume/elevenlabs/dialogue/MultiContextDialogueSession$DefaultImpls {
+	public static synthetic fun openContext$default (Ldev/yveskalume/elevenlabs/dialogue/MultiContextDialogueSession;Ljava/util/List;Ldev/yveskalume/elevenlabs/dialogue/MultiContextDialogueContextOptions;Ljava/lang/String;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun stream$default (Ldev/yveskalume/elevenlabs/dialogue/MultiContextDialogueSession;Ljava/util/List;Lkotlinx/coroutines/flow/Flow;Ldev/yveskalume/elevenlabs/dialogue/MultiContextDialogueContextOptions;ILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
+}
+
+public final class dev/yveskalume/elevenlabs/dialogue/MultiContextDialogueTimeouts {
+	public fun <init> ()V
+	public fun <init> (JJJ)V
+	public synthetic fun <init> (JJJILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()J
+	public final fun component2 ()J
+	public final fun component3 ()J
+	public final fun copy (JJJ)Ldev/yveskalume/elevenlabs/dialogue/MultiContextDialogueTimeouts;
+	public static synthetic fun copy$default (Ldev/yveskalume/elevenlabs/dialogue/MultiContextDialogueTimeouts;JJJILjava/lang/Object;)Ldev/yveskalume/elevenlabs/dialogue/MultiContextDialogueTimeouts;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getConnectTimeoutMillis ()J
+	public final fun getFinishTimeoutMillis ()J
+	public final fun getSendTimeoutMillis ()J
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class dev/yveskalume/elevenlabs/dialogue/TextToDialogueApi {
+	public abstract fun openMultiContextSession (Ldev/yveskalume/elevenlabs/dialogue/MultiContextDialogueOptions;Ldev/yveskalume/elevenlabs/tts/RealtimeTtsAuthorization;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun openMultiContextSession$default (Ldev/yveskalume/elevenlabs/dialogue/TextToDialogueApi;Ldev/yveskalume/elevenlabs/dialogue/MultiContextDialogueOptions;Ldev/yveskalume/elevenlabs/tts/RealtimeTtsAuthorization;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+}
+
+public final class dev/yveskalume/elevenlabs/dialogue/TextToDialogueApi$DefaultImpls {
+	public static synthetic fun openMultiContextSession$default (Ldev/yveskalume/elevenlabs/dialogue/TextToDialogueApi;Ldev/yveskalume/elevenlabs/dialogue/MultiContextDialogueOptions;Ldev/yveskalume/elevenlabs/tts/RealtimeTtsAuthorization;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 }
 
 public abstract class dev/yveskalume/elevenlabs/error/ApiException : dev/yveskalume/elevenlabs/error/ElevenLabsException {
@@ -139,6 +285,7 @@ public final class dev/yveskalume/elevenlabs/error/NetworkError : dev/yveskalume
 
 public class dev/yveskalume/elevenlabs/error/RealtimeServerError : dev/yveskalume/elevenlabs/error/ElevenLabsException {
 	public final fun getCloseCode ()Ljava/lang/Short;
+	public final fun getErrorCode ()Ljava/lang/String;
 	public fun getKind ()Ldev/yveskalume/elevenlabs/error/ElevenLabsErrorKind;
 	public final fun getResponseBody ()Ljava/lang/String;
 }
@@ -482,6 +629,84 @@ public final class dev/yveskalume/elevenlabs/tts/AudioChunk {
 	public final fun getBytes ()[B
 }
 
+public abstract interface class dev/yveskalume/elevenlabs/tts/MultiContextTtsContext : dev/yveskalume/elevenlabs/tts/RealtimeTtsSession {
+	public abstract fun close (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun finish (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun getEvents ()Lkotlinx/coroutines/flow/Flow;
+	public abstract fun getId ()Ljava/lang/String;
+	public abstract fun keepAlive (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class dev/yveskalume/elevenlabs/tts/MultiContextTtsContextOptions {
+	public fun <init> ()V
+	public fun <init> (Ldev/yveskalume/elevenlabs/tts/VoiceSettings;Ldev/yveskalume/elevenlabs/tts/RealtimeTtsGenerationConfig;Ljava/util/List;)V
+	public synthetic fun <init> (Ldev/yveskalume/elevenlabs/tts/VoiceSettings;Ldev/yveskalume/elevenlabs/tts/RealtimeTtsGenerationConfig;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ldev/yveskalume/elevenlabs/tts/VoiceSettings;
+	public final fun component2 ()Ldev/yveskalume/elevenlabs/tts/RealtimeTtsGenerationConfig;
+	public final fun component3 ()Ljava/util/List;
+	public final fun copy (Ldev/yveskalume/elevenlabs/tts/VoiceSettings;Ldev/yveskalume/elevenlabs/tts/RealtimeTtsGenerationConfig;Ljava/util/List;)Ldev/yveskalume/elevenlabs/tts/MultiContextTtsContextOptions;
+	public static synthetic fun copy$default (Ldev/yveskalume/elevenlabs/tts/MultiContextTtsContextOptions;Ldev/yveskalume/elevenlabs/tts/VoiceSettings;Ldev/yveskalume/elevenlabs/tts/RealtimeTtsGenerationConfig;Ljava/util/List;ILjava/lang/Object;)Ldev/yveskalume/elevenlabs/tts/MultiContextTtsContextOptions;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getGenerationConfig ()Ldev/yveskalume/elevenlabs/tts/RealtimeTtsGenerationConfig;
+	public final fun getPronunciationDictionaries ()Ljava/util/List;
+	public final fun getVoiceSettings ()Ldev/yveskalume/elevenlabs/tts/VoiceSettings;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class dev/yveskalume/elevenlabs/tts/MultiContextTtsOptions {
+	public fun <init> ()V
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ldev/yveskalume/elevenlabs/tts/OutputFormat;ZZZLdev/yveskalume/elevenlabs/tts/TextNormalization;Ljava/lang/Long;ZLdev/yveskalume/elevenlabs/tts/RealtimeTtsTimeouts;Ldev/yveskalume/elevenlabs/tts/RealtimeTtsKeepAlive;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ldev/yveskalume/elevenlabs/tts/OutputFormat;ZZZLdev/yveskalume/elevenlabs/tts/TextNormalization;Ljava/lang/Long;ZLdev/yveskalume/elevenlabs/tts/RealtimeTtsTimeouts;Ldev/yveskalume/elevenlabs/tts/RealtimeTtsKeepAlive;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component10 ()Ldev/yveskalume/elevenlabs/tts/RealtimeTtsTimeouts;
+	public final fun component11 ()Ldev/yveskalume/elevenlabs/tts/RealtimeTtsKeepAlive;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ldev/yveskalume/elevenlabs/tts/OutputFormat;
+	public final fun component4 ()Z
+	public final fun component5 ()Z
+	public final fun component6 ()Z
+	public final fun component7 ()Ldev/yveskalume/elevenlabs/tts/TextNormalization;
+	public final fun component8 ()Ljava/lang/Long;
+	public final fun component9 ()Z
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ldev/yveskalume/elevenlabs/tts/OutputFormat;ZZZLdev/yveskalume/elevenlabs/tts/TextNormalization;Ljava/lang/Long;ZLdev/yveskalume/elevenlabs/tts/RealtimeTtsTimeouts;Ldev/yveskalume/elevenlabs/tts/RealtimeTtsKeepAlive;)Ldev/yveskalume/elevenlabs/tts/MultiContextTtsOptions;
+	public static synthetic fun copy$default (Ldev/yveskalume/elevenlabs/tts/MultiContextTtsOptions;Ljava/lang/String;Ljava/lang/String;Ldev/yveskalume/elevenlabs/tts/OutputFormat;ZZZLdev/yveskalume/elevenlabs/tts/TextNormalization;Ljava/lang/Long;ZLdev/yveskalume/elevenlabs/tts/RealtimeTtsTimeouts;Ldev/yveskalume/elevenlabs/tts/RealtimeTtsKeepAlive;ILjava/lang/Object;)Ldev/yveskalume/elevenlabs/tts/MultiContextTtsOptions;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getAutoMode ()Z
+	public final fun getEnableLogging ()Z
+	public final fun getEnableSsmlParsing ()Z
+	public final fun getKeepAlive ()Ldev/yveskalume/elevenlabs/tts/RealtimeTtsKeepAlive;
+	public final fun getLanguageCode ()Ljava/lang/String;
+	public final fun getModelId ()Ljava/lang/String;
+	public final fun getOutputFormat ()Ldev/yveskalume/elevenlabs/tts/OutputFormat;
+	public final fun getSeed ()Ljava/lang/Long;
+	public final fun getSyncAlignment ()Z
+	public final fun getTextNormalization ()Ldev/yveskalume/elevenlabs/tts/TextNormalization;
+	public final fun getTimeouts ()Ldev/yveskalume/elevenlabs/tts/RealtimeTtsTimeouts;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class dev/yveskalume/elevenlabs/tts/MultiContextTtsSession {
+	public static final field Companion Ldev/yveskalume/elevenlabs/tts/MultiContextTtsSession$Companion;
+	public static final field MAX_CONTEXTS I
+	public abstract fun close (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun finish (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun openContext (Ldev/yveskalume/elevenlabs/tts/MultiContextTtsContextOptions;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun openContext$default (Ldev/yveskalume/elevenlabs/tts/MultiContextTtsSession;Ldev/yveskalume/elevenlabs/tts/MultiContextTtsContextOptions;Ljava/lang/String;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public abstract fun stream (Lkotlinx/coroutines/flow/Flow;Ldev/yveskalume/elevenlabs/tts/MultiContextTtsContextOptions;)Lkotlinx/coroutines/flow/Flow;
+	public static synthetic fun stream$default (Ldev/yveskalume/elevenlabs/tts/MultiContextTtsSession;Lkotlinx/coroutines/flow/Flow;Ldev/yveskalume/elevenlabs/tts/MultiContextTtsContextOptions;ILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
+}
+
+public final class dev/yveskalume/elevenlabs/tts/MultiContextTtsSession$Companion {
+	public static final field MAX_CONTEXTS I
+}
+
+public final class dev/yveskalume/elevenlabs/tts/MultiContextTtsSession$DefaultImpls {
+	public static synthetic fun openContext$default (Ldev/yveskalume/elevenlabs/tts/MultiContextTtsSession;Ldev/yveskalume/elevenlabs/tts/MultiContextTtsContextOptions;Ljava/lang/String;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public static synthetic fun stream$default (Ldev/yveskalume/elevenlabs/tts/MultiContextTtsSession;Lkotlinx/coroutines/flow/Flow;Ldev/yveskalume/elevenlabs/tts/MultiContextTtsContextOptions;ILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
+}
+
 public final class dev/yveskalume/elevenlabs/tts/OutputFormat {
 	public static final field Companion Ldev/yveskalume/elevenlabs/tts/OutputFormat$Companion;
 	public fun <init> (Ljava/lang/String;)V
@@ -502,6 +727,19 @@ public final class dev/yveskalume/elevenlabs/tts/OutputFormat$Companion {
 	public final fun getPcm_44100 ()Ldev/yveskalume/elevenlabs/tts/OutputFormat;
 	public final fun getUlaw_8000 ()Ldev/yveskalume/elevenlabs/tts/OutputFormat;
 	public final fun getWav_44100 ()Ldev/yveskalume/elevenlabs/tts/OutputFormat;
+}
+
+public final class dev/yveskalume/elevenlabs/tts/PronunciationDictionaryLocator {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;)Ldev/yveskalume/elevenlabs/tts/PronunciationDictionaryLocator;
+	public static synthetic fun copy$default (Ldev/yveskalume/elevenlabs/tts/PronunciationDictionaryLocator;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Ldev/yveskalume/elevenlabs/tts/PronunciationDictionaryLocator;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDictionaryId ()Ljava/lang/String;
+	public final fun getVersionId ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public abstract interface class dev/yveskalume/elevenlabs/tts/RealtimeTokenProvider {
@@ -701,8 +939,19 @@ public final class dev/yveskalume/elevenlabs/tts/RealtimeTtsTimeouts {
 	public fun toString ()Ljava/lang/String;
 }
 
+public final class dev/yveskalume/elevenlabs/tts/TextNormalization : java/lang/Enum {
+	public static final field Auto Ldev/yveskalume/elevenlabs/tts/TextNormalization;
+	public static final field Off Ldev/yveskalume/elevenlabs/tts/TextNormalization;
+	public static final field On Ldev/yveskalume/elevenlabs/tts/TextNormalization;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Ldev/yveskalume/elevenlabs/tts/TextNormalization;
+	public static fun values ()[Ldev/yveskalume/elevenlabs/tts/TextNormalization;
+}
+
 public abstract interface class dev/yveskalume/elevenlabs/tts/TextToSpeechApi {
 	public abstract fun generate (Ldev/yveskalume/elevenlabs/tts/TextToSpeechRequest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun openMultiContextSession (Ljava/lang/String;Ldev/yveskalume/elevenlabs/tts/MultiContextTtsOptions;Ldev/yveskalume/elevenlabs/tts/RealtimeTtsAuthorization;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun openMultiContextSession$default (Ldev/yveskalume/elevenlabs/tts/TextToSpeechApi;Ljava/lang/String;Ldev/yveskalume/elevenlabs/tts/MultiContextTtsOptions;Ldev/yveskalume/elevenlabs/tts/RealtimeTtsAuthorization;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public abstract fun openRealtimeSession (Ljava/lang/String;Ldev/yveskalume/elevenlabs/tts/RealtimeTtsOptions;Ldev/yveskalume/elevenlabs/tts/RealtimeTtsAuthorization;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun openRealtimeSession$default (Ldev/yveskalume/elevenlabs/tts/TextToSpeechApi;Ljava/lang/String;Ldev/yveskalume/elevenlabs/tts/RealtimeTtsOptions;Ldev/yveskalume/elevenlabs/tts/RealtimeTtsAuthorization;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public abstract fun realtime (Ljava/lang/String;Lkotlinx/coroutines/flow/Flow;Ldev/yveskalume/elevenlabs/tts/RealtimeTtsOptions;Ldev/yveskalume/elevenlabs/tts/RealtimeTtsAuthorization;)Lkotlinx/coroutines/flow/Flow;
@@ -711,6 +960,7 @@ public abstract interface class dev/yveskalume/elevenlabs/tts/TextToSpeechApi {
 }
 
 public final class dev/yveskalume/elevenlabs/tts/TextToSpeechApi$DefaultImpls {
+	public static synthetic fun openMultiContextSession$default (Ldev/yveskalume/elevenlabs/tts/TextToSpeechApi;Ljava/lang/String;Ldev/yveskalume/elevenlabs/tts/MultiContextTtsOptions;Ldev/yveskalume/elevenlabs/tts/RealtimeTtsAuthorization;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public static synthetic fun openRealtimeSession$default (Ldev/yveskalume/elevenlabs/tts/TextToSpeechApi;Ljava/lang/String;Ldev/yveskalume/elevenlabs/tts/RealtimeTtsOptions;Ldev/yveskalume/elevenlabs/tts/RealtimeTtsAuthorization;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public static synthetic fun realtime$default (Ldev/yveskalume/elevenlabs/tts/TextToSpeechApi;Ljava/lang/String;Lkotlinx/coroutines/flow/Flow;Ldev/yveskalume/elevenlabs/tts/RealtimeTtsOptions;Ldev/yveskalume/elevenlabs/tts/RealtimeTtsAuthorization;ILjava/lang/Object;)Lkotlinx/coroutines/flow/Flow;
 }

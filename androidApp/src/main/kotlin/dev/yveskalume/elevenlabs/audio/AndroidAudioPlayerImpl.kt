@@ -14,6 +14,7 @@ internal class AndroidAudioPlayerImpl(context: Context) : AudioPlayer {
     private val cacheDirectory = context.applicationContext.cacheDir
     private var mediaPlayer: MediaPlayer? = null
     private var streamingPlayer: AudioTrack? = null
+    private var streamSampleRate = 0
     private var audioFile: File? = null
 
     override suspend fun play(audio: ByteArray) {
@@ -84,6 +85,7 @@ internal class AndroidAudioPlayerImpl(context: Context) : AudioPlayer {
                 "Could not initialize realtime PCM playback."
             }
             streamingPlayer = player
+            streamSampleRate = sampleRate
             player.play()
         }
     }
@@ -95,6 +97,13 @@ internal class AndroidAudioPlayerImpl(context: Context) : AudioPlayer {
             val written = player.write(audio, 0, audio.size, AudioTrack.WRITE_BLOCKING)
             check(written >= 0) { "Failed to write realtime PCM audio ($written)." }
         }
+    }
+
+    // The playback head counts frames actually played, so it stops while the buffer is empty.
+    override fun streamPositionMillis(): Long {
+        val player = streamingPlayer ?: return 0
+        val frames = runCatching { player.playbackHeadPosition }.getOrDefault(0).toLong() and 0xFFFFFFFFL
+        return frames * 1_000 / streamSampleRate
     }
 
     override fun finishStream() {

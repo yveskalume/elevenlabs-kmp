@@ -7,6 +7,8 @@ import dev.yveskalume.elevenlabs.internal.error.toRealtimeFailure
 import dev.yveskalume.elevenlabs.internal.tts.dtos.toBody
 import dev.yveskalume.elevenlabs.tts.Audio
 import dev.yveskalume.elevenlabs.tts.AudioChunk
+import dev.yveskalume.elevenlabs.tts.MultiContextTtsOptions
+import dev.yveskalume.elevenlabs.tts.MultiContextTtsSession
 import dev.yveskalume.elevenlabs.tts.RealtimeTtsAuthorization
 import dev.yveskalume.elevenlabs.tts.RealtimeTtsEvent
 import dev.yveskalume.elevenlabs.tts.RealtimeTtsOptions
@@ -35,6 +37,8 @@ internal class TextToSpeechApiImpl(
     private val realtimeConnectionFactory: RealtimeTtsConnectionFactory = RealtimeTtsConnectionFactoryImpl(
         http
     ),
+    private val multiContextConnectionFactory: MultiContextTtsConnectionFactory =
+        MultiContextTtsConnectionFactoryImpl(http),
 ) : TextToSpeechApi {
 
     override suspend fun generate(request: TextToSpeechRequest): Audio {
@@ -112,6 +116,28 @@ internal class TextToSpeechApiImpl(
             RealtimeTtsSessionImpl.open(
                 openConnection = {
                     realtimeConnectionFactory.open(voiceId, options, authorization)
+                },
+                options = options,
+            )
+        } catch (cancellation: CancellationException) {
+            throw cancellation
+        } catch (exception: ElevenLabsException) {
+            throw exception
+        } catch (throwable: Throwable) {
+            throw throwable.toRealtimeFailure()
+        }
+    }
+
+    override suspend fun openMultiContextSession(
+        voiceId: String,
+        options: MultiContextTtsOptions,
+        authorization: RealtimeTtsAuthorization,
+    ): MultiContextTtsSession {
+        require(voiceId.isNotBlank()) { "voiceId cannot be blank." }
+        return try {
+            MultiContextTtsSessionImpl.open(
+                openConnection = {
+                    multiContextConnectionFactory.open(voiceId, options, authorization)
                 },
                 options = options,
             )
