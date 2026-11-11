@@ -1,16 +1,16 @@
 package dev.yveskalume.elevenlabs.internal.http
 
 import dev.yveskalume.elevenlabs.ApiKeyProvider
+import dev.yveskalume.elevenlabs.Authorization
 import dev.yveskalume.elevenlabs.error.ApiException
 import dev.yveskalume.elevenlabs.error.ElevenLabsErrorKind
 import dev.yveskalume.elevenlabs.error.ElevenLabsException
 import dev.yveskalume.elevenlabs.internal.stt.SpeechToTextApiImpl
 import dev.yveskalume.elevenlabs.internal.tts.TextToSpeechApiImpl
 import dev.yveskalume.elevenlabs.internal.voices.VoicesApiImpl
-import dev.yveskalume.elevenlabs.stt.SpeechToTextAuthorization
+import dev.yveskalume.elevenlabs.models.ModelId
 import dev.yveskalume.elevenlabs.stt.SpeechToTextRequest
 import dev.yveskalume.elevenlabs.tts.OutputFormat
-import dev.yveskalume.elevenlabs.tts.RealtimeTtsAuthorization
 import dev.yveskalume.elevenlabs.tts.TextToSpeechRequest
 import dev.yveskalume.elevenlabs.voices.ListVoicesRequest
 import io.ktor.client.HttpClient
@@ -116,7 +116,7 @@ class ElevenLabsHttpContractTest {
             TextToSpeechRequest(
                 voiceId = "voice-1",
                 text = "Hello",
-                modelId = "eleven_flash_v2_5",
+                modelId = ModelId.ElevenFlashV2_5,
                 languageCode = "en",
                 outputFormat = OutputFormat.Pcm_24000,
                 enableLogging = false,
@@ -271,13 +271,13 @@ class ElevenLabsHttpContractTest {
         assertFailsWith<ElevenLabsException.MissingCredentials> {
             api.openRealtimeSession(
                 voiceId = "voice-1",
-                authorization = RealtimeTtsAuthorization.TokenProvider { " " },
+                authorization = Authorization.TokenProvider { " " },
             )
         }
         assertFailsWith<ElevenLabsException.MissingCredentials> {
             api.openMultiContextSession(
                 voiceId = "voice-1",
-                authorization = RealtimeTtsAuthorization.TokenProvider { error("backend down") },
+                authorization = Authorization.TokenProvider { error("backend down") },
             )
         }
     }
@@ -289,10 +289,10 @@ class ElevenLabsHttpContractTest {
 
         assertFailsWith<ElevenLabsException.MissingCredentials> { api.transcribe(request) }
         assertFailsWith<ElevenLabsException.MissingCredentials> {
-            api.transcribe(request, SpeechToTextAuthorization.TokenProvider { "" })
+            api.transcribe(request, Authorization.TokenProvider { "" })
         }
         val exception = assertFailsWith<ElevenLabsException.MissingCredentials> {
-            api.transcribe(request, SpeechToTextAuthorization.TokenProvider { error("backend down") })
+            api.transcribe(request, Authorization.TokenProvider { error("backend down") })
         }
         assertIs<IllegalStateException>(exception.cause)
     }

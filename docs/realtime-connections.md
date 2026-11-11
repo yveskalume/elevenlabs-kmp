@@ -64,7 +64,7 @@ The interval must be shorter than `inactivityTimeoutSeconds`, otherwise the opti
 throws `IllegalArgumentException`. Turn it off if you'd rather let idle sessions close:
 
 ```kotlin
-RealtimeTtsOptions(keepAlive = RealtimeTtsKeepAlive(enabled = false))
+RealtimeTtsOptions(keepAlive = KeepAlive(enabled = false))
 ```
 
 ## Reconnecting

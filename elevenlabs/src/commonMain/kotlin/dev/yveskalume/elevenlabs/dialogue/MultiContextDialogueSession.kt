@@ -1,8 +1,8 @@
 package dev.yveskalume.elevenlabs.dialogue
 
 import dev.yveskalume.elevenlabs.error.ElevenLabsException
+import dev.yveskalume.elevenlabs.realtime.Alignment
 import dev.yveskalume.elevenlabs.tts.AudioChunk
-import dev.yveskalume.elevenlabs.tts.RealtimeTtsAlignment
 import kotlin.coroutines.cancellation.CancellationException
 import kotlinx.coroutines.flow.Flow
 
@@ -20,8 +20,8 @@ public interface MultiContextDialogueSession {
     /**
      * Opens a new dialogue context whose lines can be spoken by [voiceIds].
      *
-     * `eleven_v3_conversational`, the default model, supports one voice per context; other Eleven
-     * v3 models support up to [MultiContextDialogueSession.MAX_VOICES_PER_CONTEXT].
+     * `eleven_v3` supports up to [MultiContextDialogueSession.MAX_VOICES_PER_CONTEXT] voices per
+     * context. The default model, `eleven_v3_conversational`, and the Eleven v4 models support one.
      *
      * @throws IllegalArgumentException if [voiceIds] is empty, has blank or duplicate IDs, or has
      * more voices than the model allows, or if [contextId] is blank or was already used.
@@ -76,7 +76,7 @@ public interface MultiContextDialogueSession {
         /** Maximum number of contexts that may be open at the same time on one connection. */
         public const val MAX_CONTEXTS: Int = 5
 
-        /** Maximum number of voices one context can register, with models other than `eleven_v3_conversational`. */
+        /** Maximum number of voices one context can register with `eleven_v3`. Other models allow one. */
         public const val MAX_VOICES_PER_CONTEXT: Int = 10
     }
 }
@@ -189,7 +189,7 @@ public sealed interface DialogueEvent {
     public class Audio internal constructor(
         bytes: ByteArray,
         /** Character timing for this chunk, when [MultiContextDialogueOptions.syncAlignment] is enabled. */
-        public val alignment: RealtimeTtsAlignment? = null,
+        public val alignment: Alignment? = null,
     ) : DialogueEvent {
         /** Generated audio bytes owned by this event. */
         public val bytes: ByteArray = bytes

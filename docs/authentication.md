@@ -54,8 +54,8 @@ On the app side, pass a token provider as the `authorization` argument. The SDK 
 new connection or request, which matters because a token only works once:
 
 ```kotlin
-val authorization = RealtimeTtsAuthorization.TokenProvider(
-    RealtimeTokenProvider {
+val authorization = Authorization.TokenProvider(
+    SingleUseTokenProvider {
         backend.fetchElevenLabsToken(type = "tts_websocket")
     },
 )
@@ -72,8 +72,9 @@ elevenLabs.textToSpeech.realtime(
 `backend.fetchElevenLabsToken` stands for your own call to your server. The SDK doesn't talk to your
 backend.
 
-Speech to text works the same way with `SpeechToTextAuthorization.TokenProvider`. Both also accept a
-`SingleUseToken` if you've already fetched one, but it can only be used for one connection.
+Speech to text and text to dialogue take the same `Authorization`, with a token issued for their
+endpoint. `Authorization.SingleUseToken` also works if you've already fetched one, but it can only
+be used for one connection.
 
 An app that only uses tokens can create the client without calling `apiKey()`:
 

@@ -1,7 +1,7 @@
 package dev.yveskalume.elevenlabs.dialogue
 
+import dev.yveskalume.elevenlabs.Authorization
 import dev.yveskalume.elevenlabs.error.ElevenLabsException
-import dev.yveskalume.elevenlabs.tts.RealtimeTtsAuthorization
 import kotlin.coroutines.cancellation.CancellationException
 
 /** Generates multi-speaker dialogue with Eleven v3 models. */
@@ -28,6 +28,6 @@ public interface TextToDialogueApi {
     )
     public suspend fun openMultiContextSession(
         options: MultiContextDialogueOptions = MultiContextDialogueOptions(),
-        authorization: RealtimeTtsAuthorization = RealtimeTtsAuthorization.ConfiguredApiKey,
+        authorization: Authorization = Authorization.ConfiguredApiKey,
     ): MultiContextDialogueSession
 }

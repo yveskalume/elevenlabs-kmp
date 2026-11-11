@@ -5,6 +5,7 @@ import dev.yveskalume.elevenlabs.ElevenLabs
 import dev.yveskalume.elevenlabs.feature.LoadingState
 import dev.yveskalume.elevenlabs.feature.LogicHandler
 import dev.yveskalume.elevenlabs.feature.userMessage
+import dev.yveskalume.elevenlabs.models.ModelId
 import dev.yveskalume.elevenlabs.tts.OutputFormat
 import dev.yveskalume.elevenlabs.tts.RealtimeTtsOptions
 import dev.yveskalume.elevenlabs.tts.TextToSpeechRequest
@@ -150,7 +151,7 @@ internal class TTSLogicHandler(
             voiceId = voice.id,
             text = text.asRealtimeInput(),
             options = RealtimeTtsOptions(
-                modelId = REALTIME_MODEL_ID,
+                modelId = ModelId.ElevenFlashV2_5,
                 outputFormat = OutputFormat.Pcm_24000,
             ),
         ).collect { chunk -> audioPlayer.writeStream(chunk.bytes) }
@@ -183,7 +184,6 @@ internal class TTSLogicHandler(
     private companion object {
         const val REALTIME_SAMPLE_RATE = 24_000
         const val REALTIME_CHUNK_DELAY_MS = 80L
-        const val REALTIME_MODEL_ID = "eleven_flash_v2_5"
         val REALTIME_TEXT_CHUNK = Regex("\\S+\\s*")
     }
 }

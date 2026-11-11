@@ -1,5 +1,8 @@
 package dev.yveskalume.elevenlabs.tts
 
+import dev.yveskalume.elevenlabs.models.ModelId
+import dev.yveskalume.elevenlabs.realtime.KeepAlive
+
 /**
  * Connection-level configuration for a [MultiContextTtsSession].
  *
@@ -8,7 +11,7 @@ package dev.yveskalume.elevenlabs.tts
  */
 public data class MultiContextTtsOptions @Throws(IllegalArgumentException::class) constructor(
     /** Model identifier, or `null` to use the service default. */
-    val modelId: String? = null,
+    val modelId: ModelId? = null,
     /** Language code, or `null` to let the selected model infer it. */
     val languageCode: String? = null,
     /** Encoding and sample rate of emitted audio. */
@@ -31,10 +34,9 @@ public data class MultiContextTtsOptions @Throws(IllegalArgumentException::class
     /** Client and server timeout configuration. [RealtimeTtsTimeouts.inactivityTimeoutSeconds] applies per context. */
     val timeouts: RealtimeTtsTimeouts = RealtimeTtsTimeouts(),
     /** Automatic keepalive applied to every open context. */
-    val keepAlive: RealtimeTtsKeepAlive = RealtimeTtsKeepAlive(),
+    val keepAlive: KeepAlive = KeepAlive(),
 ) {
     init {
-        require(modelId == null || modelId.isNotBlank()) { "modelId cannot be blank." }
         require(languageCode == null || languageCode.isNotBlank()) { "languageCode cannot be blank." }
         require(seed == null || seed in 0..MAX_SEED) { "seed must be between 0 and $MAX_SEED." }
         require(

@@ -7,7 +7,7 @@ import dev.yveskalume.elevenlabs.internal.error.realtimeErrorCode
 import dev.yveskalume.elevenlabs.internal.http.JSON
 import dev.yveskalume.elevenlabs.internal.realtime.MultiContextInbound
 import dev.yveskalume.elevenlabs.internal.realtime.MultiContextProtocol
-import dev.yveskalume.elevenlabs.tts.RealtimeTtsAlignment
+import dev.yveskalume.elevenlabs.realtime.Alignment
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonElement
@@ -174,7 +174,7 @@ private data class DialogueAlignmentDto(
     @SerialName("char_durations_ms")
     val characterDurationsMs: List<Int> = emptyList(),
 ) {
-    fun toPublic() = RealtimeTtsAlignment(
+    fun toPublic() = Alignment(
         characters = characters,
         characterStartTimesMs = characterStartTimesMs,
         characterDurationsMs = characterDurationsMs,

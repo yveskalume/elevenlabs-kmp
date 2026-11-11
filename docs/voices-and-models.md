@@ -75,3 +75,7 @@ The capability flags tell you what a model accepts before you send a request:
 | `languages` | The languages the model supports. |
 
 The model list changes rarely, so fetching it once per app launch is usually enough.
+
+`Model.id` is a `ModelId`, so you can pass it straight to a request's `modelId`. `ModelId` also has
+constants for the models this SDK version knows about, such as `ModelId.ElevenFlashV2_5`. For a
+newer model, construct one from its ID: `ModelId("eleven_new_model")`.

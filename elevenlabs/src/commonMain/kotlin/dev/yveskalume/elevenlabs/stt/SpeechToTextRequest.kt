@@ -1,5 +1,7 @@
 package dev.yveskalume.elevenlabs.stt
 
+import dev.yveskalume.elevenlabs.models.ModelId
+
 /** Input for transcribing one complete audio or video file. */
 public data class SpeechToTextRequest @Throws(IllegalArgumentException::class) constructor(
     /**
@@ -14,8 +16,8 @@ public data class SpeechToTextRequest @Throws(IllegalArgumentException::class) c
     val fileName: String = "audio.mp3",
     /** MIME type included in the multipart upload. */
     val contentType: String = "audio/mpeg",
-    /** Speech-to-text model identifier. */
-    val modelId: String = "scribe_v2",
+    /** Speech-to-text model. Batch transcription requires one, so there is no service default. */
+    val modelId: ModelId = ModelId.ScribeV2,
     /** Expected language code, or `null` for automatic detection. */
     val languageCode: String? = null,
     /** Whether identifiable non-speech audio events should be tagged in the transcript. */
@@ -35,7 +37,6 @@ public data class SpeechToTextRequest @Throws(IllegalArgumentException::class) c
         require(audio.isNotEmpty()) { "audio cannot be empty." }
         require(fileName.isNotBlank()) { "fileName cannot be blank." }
         require(contentType.isNotBlank()) { "contentType cannot be blank." }
-        require(modelId.isNotBlank()) { "modelId cannot be blank." }
         require(languageCode == null || languageCode.isNotBlank()) { "languageCode cannot be blank." }
         require(numberOfSpeakers == null || numberOfSpeakers in 1..32) {
             "numberOfSpeakers must be between 1 and 32."

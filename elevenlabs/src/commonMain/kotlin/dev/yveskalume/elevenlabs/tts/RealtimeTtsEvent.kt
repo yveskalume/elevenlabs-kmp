@@ -1,5 +1,7 @@
 package dev.yveskalume.elevenlabs.tts
 
+import dev.yveskalume.elevenlabs.realtime.Alignment
+
 /** Event emitted by a [RealtimeTtsSession]. */
 public sealed interface RealtimeTtsEvent {
     /** A generated audio chunk */
@@ -7,9 +9,9 @@ public sealed interface RealtimeTtsEvent {
         /** Generated audio bytes owned by this event */
         public val bytes: ByteArray,
         /** Timing for the submitted text, when requested and available. */
-        public val alignment: RealtimeTtsAlignment? = null,
+        public val alignment: Alignment? = null,
         /** Timing for the normalized spoken text, when requested and available. */
-        public val normalizedAlignment: RealtimeTtsAlignment? = null,
+        public val normalizedAlignment: Alignment? = null,
     ) : RealtimeTtsEvent {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true

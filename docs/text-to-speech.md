@@ -47,7 +47,7 @@ elevenLabs.textToSpeech.realtime(
     voiceId = voiceId,
     text = llmText,
     options = RealtimeTtsOptions(
-        modelId = "eleven_flash_v2_5",
+        modelId = ModelId.ElevenFlashV2_5,
         outputFormat = OutputFormat.Pcm_24000,
     ),
 ).collect { chunk ->
@@ -100,7 +100,7 @@ voice but need different settings.
 val session = elevenLabs.textToSpeech.openMultiContextSession(
     voiceId = voiceId,
     options = MultiContextTtsOptions(
-        modelId = "eleven_flash_v2_5",
+        modelId = ModelId.ElevenFlashV2_5,
         outputFormat = OutputFormat.Pcm_24000,
     ),
 )

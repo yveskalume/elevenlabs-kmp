@@ -1,5 +1,6 @@
 package dev.yveskalume.elevenlabs.tts
 
+import dev.yveskalume.elevenlabs.Authorization
 import dev.yveskalume.elevenlabs.error.ApiException
 import dev.yveskalume.elevenlabs.error.ElevenLabsException
 import kotlin.coroutines.cancellation.CancellationException
@@ -46,7 +47,7 @@ public interface TextToSpeechApi {
         voiceId: String,
         text: Flow<String>,
         options: RealtimeTtsOptions = RealtimeTtsOptions(),
-        authorization: RealtimeTtsAuthorization = RealtimeTtsAuthorization.ConfiguredApiKey,
+        authorization: Authorization = Authorization.ConfiguredApiKey,
     ): Flow<AudioChunk>
 
     /**
@@ -68,7 +69,7 @@ public interface TextToSpeechApi {
     public suspend fun openRealtimeSession(
         voiceId: String,
         options: RealtimeTtsOptions = RealtimeTtsOptions(),
-        authorization: RealtimeTtsAuthorization = RealtimeTtsAuthorization.ConfiguredApiKey,
+        authorization: Authorization = Authorization.ConfiguredApiKey,
     ): RealtimeTtsSession
 
     /**
@@ -97,6 +98,6 @@ public interface TextToSpeechApi {
     public suspend fun openMultiContextSession(
         voiceId: String,
         options: MultiContextTtsOptions = MultiContextTtsOptions(),
-        authorization: RealtimeTtsAuthorization = RealtimeTtsAuthorization.ConfiguredApiKey,
+        authorization: Authorization = Authorization.ConfiguredApiKey,
     ): MultiContextTtsSession
 }

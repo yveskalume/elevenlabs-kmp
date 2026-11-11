@@ -78,26 +78,6 @@ internal class ElevenLabsHttpClient(
     }
 }
 
-/** Runs a user-supplied credential [provider], keeping its failures inside the SDK's error model. */
-internal suspend fun resolveCredential(
-    providerName: String,
-    provider: suspend () -> String,
-): String {
-    val credential = try {
-        provider()
-    } catch (cancellation: CancellationException) {
-        throw cancellation
-    } catch (exception: ElevenLabsException) {
-        throw exception
-    } catch (throwable: Throwable) {
-        throw ElevenLabsException.MissingCredentials("The $providerName failed.", throwable)
-    }
-    if (credential.isBlank()) {
-        throw ElevenLabsException.MissingCredentials("The $providerName returned a blank value.")
-    }
-    return credential
-}
-
 internal fun HttpClientConfig<*>.httpResponseValidator() {
     HttpResponseValidator {
         validateResponse { response ->

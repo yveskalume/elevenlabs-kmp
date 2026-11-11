@@ -40,8 +40,8 @@ internal class MultiContextDialogueSessionImpl private constructor(
         require(voiceIds.toSet().size == voiceIds.size) { "Voice IDs must be distinct." }
         require(voiceIds.size <= maxVoicesPerContext) {
             if (maxVoicesPerContext == 1) {
-                "eleven_v3_conversational supports one voice per context. Use another Eleven v3 model " +
-                    "in MultiContextDialogueOptions.modelId for multi-speaker contexts."
+                "This model supports one voice per context. Use ModelId.ElevenV3 in " +
+                    "MultiContextDialogueOptions.modelId for multi-speaker contexts."
             } else {
                 "A dialogue context supports at most $maxVoicesPerContext voices."
             }

@@ -1,8 +1,9 @@
 package dev.yveskalume.elevenlabs.internal.stt
 
+import dev.yveskalume.elevenlabs.Authorization
 import dev.yveskalume.elevenlabs.internal.http.ElevenLabsHttpClient
+import dev.yveskalume.elevenlabs.internal.http.resolveCredentials
 import dev.yveskalume.elevenlabs.stt.RealtimeSttOptions
-import dev.yveskalume.elevenlabs.stt.SpeechToTextAuthorization
 import io.ktor.client.plugins.websocket.webSocketSession
 import io.ktor.client.request.header
 import io.ktor.client.request.url
@@ -14,7 +15,7 @@ import io.ktor.http.appendPathSegments
 internal fun interface RealtimeSttConnectionFactory {
     suspend fun open(
         options: RealtimeSttOptions,
-        authorization: SpeechToTextAuthorization,
+        authorization: Authorization,
     ): RealtimeSttConnection
 }
 
@@ -23,10 +24,10 @@ internal class RealtimeSttConnectionFactoryImpl(
 ) : RealtimeSttConnectionFactory {
     override suspend fun open(
         options: RealtimeSttOptions,
-        authorization: SpeechToTextAuthorization,
+        authorization: Authorization,
     ): RealtimeSttConnection {
         val credentials = authorization.resolveCredentials(http)
-        val endpoint = buildRealtimeSttUrl(http.baseUrl, options, credentials.token)
+        val endpoint = buildRealtimeSttUrl(http.baseUrl, options, credentials.singleUseToken)
         val session = http.client.webSocketSession {
             method = HttpMethod.Get
             url(endpoint)
@@ -46,7 +47,7 @@ internal class RealtimeSttConnectionFactoryImpl(
             URLProtocol.HTTPS -> URLProtocol.WSS
             else -> protocol
         }
-        parameters.append("model_id", options.modelId)
+        options.modelId?.let { parameters.append("model_id", it.value) }
         parameters.append("audio_format", options.audioFormat.value)
         parameters.append("commit_strategy", options.commitStrategy.value)
         parameters.append("include_timestamps", options.includeTimestamps.toString())

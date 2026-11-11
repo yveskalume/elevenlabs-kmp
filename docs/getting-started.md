@@ -77,7 +77,7 @@ val audio = elevenLabs.textToSpeech.generate(
     TextToSpeechRequest(
         voiceId = "JBFqnCBsd6RMkjVDRZzb",
         text = "Hello from Kotlin Multiplatform.",
-        modelId = "eleven_multilingual_v2",
+        modelId = ModelId.ElevenMultilingualV2,
     ),
 )
 

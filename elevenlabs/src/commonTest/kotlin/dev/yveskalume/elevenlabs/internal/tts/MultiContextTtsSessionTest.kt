@@ -1,6 +1,8 @@
 package dev.yveskalume.elevenlabs.internal.tts
 
 import dev.yveskalume.elevenlabs.error.ElevenLabsException
+import dev.yveskalume.elevenlabs.models.ModelId
+import dev.yveskalume.elevenlabs.realtime.KeepAlive
 import dev.yveskalume.elevenlabs.tts.MultiContextTtsContextOptions
 import dev.yveskalume.elevenlabs.tts.MultiContextTtsOptions
 import dev.yveskalume.elevenlabs.tts.MultiContextTtsSession
@@ -8,7 +10,6 @@ import dev.yveskalume.elevenlabs.tts.OutputFormat
 import dev.yveskalume.elevenlabs.tts.PronunciationDictionaryLocator
 import dev.yveskalume.elevenlabs.tts.RealtimeTtsEvent
 import dev.yveskalume.elevenlabs.tts.RealtimeTtsGenerationConfig
-import dev.yveskalume.elevenlabs.tts.RealtimeTtsKeepAlive
 import dev.yveskalume.elevenlabs.tts.RealtimeTtsTimeouts
 import dev.yveskalume.elevenlabs.tts.TextNormalization
 import dev.yveskalume.elevenlabs.tts.VoiceSettings
@@ -55,7 +56,7 @@ class MultiContextTtsSessionTest {
                 baseUrl = "https://api.elevenlabs.io",
                 voiceId = "voice-1",
                 options = MultiContextTtsOptions(
-                    modelId = "eleven_flash_v2_5",
+                    modelId = ModelId.ElevenFlashV2_5,
                     languageCode = "en",
                     outputFormat = OutputFormat.Pcm_24000,
                     syncAlignment = true,
@@ -536,7 +537,7 @@ class MultiContextTtsSessionTest {
         val connection = FakeConnection()
         val session = openSession(
             connection,
-            keepAlive = RealtimeTtsKeepAlive(enabled = true, intervalMillis = 1_000),
+            keepAlive = KeepAlive(enabled = true, intervalMillis = 1_000),
         )
         val context = session.openContext(contextId = "a")
 
@@ -613,7 +614,7 @@ class MultiContextTtsSessionTest {
     private suspend fun TestScope.openSession(
         connection: FakeConnection,
         timeouts: RealtimeTtsTimeouts = RealtimeTtsTimeouts(),
-        keepAlive: RealtimeTtsKeepAlive = RealtimeTtsKeepAlive(enabled = false),
+        keepAlive: KeepAlive = KeepAlive(enabled = false),
     ): MultiContextTtsSession = MultiContextTtsSessionImpl.open(
         openConnection = { connection },
         options = MultiContextTtsOptions(timeouts = timeouts, keepAlive = keepAlive),

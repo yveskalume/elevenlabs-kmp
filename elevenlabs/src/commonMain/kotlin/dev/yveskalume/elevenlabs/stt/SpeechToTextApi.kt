@@ -1,5 +1,6 @@
 package dev.yveskalume.elevenlabs.stt
 
+import dev.yveskalume.elevenlabs.Authorization
 import dev.yveskalume.elevenlabs.error.ApiException
 import dev.yveskalume.elevenlabs.error.ElevenLabsException
 import kotlin.coroutines.cancellation.CancellationException
@@ -23,7 +24,7 @@ public interface SpeechToTextApi {
     )
     public suspend fun transcribe(
         request: SpeechToTextRequest,
-        authorization: SpeechToTextAuthorization = SpeechToTextAuthorization.ConfiguredApiKey,
+        authorization: Authorization = Authorization.ConfiguredApiKey,
     ): Transcription
 
     /**
@@ -44,6 +45,6 @@ public interface SpeechToTextApi {
     )
     public suspend fun openRealtimeSession(
         options: RealtimeSttOptions = RealtimeSttOptions(),
-        authorization: SpeechToTextAuthorization = SpeechToTextAuthorization.ConfiguredApiKey,
+        authorization: Authorization = Authorization.ConfiguredApiKey,
     ): RealtimeSttSession
 }

@@ -12,7 +12,7 @@ val transcript = elevenLabs.speechToText.transcribe(
         audio = recording,
         fileName = "recording.m4a",
         contentType = "audio/mp4",
-        modelId = "scribe_v2",
+        modelId = ModelId.ScribeV2,
         diarize = true,
     ),
 )
@@ -102,6 +102,12 @@ push-to-talk button.
 With `VoiceActivityDetection`, ElevenLabs commits when it hears a pause. You can still call
 `commit()` yourself, which is useful at the end of the recording so the last words aren't left
 waiting for a pause that never comes.
+
+With `TurnPrediction`, ElevenLabs commits when it predicts the speaker has finished their turn.
+
+The formats, strategies, and granularities are open types: if ElevenLabs adds a value this SDK
+version doesn't have a constant for, pass it directly, for example
+`RealtimeSttCommitStrategy("new_strategy")`.
 
 ### Improving accuracy
 

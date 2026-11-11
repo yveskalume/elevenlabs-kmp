@@ -1,8 +1,8 @@
 package dev.yveskalume.elevenlabs.internal.tts
 
 import dev.yveskalume.elevenlabs.error.ElevenLabsException
+import dev.yveskalume.elevenlabs.realtime.KeepAlive
 import dev.yveskalume.elevenlabs.tts.RealtimeTtsEvent
-import dev.yveskalume.elevenlabs.tts.RealtimeTtsKeepAlive
 import dev.yveskalume.elevenlabs.tts.RealtimeTtsOptions
 import dev.yveskalume.elevenlabs.tts.RealtimeTtsReconnectPolicy
 import dev.yveskalume.elevenlabs.tts.RealtimeTtsTimeouts
@@ -36,7 +36,7 @@ class RealtimeTtsSessionImplTest {
         }
         val session = RealtimeTtsSessionImpl.open(
             openConnection = { connection },
-            options = RealtimeTtsOptions(keepAlive = RealtimeTtsKeepAlive(enabled = false)),
+            options = RealtimeTtsOptions(keepAlive = KeepAlive(enabled = false)),
             dispatcher = StandardTestDispatcher(testScheduler),
         )
 
@@ -61,7 +61,7 @@ class RealtimeTtsSessionImplTest {
         val session = RealtimeTtsSessionImpl.open(
             openConnection = { connection },
             options = RealtimeTtsOptions(
-                keepAlive = RealtimeTtsKeepAlive(intervalMillis = 1),
+                keepAlive = KeepAlive(intervalMillis = 1),
             ),
             dispatcher = StandardTestDispatcher(testScheduler),
         )
@@ -91,7 +91,7 @@ class RealtimeTtsSessionImplTest {
             openConnection = { connection },
             options = RealtimeTtsOptions(
                 timeouts = RealtimeTtsTimeouts(sendTimeoutMillis = 10),
-                keepAlive = RealtimeTtsKeepAlive(intervalMillis = 1),
+                keepAlive = KeepAlive(intervalMillis = 1),
             ),
             dispatcher = StandardTestDispatcher(testScheduler),
         )
@@ -119,7 +119,7 @@ class RealtimeTtsSessionImplTest {
         }
         val session = RealtimeTtsSessionImpl.open(
             openConnection = { connection },
-            options = RealtimeTtsOptions(keepAlive = RealtimeTtsKeepAlive(enabled = false)),
+            options = RealtimeTtsOptions(keepAlive = KeepAlive(enabled = false)),
             dispatcher = StandardTestDispatcher(testScheduler),
         )
         val events = async { session.events.toList() }
@@ -142,7 +142,7 @@ class RealtimeTtsSessionImplTest {
         }
         val session = RealtimeTtsSessionImpl.open(
             openConnection = { connection },
-            options = RealtimeTtsOptions(keepAlive = RealtimeTtsKeepAlive(enabled = false)),
+            options = RealtimeTtsOptions(keepAlive = KeepAlive(enabled = false)),
             dispatcher = StandardTestDispatcher(testScheduler),
         )
 
@@ -163,7 +163,7 @@ class RealtimeTtsSessionImplTest {
         }
         val session = RealtimeTtsSessionImpl.open(
             openConnection = { connection },
-            options = RealtimeTtsOptions(keepAlive = RealtimeTtsKeepAlive(enabled = false)),
+            options = RealtimeTtsOptions(keepAlive = KeepAlive(enabled = false)),
             dispatcher = StandardTestDispatcher(testScheduler),
         )
         runCurrent()
@@ -187,7 +187,7 @@ class RealtimeTtsSessionImplTest {
         }
         val session = RealtimeTtsSessionImpl.open(
             openConnection = { connection },
-            options = RealtimeTtsOptions(keepAlive = RealtimeTtsKeepAlive(enabled = false)),
+            options = RealtimeTtsOptions(keepAlive = KeepAlive(enabled = false)),
             dispatcher = StandardTestDispatcher(testScheduler),
         )
         runCurrent()
@@ -213,7 +213,7 @@ class RealtimeTtsSessionImplTest {
         }
         val session = RealtimeTtsSessionImpl.open(
             openConnection = { connection },
-            options = RealtimeTtsOptions(keepAlive = RealtimeTtsKeepAlive(enabled = false)),
+            options = RealtimeTtsOptions(keepAlive = KeepAlive(enabled = false)),
             dispatcher = StandardTestDispatcher(testScheduler),
         )
 
@@ -252,7 +252,7 @@ class RealtimeTtsSessionImplTest {
                 connection
             },
             options = RealtimeTtsOptions(
-                keepAlive = RealtimeTtsKeepAlive(enabled = false),
+                keepAlive = KeepAlive(enabled = false),
                 reconnectPolicy = RealtimeTtsReconnectPolicy.BeforeFirstAudio(
                     maxAttempts = 2,
                     initialDelayMillis = 0,
@@ -284,7 +284,7 @@ class RealtimeTtsSessionImplTest {
         }
         val session = RealtimeTtsSessionImpl.open(
             openConnection = { connection },
-            options = RealtimeTtsOptions(keepAlive = RealtimeTtsKeepAlive(enabled = false)),
+            options = RealtimeTtsOptions(keepAlive = KeepAlive(enabled = false)),
             dispatcher = StandardTestDispatcher(testScheduler),
         )
 
@@ -303,7 +303,7 @@ class RealtimeTtsSessionImplTest {
         }
         val session = RealtimeTtsSessionImpl.open(
             openConnection = { connection },
-            options = RealtimeTtsOptions(keepAlive = RealtimeTtsKeepAlive(enabled = false)),
+            options = RealtimeTtsOptions(keepAlive = KeepAlive(enabled = false)),
             dispatcher = StandardTestDispatcher(testScheduler),
         )
 
@@ -328,7 +328,7 @@ class RealtimeTtsSessionImplTest {
                 connection
             },
             options = RealtimeTtsOptions(
-                keepAlive = RealtimeTtsKeepAlive(enabled = false),
+                keepAlive = KeepAlive(enabled = false),
                 reconnectPolicy = RealtimeTtsReconnectPolicy.BeforeFirstAudio(initialDelayMillis = 0),
             ),
             dispatcher = StandardTestDispatcher(testScheduler),

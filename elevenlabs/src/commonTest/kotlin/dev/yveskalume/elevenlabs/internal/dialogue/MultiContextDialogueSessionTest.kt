@@ -9,9 +9,10 @@ import dev.yveskalume.elevenlabs.error.ElevenLabsErrorKind
 import dev.yveskalume.elevenlabs.error.ElevenLabsException
 import dev.yveskalume.elevenlabs.internal.tts.RealtimeConnectionFrame
 import dev.yveskalume.elevenlabs.internal.tts.RealtimeTtsConnection
+import dev.yveskalume.elevenlabs.models.ModelId
+import dev.yveskalume.elevenlabs.realtime.KeepAlive
 import dev.yveskalume.elevenlabs.tts.OutputFormat
 import dev.yveskalume.elevenlabs.tts.PronunciationDictionaryLocator
-import dev.yveskalume.elevenlabs.tts.RealtimeTtsKeepAlive
 import dev.yveskalume.elevenlabs.tts.TextNormalization
 import io.ktor.http.Url
 import io.ktor.websocket.CloseReason
@@ -48,7 +49,7 @@ class MultiContextDialogueSessionTest {
             buildMultiContextDialogueUrl(
                 baseUrl = "https://api.elevenlabs.io",
                 options = MultiContextDialogueOptions(
-                    modelId = "eleven_v3",
+                    modelId = ModelId.ElevenV3,
                     languageCode = "fr",
                     outputFormat = OutputFormat.Pcm_24000,
                     syncAlignment = true,
@@ -73,10 +74,10 @@ class MultiContextDialogueSessionTest {
 
     @Test
     fun `options reject values ElevenLabs would refuse`() {
-        assertFailsWith<IllegalArgumentException> { MultiContextDialogueOptions(modelId = "eleven_flash_v2_5") }
+        assertFailsWith<IllegalArgumentException> { MultiContextDialogueOptions(modelId = ModelId.ElevenFlashV2_5) }
         assertFailsWith<IllegalArgumentException> { MultiContextDialogueOptions(seed = 0) }
         assertFailsWith<IllegalArgumentException> {
-            MultiContextDialogueOptions(keepAlive = RealtimeTtsKeepAlive(intervalMillis = 20_000))
+            MultiContextDialogueOptions(keepAlive = KeepAlive(intervalMillis = 20_000))
         }
         assertFailsWith<IllegalArgumentException> { MultiContextDialogueContextOptions(stability = 1.5) }
         assertFailsWith<IllegalArgumentException> { DialogueLine("alice", "") }
@@ -85,7 +86,7 @@ class MultiContextDialogueSessionTest {
     @Test
     fun `contexts register voices and send lines as inputs`() = runTest {
         val connection = FakeConnection()
-        val session = openSession(connection, modelId = "eleven_v3")
+        val session = openSession(connection, modelId = ModelId.ElevenV3)
 
         val scene = session.openContext(
             voiceIds = listOf("alice", "bob"),
@@ -139,12 +140,21 @@ class MultiContextDialogueSessionTest {
         assertEquals(1, connection.sent.size)
         conversational.close()
 
-        val v3 = openSession(FakeConnection(), modelId = "eleven_v3")
+        val v3 = openSession(FakeConnection(), modelId = ModelId.ElevenV3)
         v3.openContext(List(MultiContextDialogueSession.MAX_VOICES_PER_CONTEXT) { "voice-$it" })
         assertFailsWith<IllegalArgumentException> {
             v3.openContext(List(MultiContextDialogueSession.MAX_VOICES_PER_CONTEXT + 1) { "voice-$it" })
         }
         v3.close()
+    }
+
+    @Test
+    fun `eleven v4 models are accepted with one voice per context`() = runTest {
+        val session = openSession(FakeConnection(), modelId = ModelId.ElevenV4Turbo)
+
+        session.openContext(listOf("alice"))
+        assertFailsWith<IllegalArgumentException> { session.openContext(listOf("bob", "carol")) }
+        session.close()
     }
 
     @Test
@@ -246,7 +256,7 @@ class MultiContextDialogueSessionTest {
     @Test
     fun `keepalive uses the dialogue keep_alive flag`() = runTest {
         val connection = FakeConnection()
-        val session = openSession(connection, keepAlive = RealtimeTtsKeepAlive(intervalMillis = 1_000))
+        val session = openSession(connection, keepAlive = KeepAlive(intervalMillis = 1_000))
         session.openContext(listOf("alice"), contextId = "a")
 
         advanceTimeBy(1_001)
@@ -258,8 +268,8 @@ class MultiContextDialogueSessionTest {
 
     private suspend fun TestScope.openSession(
         connection: FakeConnection,
-        modelId: String? = null,
-        keepAlive: RealtimeTtsKeepAlive = RealtimeTtsKeepAlive(enabled = false),
+        modelId: ModelId? = null,
+        keepAlive: KeepAlive = KeepAlive(enabled = false),
     ): MultiContextDialogueSession = MultiContextDialogueSessionImpl.open(
         openConnection = { connection },
         options = MultiContextDialogueOptions(modelId = modelId, keepAlive = keepAlive),

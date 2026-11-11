@@ -1,8 +1,9 @@
 package dev.yveskalume.elevenlabs.dialogue
 
+import dev.yveskalume.elevenlabs.models.ModelId
+import dev.yveskalume.elevenlabs.realtime.KeepAlive
 import dev.yveskalume.elevenlabs.tts.OutputFormat
 import dev.yveskalume.elevenlabs.tts.PronunciationDictionaryLocator
-import dev.yveskalume.elevenlabs.tts.RealtimeTtsKeepAlive
 import dev.yveskalume.elevenlabs.tts.TextNormalization
 
 /**
@@ -11,10 +12,11 @@ import dev.yveskalume.elevenlabs.tts.TextNormalization
  */
 public data class MultiContextDialogueOptions @Throws(IllegalArgumentException::class) constructor(
     /**
-     * Eleven v3 model identifier, or `null` for the service default, `eleven_v3_conversational`,
-     * which allows one voice per context.
+     * An Eleven v3 or v4 model, or `null` for the service default,
+     * [ModelId.ElevenV3Conversational]. Only [ModelId.ElevenV3] allows several voices per context;
+     * the others allow one.
      */
-    val modelId: String? = null,
+    val modelId: ModelId? = null,
     /** Language code used for text normalization, or `null` to let the model infer it. */
     val languageCode: String? = null,
     /** Encoding and sample rate of emitted audio. */
@@ -33,11 +35,11 @@ public data class MultiContextDialogueOptions @Throws(IllegalArgumentException::
      * Automatic keepalive for open contexts. ElevenLabs closes a context after 20 seconds without
      * input, so the interval must be shorter than that.
      */
-    val keepAlive: RealtimeTtsKeepAlive = RealtimeTtsKeepAlive(),
+    val keepAlive: KeepAlive = KeepAlive(),
 ) {
     init {
-        require(modelId == null || modelId.startsWith(V3_MODEL_PREFIX)) {
-            "Text-to-dialogue requires an Eleven v3 model (\"$V3_MODEL_PREFIX…\")."
+        require(modelId == null || DIALOGUE_MODEL_PREFIXES.any { modelId.value.startsWith(it) }) {
+            "Text-to-dialogue requires an Eleven v3 or v4 model (\"eleven_v3…\" or \"eleven_v4…\")."
         }
         require(languageCode == null || languageCode.isNotBlank()) { "languageCode cannot be blank." }
         require(seed == null || seed in 1..MAX_SEED) { "seed must be between 1 and $MAX_SEED." }
@@ -46,16 +48,17 @@ public data class MultiContextDialogueOptions @Throws(IllegalArgumentException::
         }
     }
 
+    // ElevenLabs allows several voices per context only for eleven_v3. The conversational v3
+    // model, which is the default, and every v4 model allow one.
     internal val maxVoicesPerContext: Int
-        get() = if (modelId == null || modelId == CONVERSATIONAL_MODEL) {
-            1
-        } else {
+        get() = if (modelId == ModelId.ElevenV3) {
             MultiContextDialogueSession.MAX_VOICES_PER_CONTEXT
+        } else {
+            1
         }
 
     private companion object {
-        const val V3_MODEL_PREFIX = "eleven_v3"
-        const val CONVERSATIONAL_MODEL = "eleven_v3_conversational"
+        val DIALOGUE_MODEL_PREFIXES = listOf("eleven_v3", "eleven_v4")
         const val MAX_SEED = 4_294_967_295L
         const val INACTIVITY_TIMEOUT_MILLIS = 20_000L
     }

@@ -1,5 +1,6 @@
 package dev.yveskalume.elevenlabs.internal.tts
 
+import dev.yveskalume.elevenlabs.Authorization
 import dev.yveskalume.elevenlabs.error.ElevenLabsException
 import dev.yveskalume.elevenlabs.internal.http.ElevenLabsHttpClient
 import dev.yveskalume.elevenlabs.internal.http.toHttpFailure
@@ -9,7 +10,6 @@ import dev.yveskalume.elevenlabs.tts.Audio
 import dev.yveskalume.elevenlabs.tts.AudioChunk
 import dev.yveskalume.elevenlabs.tts.MultiContextTtsOptions
 import dev.yveskalume.elevenlabs.tts.MultiContextTtsSession
-import dev.yveskalume.elevenlabs.tts.RealtimeTtsAuthorization
 import dev.yveskalume.elevenlabs.tts.RealtimeTtsEvent
 import dev.yveskalume.elevenlabs.tts.RealtimeTtsOptions
 import dev.yveskalume.elevenlabs.tts.RealtimeTtsSession
@@ -81,7 +81,7 @@ internal class TextToSpeechApiImpl(
         voiceId: String,
         text: Flow<String>,
         options: RealtimeTtsOptions,
-        authorization: RealtimeTtsAuthorization,
+        authorization: Authorization,
     ): Flow<AudioChunk> = flow {
         coroutineScope {
             val session = openRealtimeSession(voiceId, options, authorization)
@@ -109,7 +109,7 @@ internal class TextToSpeechApiImpl(
     override suspend fun openRealtimeSession(
         voiceId: String,
         options: RealtimeTtsOptions,
-        authorization: RealtimeTtsAuthorization,
+        authorization: Authorization,
     ): RealtimeTtsSession {
         require(voiceId.isNotBlank()) { "voiceId cannot be blank." }
         return try {
@@ -131,7 +131,7 @@ internal class TextToSpeechApiImpl(
     override suspend fun openMultiContextSession(
         voiceId: String,
         options: MultiContextTtsOptions,
-        authorization: RealtimeTtsAuthorization,
+        authorization: Authorization,
     ): MultiContextTtsSession {
         require(voiceId.isNotBlank()) { "voiceId cannot be blank." }
         return try {

@@ -1,9 +1,9 @@
 package dev.yveskalume.elevenlabs.internal.tts
 
+import dev.yveskalume.elevenlabs.Authorization
 import dev.yveskalume.elevenlabs.internal.http.ElevenLabsHttpClient
-import dev.yveskalume.elevenlabs.tts.RealtimeTtsAuthorization
+import dev.yveskalume.elevenlabs.internal.http.resolveCredentials
 import dev.yveskalume.elevenlabs.tts.RealtimeTtsOptions
-import dev.yveskalume.elevenlabs.tts.resolveCredentials
 import io.ktor.client.plugins.websocket.webSocketSession
 import io.ktor.client.request.header
 import io.ktor.client.request.url
@@ -16,7 +16,7 @@ internal fun interface RealtimeTtsConnectionFactory {
     suspend fun open(
         voiceId: String,
         options: RealtimeTtsOptions,
-        authorization: RealtimeTtsAuthorization,
+        authorization: Authorization,
     ): RealtimeTtsConnection
 }
 
@@ -27,7 +27,7 @@ internal class RealtimeTtsConnectionFactoryImpl(
     override suspend fun open(
         voiceId: String,
         options: RealtimeTtsOptions,
-        authorization: RealtimeTtsAuthorization,
+        authorization: Authorization,
     ): RealtimeTtsConnection {
         val credentials = authorization.resolveCredentials(http)
         val endpoint = buildRealtimeTtsUrl(
@@ -67,7 +67,7 @@ internal class RealtimeTtsConnectionFactoryImpl(
             "inactivity_timeout",
             options.timeouts.inactivityTimeoutSeconds.toString(),
         )
-        options.modelId?.let { parameters.append("model_id", it) }
+        options.modelId?.let { parameters.append("model_id", it.value) }
         options.languageCode?.let { parameters.append("language_code", it) }
         singleUseToken?.let { parameters.append("single_use_token", it) }
     }.buildString()

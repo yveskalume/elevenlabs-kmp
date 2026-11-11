@@ -1,5 +1,7 @@
 package dev.yveskalume.elevenlabs.tts
 
+import dev.yveskalume.elevenlabs.models.ModelId
+
 /** Input for complete or HTTP-streamed text-to-speech generation. */
 public data class TextToSpeechRequest @Throws(IllegalArgumentException::class) constructor(
     /** Identifier of the voice that should speak the text. */
@@ -7,7 +9,7 @@ public data class TextToSpeechRequest @Throws(IllegalArgumentException::class) c
     /** Non-blank text to synthesize. */
     val text: String,
     /** Model identifier, or `null` to use the service default. */
-    val modelId: String? = null,
+    val modelId: ModelId? = null,
     /** Language code, or `null` to let the service infer it. */
     val languageCode: String? = null,
     /** Optional voice tuning parameters. */

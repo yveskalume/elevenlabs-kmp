@@ -1,6 +1,6 @@
 # Text to dialogue
 
-Text-to-dialogue generates conversations between several speakers with Eleven v3 models, with
+Text-to-dialogue generates conversations between several speakers with Eleven v3 and v4 models, with
 delivery that follows the flow of the conversation. The realtime API hosts up to five independent
 dialogue contexts on one WebSocket (`MultiContextDialogueSession.MAX_CONTEXTS`), for example to
 prepare the next scene while the current one plays.
@@ -8,7 +8,7 @@ prepare the next scene while the current one plays.
 ```kotlin
 val session = elevenLabs.textToDialogue.openMultiContextSession(
     options = MultiContextDialogueOptions(
-        modelId = "eleven_v3",
+        modelId = ModelId.ElevenV3,
         outputFormat = OutputFormat.Pcm_24000,
     ),
 )
@@ -20,8 +20,9 @@ Unlike text-to-speech, the voices are chosen per context.
 ## Voices per context
 
 Each context registers the voices of its speakers when it opens, and every line names the voice that
-says it. `eleven_v3_conversational`, the default model, allows one voice per context; other Eleven
-v3 models allow up to ten (`MultiContextDialogueSession.MAX_VOICES_PER_CONTEXT`).
+says it. `ModelId.ElevenV3` allows up to ten voices per context
+(`MultiContextDialogueSession.MAX_VOICES_PER_CONTEXT`). The default model,
+`ModelId.ElevenV3Conversational`, and the Eleven v4 models allow one.
 
 ```kotlin
 val scene = session.openContext(

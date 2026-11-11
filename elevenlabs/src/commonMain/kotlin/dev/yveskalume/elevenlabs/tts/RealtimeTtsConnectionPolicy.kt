@@ -21,18 +21,6 @@ public data class RealtimeTtsTimeouts @Throws(IllegalArgumentException::class) c
     }
 }
 
-/** Keeps an otherwise idle ElevenLabs TTS WebSocket session open. */
-public data class RealtimeTtsKeepAlive @Throws(IllegalArgumentException::class) constructor(
-    /** Whether keepalive messages are sent. */
-    val enabled: Boolean = true,
-    /** Delay between keepalive messages, in milliseconds. */
-    val intervalMillis: Long = 15_000,
-) {
-    init {
-        require(intervalMillis > 0) { "intervalMillis must be greater than 0." }
-    }
-}
-
 /** Controls if a realtime TTS connection may be opened again after a transient failure. */
 public sealed interface RealtimeTtsReconnectPolicy {
     /** Never reconnect automatically. */

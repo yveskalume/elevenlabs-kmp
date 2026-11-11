@@ -2,7 +2,8 @@ package dev.yveskalume.elevenlabs.models
 
 /** Describes an ElevenLabs model and its supported capabilities. */
 public data class Model(
-    val id: String,
+    /** Identifier to pass as `modelId` in requests and options. */
+    val id: ModelId,
     val name: String,
     val description: String? = null,
     /** Whether the model supports text-to-speech generation. */

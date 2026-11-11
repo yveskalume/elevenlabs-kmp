@@ -1,6 +1,7 @@
 package dev.yveskalume.elevenlabs.internal.models
 
 import dev.yveskalume.elevenlabs.models.Model
+import dev.yveskalume.elevenlabs.models.ModelId
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -25,7 +26,7 @@ internal data class ModelDto(
     val languages: List<ModelLanguageDto> = emptyList(),
 ) {
     fun toPublic() = Model(
-        id = id,
+        id = ModelId(id),
         name = name,
         description = description,
         canDoTextToSpeech = canDoTextToSpeech,
