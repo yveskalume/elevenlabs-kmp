@@ -6,7 +6,7 @@ public sealed interface SpeechToTextAuthorization {
     public data object ConfiguredApiKey : SpeechToTextAuthorization
 
     /** Uses an already-fetched endpoint-appropriate single-use [token]. */
-    public data class SingleUseToken(public val token: String) : SpeechToTextAuthorization {
+    public data class SingleUseToken @Throws(IllegalArgumentException::class) constructor(public val token: String) : SpeechToTextAuthorization {
         init {
             require(token.isNotBlank()) { "The ElevenLabs speech-to-text token cannot be blank." }
         }

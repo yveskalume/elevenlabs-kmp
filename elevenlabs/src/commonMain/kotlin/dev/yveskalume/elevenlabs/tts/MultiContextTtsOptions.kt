@@ -6,7 +6,7 @@ package dev.yveskalume.elevenlabs.tts
  * These values are fixed when the WebSocket is opened and apply to every context. Settings that
  * can differ per context live in [MultiContextTtsContextOptions].
  */
-public data class MultiContextTtsOptions(
+public data class MultiContextTtsOptions @Throws(IllegalArgumentException::class) constructor(
     /** Model identifier, or `null` to use the service default. */
     val modelId: String? = null,
     /** Language code, or `null` to let the selected model infer it. */
@@ -51,7 +51,7 @@ public data class MultiContextTtsOptions(
 }
 
 /** Configuration of a single context in a [MultiContextTtsSession]. */
-public data class MultiContextTtsContextOptions(
+public data class MultiContextTtsContextOptions @Throws(IllegalArgumentException::class) constructor(
     /** Voice tuning for this context, or `null` to use the voice defaults. */
     val voiceSettings: VoiceSettings? = null,
     /** Server-side text chunking for this context, or `null` to use the service default. */
@@ -71,7 +71,7 @@ public data class MultiContextTtsContextOptions(
 }
 
 /** Reference to a specific version of a pronunciation dictionary stored in ElevenLabs. */
-public data class PronunciationDictionaryLocator(
+public data class PronunciationDictionaryLocator @Throws(IllegalArgumentException::class) constructor(
     /** Identifier of the pronunciation dictionary. */
     val dictionaryId: String,
     /** Version of the dictionary to apply. */

@@ -1,7 +1,7 @@
 package dev.yveskalume.elevenlabs.tts
 
 /** Input for complete or HTTP-streamed text-to-speech generation. */
-public data class TextToSpeechRequest(
+public data class TextToSpeechRequest @Throws(IllegalArgumentException::class) constructor(
     /** Identifier of the voice that should speak the text. */
     val voiceId: String,
     /** Non-blank text to synthesize. */

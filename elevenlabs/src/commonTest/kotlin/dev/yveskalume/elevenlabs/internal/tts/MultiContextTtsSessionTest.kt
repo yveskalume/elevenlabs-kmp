@@ -1,9 +1,6 @@
 package dev.yveskalume.elevenlabs.internal.tts
 
-import dev.yveskalume.elevenlabs.error.NetworkError
-import dev.yveskalume.elevenlabs.error.RealtimeServerError
-import dev.yveskalume.elevenlabs.error.SerializationError
-import dev.yveskalume.elevenlabs.error.TimeoutError
+import dev.yveskalume.elevenlabs.error.ElevenLabsException
 import dev.yveskalume.elevenlabs.tts.MultiContextTtsContextOptions
 import dev.yveskalume.elevenlabs.tts.MultiContextTtsOptions
 import dev.yveskalume.elevenlabs.tts.MultiContextTtsSession
@@ -299,7 +296,7 @@ class MultiContextTtsSessionTest {
         runCurrent()
 
         assertEquals(listOf<RealtimeTtsEvent>(RealtimeTtsEvent.Finished), context.events.toList())
-        assertFailsWith<IllegalStateException> { context.sendText("too late") }
+        assertFailsWith<ElevenLabsException.RealtimeServer> { context.sendText("too late") }
         session.close()
     }
 
@@ -316,9 +313,13 @@ class MultiContextTtsSessionTest {
         )
         runCurrent()
 
-        val failure = assertFailsWith<RealtimeServerError> { failing.events.toList() }
+        val failure = assertFailsWith<ElevenLabsException.RealtimeServer> { failing.events.toList() }
         assertEquals("Invalid voice settings", failure.message)
         assertEquals("invalid_settings", failure.errorCode)
+        val sendFailure = assertFailsWith<ElevenLabsException.RealtimeServer> {
+            failing.sendText("nope")
+        }
+        assertEquals("invalid_settings", sendFailure.errorCode)
 
         healthy.sendText("still works")
         connection.serverSends("""{"contextId":"healthy","audio":"${b64(3)}"}""")
@@ -344,15 +345,19 @@ class MultiContextTtsSessionTest {
 
         assertEquals(
             "quota_exceeded",
-            assertFailsWith<RealtimeServerError> { first.events.toList() }.message,
+            assertFailsWith<ElevenLabsException.RealtimeServer> { first.events.toList() }.message,
         )
-        assertFailsWith<RealtimeServerError> { second.events.toList() }
+        assertFailsWith<ElevenLabsException.RealtimeServer> { second.events.toList() }
         assertTrue(connection.closed)
 
-        val stateFailure = assertFailsWith<IllegalStateException> { session.openContext() }
-        assertIs<RealtimeServerError>(stateFailure.cause)
-        assertFailsWith<IllegalStateException> { first.sendText("nope") }
+        val failure = assertFailsWith<ElevenLabsException.RealtimeServer> { session.openContext() }
+        assertEquals("quota_exceeded", failure.message)
+        assertFailsWith<ElevenLabsException.RealtimeServer> { first.sendText("nope") }
+        assertFailsWith<ElevenLabsException.RealtimeServer> { first.keepAlive() }
+
+        // The session did fail, so closing it afterwards does not turn this into a state error.
         session.close()
+        assertFailsWith<ElevenLabsException.RealtimeServer> { session.openContext() }
     }
 
     @Test
@@ -364,7 +369,7 @@ class MultiContextTtsSessionTest {
         connection.serverCloses(CloseReason.Codes.INTERNAL_ERROR.code, "")
         runCurrent()
 
-        val failure = assertFailsWith<RealtimeServerError> { context.events.toList() }
+        val failure = assertFailsWith<ElevenLabsException.RealtimeServer> { context.events.toList() }
         assertEquals(CloseReason.Codes.INTERNAL_ERROR.code, failure.closeCode)
         assertTrue(failure.message.orEmpty().isNotBlank())
         session.close()
@@ -379,7 +384,7 @@ class MultiContextTtsSessionTest {
         connection.serverSends("not json")
         runCurrent()
 
-        assertFailsWith<SerializationError> { context.events.toList() }
+        assertFailsWith<ElevenLabsException.Serialization> { context.events.toList() }
         session.close()
     }
 
@@ -392,8 +397,8 @@ class MultiContextTtsSessionTest {
 
         connection.sendFailure = IOException("socket reset")
 
-        assertFailsWith<NetworkError> { sender.sendText("Hello") }
-        assertFailsWith<NetworkError> { bystander.events.toList() }
+        assertFailsWith<ElevenLabsException.Network> { sender.sendText("Hello") }
+        assertFailsWith<ElevenLabsException.Network> { bystander.events.toList() }
         session.close()
     }
 
@@ -460,7 +465,7 @@ class MultiContextTtsSessionTest {
         advanceTimeBy(1_001)
         runCurrent()
 
-        assertIs<TimeoutError>(slowFailure.await())
+        assertIs<ElevenLabsException.Timeout>(slowFailure.await())
         other.sendText("unaffected")
         session.close()
     }
@@ -501,8 +506,8 @@ class MultiContextTtsSessionTest {
 
         val failure = runCatching { session.finish() }.exceptionOrNull()
 
-        assertIs<TimeoutError>(failure)
-        assertIs<TimeoutError>(runCatching { context.events.toList() }.exceptionOrNull())
+        assertIs<ElevenLabsException.Timeout>(failure)
+        assertIs<ElevenLabsException.Timeout>(runCatching { context.events.toList() }.exceptionOrNull())
         assertTrue(connection.closed)
     }
 

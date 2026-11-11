@@ -1,6 +1,6 @@
 package dev.yveskalume.elevenlabs.internal.tts
 
-import dev.yveskalume.elevenlabs.error.TimeoutError
+import dev.yveskalume.elevenlabs.error.ElevenLabsException
 import dev.yveskalume.elevenlabs.internal.realtime.MultiContextEngine
 import dev.yveskalume.elevenlabs.internal.realtime.MultiContextEngineConfig
 import dev.yveskalume.elevenlabs.internal.tts.dtos.MultiContextTtsProtocol
@@ -108,7 +108,7 @@ internal class MultiContextTtsSessionImpl private constructor(
             val connection = try {
                 withTimeout(options.timeouts.connectTimeoutMillis.milliseconds) { openConnection() }
             } catch (timeout: TimeoutCancellationException) {
-                throw TimeoutError(
+                throw ElevenLabsException.Timeout(
                     message = "Multi-context TTS connection timed out after " +
                         "${options.timeouts.connectTimeoutMillis} ms.",
                     cause = timeout,

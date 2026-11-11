@@ -1,6 +1,7 @@
 package dev.yveskalume.elevenlabs.tts
 
 import dev.yveskalume.elevenlabs.internal.http.ElevenLabsHttpClient
+import dev.yveskalume.elevenlabs.internal.http.resolveCredential
 import dev.yveskalume.elevenlabs.internal.tts.RealtimeTtsCredentials
 
 /** Credentials used to open a realtime text-to-speech connection. */
@@ -9,7 +10,7 @@ public sealed interface RealtimeTtsAuthorization {
     public data object ConfiguredApiKey : RealtimeTtsAuthorization
 
     /** Uses an already-fetched endpoint-appropriate single-use [token]. */
-    public data class SingleUseToken(public val token: String) : RealtimeTtsAuthorization {
+    public data class SingleUseToken @Throws(IllegalArgumentException::class) constructor(public val token: String) : RealtimeTtsAuthorization {
         init {
             require(token.isNotBlank()) { "The ElevenLabs single-use token cannot be blank." }
         }
@@ -32,11 +33,9 @@ internal suspend fun RealtimeTtsAuthorization.resolveCredentials(
         singleUseToken = token,
     )
 
-    is RealtimeTtsAuthorization.TokenProvider -> {
-        val token = provider.getToken()
-        require(token.isNotBlank()) {
-            "The ElevenLabs realtime token provider returned a blank token."
-        }
-        RealtimeTtsCredentials(singleUseToken = token)
-    }
+    is RealtimeTtsAuthorization.TokenProvider -> RealtimeTtsCredentials(
+        singleUseToken = resolveCredential("ElevenLabs realtime token provider") {
+            provider.getToken()
+        },
+    )
 }

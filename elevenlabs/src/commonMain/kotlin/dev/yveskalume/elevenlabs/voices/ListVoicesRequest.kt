@@ -1,7 +1,7 @@
 package dev.yveskalume.elevenlabs.voices
 
 /** Filters and pagination controls for [VoicesApi.list]. */
-public data class ListVoicesRequest(
+public data class ListVoicesRequest @Throws(IllegalArgumentException::class) constructor(
     /** Maximum number of voices to return, from 1 through 100. */
     val pageSize: Int = 10,
     /** Opaque token returned by the previous [VoicePage]. */

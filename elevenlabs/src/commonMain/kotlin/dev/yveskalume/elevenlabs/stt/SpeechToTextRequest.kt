@@ -1,7 +1,7 @@
 package dev.yveskalume.elevenlabs.stt
 
 /** Input for transcribing one complete audio or video file. */
-public data class SpeechToTextRequest(
+public data class SpeechToTextRequest @Throws(IllegalArgumentException::class) constructor(
     /**
      * Non-empty contents of the file to upload.
      *

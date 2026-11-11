@@ -6,7 +6,7 @@ import dev.yveskalume.elevenlabs.dialogue.MultiContextDialogueContextOptions
 import dev.yveskalume.elevenlabs.dialogue.MultiContextDialogueOptions
 import dev.yveskalume.elevenlabs.dialogue.MultiContextDialogueSession
 import dev.yveskalume.elevenlabs.error.ElevenLabsErrorKind
-import dev.yveskalume.elevenlabs.error.RealtimeServerError
+import dev.yveskalume.elevenlabs.error.ElevenLabsException
 import dev.yveskalume.elevenlabs.internal.tts.RealtimeConnectionFrame
 import dev.yveskalume.elevenlabs.internal.tts.RealtimeTtsConnection
 import dev.yveskalume.elevenlabs.tts.OutputFormat
@@ -192,12 +192,13 @@ class MultiContextDialogueSessionTest {
         )
         runCurrent()
 
-        val failure = assertFailsWith<RealtimeServerError> { first.events.toList() }
+        val failure = assertFailsWith<ElevenLabsException.RealtimeServer> { first.events.toList() }
         assertEquals("Missing credentials", failure.message)
         assertEquals("authentication_required", failure.errorCode)
         assertEquals(ElevenLabsErrorKind.Authentication, failure.kind)
-        assertFailsWith<RealtimeServerError> { second.events.toList() }
-        assertFailsWith<IllegalStateException> { session.openContext(listOf("carol")) }
+        assertFailsWith<ElevenLabsException.RealtimeServer> { second.events.toList() }
+        assertFailsWith<ElevenLabsException.RealtimeServer> { session.openContext(listOf("carol")) }
+        assertFailsWith<ElevenLabsException.RealtimeServer> { first.flush() }
         session.close()
     }
 

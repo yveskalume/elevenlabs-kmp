@@ -523,34 +523,6 @@ final class dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueTimeouts { //
     final fun toString(): kotlin/String // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueTimeouts.toString|toString(){}[0]
 }
 
-final class dev.yveskalume.elevenlabs.error/ElevenLabsErrorDetails { // dev.yveskalume.elevenlabs.error/ElevenLabsErrorDetails|null[0]
-    constructor <init>(kotlin/Int?, kotlin/String, kotlin/String? = ..., kotlin/String? = ..., kotlin/String? = ..., kotlin.collections/List<dev.yveskalume.elevenlabs.error/ElevenLabsValidationError> = ...) // dev.yveskalume.elevenlabs.error/ElevenLabsErrorDetails.<init>|<init>(kotlin.Int?;kotlin.String;kotlin.String?;kotlin.String?;kotlin.String?;kotlin.collections.List<dev.yveskalume.elevenlabs.error.ElevenLabsValidationError>){}[0]
-
-    final val errorCode // dev.yveskalume.elevenlabs.error/ElevenLabsErrorDetails.errorCode|{}errorCode[0]
-        final fun <get-errorCode>(): kotlin/String? // dev.yveskalume.elevenlabs.error/ElevenLabsErrorDetails.errorCode.<get-errorCode>|<get-errorCode>(){}[0]
-    final val message // dev.yveskalume.elevenlabs.error/ElevenLabsErrorDetails.message|{}message[0]
-        final fun <get-message>(): kotlin/String // dev.yveskalume.elevenlabs.error/ElevenLabsErrorDetails.message.<get-message>|<get-message>(){}[0]
-    final val requestId // dev.yveskalume.elevenlabs.error/ElevenLabsErrorDetails.requestId|{}requestId[0]
-        final fun <get-requestId>(): kotlin/String? // dev.yveskalume.elevenlabs.error/ElevenLabsErrorDetails.requestId.<get-requestId>|<get-requestId>(){}[0]
-    final val responseBody // dev.yveskalume.elevenlabs.error/ElevenLabsErrorDetails.responseBody|{}responseBody[0]
-        final fun <get-responseBody>(): kotlin/String? // dev.yveskalume.elevenlabs.error/ElevenLabsErrorDetails.responseBody.<get-responseBody>|<get-responseBody>(){}[0]
-    final val statusCode // dev.yveskalume.elevenlabs.error/ElevenLabsErrorDetails.statusCode|{}statusCode[0]
-        final fun <get-statusCode>(): kotlin/Int? // dev.yveskalume.elevenlabs.error/ElevenLabsErrorDetails.statusCode.<get-statusCode>|<get-statusCode>(){}[0]
-    final val validationErrors // dev.yveskalume.elevenlabs.error/ElevenLabsErrorDetails.validationErrors|{}validationErrors[0]
-        final fun <get-validationErrors>(): kotlin.collections/List<dev.yveskalume.elevenlabs.error/ElevenLabsValidationError> // dev.yveskalume.elevenlabs.error/ElevenLabsErrorDetails.validationErrors.<get-validationErrors>|<get-validationErrors>(){}[0]
-
-    final fun component1(): kotlin/Int? // dev.yveskalume.elevenlabs.error/ElevenLabsErrorDetails.component1|component1(){}[0]
-    final fun component2(): kotlin/String // dev.yveskalume.elevenlabs.error/ElevenLabsErrorDetails.component2|component2(){}[0]
-    final fun component3(): kotlin/String? // dev.yveskalume.elevenlabs.error/ElevenLabsErrorDetails.component3|component3(){}[0]
-    final fun component4(): kotlin/String? // dev.yveskalume.elevenlabs.error/ElevenLabsErrorDetails.component4|component4(){}[0]
-    final fun component5(): kotlin/String? // dev.yveskalume.elevenlabs.error/ElevenLabsErrorDetails.component5|component5(){}[0]
-    final fun component6(): kotlin.collections/List<dev.yveskalume.elevenlabs.error/ElevenLabsValidationError> // dev.yveskalume.elevenlabs.error/ElevenLabsErrorDetails.component6|component6(){}[0]
-    final fun copy(kotlin/Int? = ..., kotlin/String = ..., kotlin/String? = ..., kotlin/String? = ..., kotlin/String? = ..., kotlin.collections/List<dev.yveskalume.elevenlabs.error/ElevenLabsValidationError> = ...): dev.yveskalume.elevenlabs.error/ElevenLabsErrorDetails // dev.yveskalume.elevenlabs.error/ElevenLabsErrorDetails.copy|copy(kotlin.Int?;kotlin.String;kotlin.String?;kotlin.String?;kotlin.String?;kotlin.collections.List<dev.yveskalume.elevenlabs.error.ElevenLabsValidationError>){}[0]
-    final fun equals(kotlin/Any?): kotlin/Boolean // dev.yveskalume.elevenlabs.error/ElevenLabsErrorDetails.equals|equals(kotlin.Any?){}[0]
-    final fun hashCode(): kotlin/Int // dev.yveskalume.elevenlabs.error/ElevenLabsErrorDetails.hashCode|hashCode(){}[0]
-    final fun toString(): kotlin/String // dev.yveskalume.elevenlabs.error/ElevenLabsErrorDetails.toString|toString(){}[0]
-}
-
 final class dev.yveskalume.elevenlabs.error/ElevenLabsValidationError { // dev.yveskalume.elevenlabs.error/ElevenLabsValidationError|null[0]
     constructor <init>(kotlin.collections/List<kotlin/String>, kotlin/String, kotlin/String? = ...) // dev.yveskalume.elevenlabs.error/ElevenLabsValidationError.<init>|<init>(kotlin.collections.List<kotlin.String>;kotlin.String;kotlin.String?){}[0]
 
@@ -568,28 +540,6 @@ final class dev.yveskalume.elevenlabs.error/ElevenLabsValidationError { // dev.y
     final fun equals(kotlin/Any?): kotlin/Boolean // dev.yveskalume.elevenlabs.error/ElevenLabsValidationError.equals|equals(kotlin.Any?){}[0]
     final fun hashCode(): kotlin/Int // dev.yveskalume.elevenlabs.error/ElevenLabsValidationError.hashCode|hashCode(){}[0]
     final fun toString(): kotlin/String // dev.yveskalume.elevenlabs.error/ElevenLabsValidationError.toString|toString(){}[0]
-}
-
-final class dev.yveskalume.elevenlabs.error/NetworkError : dev.yveskalume.elevenlabs.error/ElevenLabsException { // dev.yveskalume.elevenlabs.error/NetworkError|null[0]
-    final val kind // dev.yveskalume.elevenlabs.error/NetworkError.kind|{}kind[0]
-        final fun <get-kind>(): dev.yveskalume.elevenlabs.error/ElevenLabsErrorKind // dev.yveskalume.elevenlabs.error/NetworkError.kind.<get-kind>|<get-kind>(){}[0]
-}
-
-final class dev.yveskalume.elevenlabs.error/SerializationError : dev.yveskalume.elevenlabs.error/ElevenLabsException { // dev.yveskalume.elevenlabs.error/SerializationError|null[0]
-    final val details // dev.yveskalume.elevenlabs.error/SerializationError.details|{}details[0]
-        final fun <get-details>(): dev.yveskalume.elevenlabs.error/ElevenLabsErrorDetails? // dev.yveskalume.elevenlabs.error/SerializationError.details.<get-details>|<get-details>(){}[0]
-    final val kind // dev.yveskalume.elevenlabs.error/SerializationError.kind|{}kind[0]
-        final fun <get-kind>(): dev.yveskalume.elevenlabs.error/ElevenLabsErrorKind // dev.yveskalume.elevenlabs.error/SerializationError.kind.<get-kind>|<get-kind>(){}[0]
-}
-
-final class dev.yveskalume.elevenlabs.error/TimeoutError : dev.yveskalume.elevenlabs.error/ElevenLabsException { // dev.yveskalume.elevenlabs.error/TimeoutError|null[0]
-    final val kind // dev.yveskalume.elevenlabs.error/TimeoutError.kind|{}kind[0]
-        final fun <get-kind>(): dev.yveskalume.elevenlabs.error/ElevenLabsErrorKind // dev.yveskalume.elevenlabs.error/TimeoutError.kind.<get-kind>|<get-kind>(){}[0]
-}
-
-final class dev.yveskalume.elevenlabs.error/UnknownError : dev.yveskalume.elevenlabs.error/ElevenLabsException { // dev.yveskalume.elevenlabs.error/UnknownError|null[0]
-    final val kind // dev.yveskalume.elevenlabs.error/UnknownError.kind|{}kind[0]
-        final fun <get-kind>(): dev.yveskalume.elevenlabs.error/ElevenLabsErrorKind // dev.yveskalume.elevenlabs.error/UnknownError.kind.<get-kind>|<get-kind>(){}[0]
 }
 
 final class dev.yveskalume.elevenlabs.models/Model { // dev.yveskalume.elevenlabs.models/Model|null[0]
@@ -1178,28 +1128,7 @@ final class dev.yveskalume.elevenlabs/ElevenLabsConfiguration { // dev.yveskalum
     final fun apiKey(kotlin/String) // dev.yveskalume.elevenlabs/ElevenLabsConfiguration.apiKey|apiKey(kotlin.String){}[0]
 }
 
-open class dev.yveskalume.elevenlabs.error/RealtimeServerError : dev.yveskalume.elevenlabs.error/ElevenLabsException { // dev.yveskalume.elevenlabs.error/RealtimeServerError|null[0]
-    final val closeCode // dev.yveskalume.elevenlabs.error/RealtimeServerError.closeCode|{}closeCode[0]
-        final fun <get-closeCode>(): kotlin/Short? // dev.yveskalume.elevenlabs.error/RealtimeServerError.closeCode.<get-closeCode>|<get-closeCode>(){}[0]
-    final val errorCode // dev.yveskalume.elevenlabs.error/RealtimeServerError.errorCode|{}errorCode[0]
-        final fun <get-errorCode>(): kotlin/String? // dev.yveskalume.elevenlabs.error/RealtimeServerError.errorCode.<get-errorCode>|<get-errorCode>(){}[0]
-    final val responseBody // dev.yveskalume.elevenlabs.error/RealtimeServerError.responseBody|{}responseBody[0]
-        final fun <get-responseBody>(): kotlin/String? // dev.yveskalume.elevenlabs.error/RealtimeServerError.responseBody.<get-responseBody>|<get-responseBody>(){}[0]
-    open val kind // dev.yveskalume.elevenlabs.error/RealtimeServerError.kind|{}kind[0]
-        open fun <get-kind>(): dev.yveskalume.elevenlabs.error/ElevenLabsErrorKind // dev.yveskalume.elevenlabs.error/RealtimeServerError.kind.<get-kind>|<get-kind>(){}[0]
-}
-
 sealed class dev.yveskalume.elevenlabs.error/ApiException : dev.yveskalume.elevenlabs.error/ElevenLabsException { // dev.yveskalume.elevenlabs.error/ApiException|null[0]
-    final val details // dev.yveskalume.elevenlabs.error/ApiException.details|{}details[0]
-        final fun <get-details>(): dev.yveskalume.elevenlabs.error/ElevenLabsErrorDetails // dev.yveskalume.elevenlabs.error/ApiException.details.<get-details>|<get-details>(){}[0]
-    final val errorCode // dev.yveskalume.elevenlabs.error/ApiException.errorCode|{}errorCode[0]
-        final fun <get-errorCode>(): kotlin/String? // dev.yveskalume.elevenlabs.error/ApiException.errorCode.<get-errorCode>|<get-errorCode>(){}[0]
-    final val requestId // dev.yveskalume.elevenlabs.error/ApiException.requestId|{}requestId[0]
-        final fun <get-requestId>(): kotlin/String? // dev.yveskalume.elevenlabs.error/ApiException.requestId.<get-requestId>|<get-requestId>(){}[0]
-    final val responseBody // dev.yveskalume.elevenlabs.error/ApiException.responseBody|{}responseBody[0]
-        final fun <get-responseBody>(): kotlin/String? // dev.yveskalume.elevenlabs.error/ApiException.responseBody.<get-responseBody>|<get-responseBody>(){}[0]
-    final val statusCode // dev.yveskalume.elevenlabs.error/ApiException.statusCode|{}statusCode[0]
-        final fun <get-statusCode>(): kotlin/Int // dev.yveskalume.elevenlabs.error/ApiException.statusCode.<get-statusCode>|<get-statusCode>(){}[0]
     final val validationErrors // dev.yveskalume.elevenlabs.error/ApiException.validationErrors|{}validationErrors[0]
         final fun <get-validationErrors>(): kotlin.collections/List<dev.yveskalume.elevenlabs.error/ElevenLabsValidationError> // dev.yveskalume.elevenlabs.error/ApiException.validationErrors.<get-validationErrors>|<get-validationErrors>(){}[0]
     open val kind // dev.yveskalume.elevenlabs.error/ApiException.kind|{}kind[0]
@@ -1230,20 +1159,46 @@ sealed class dev.yveskalume.elevenlabs.error/ApiException : dev.yveskalume.eleve
 sealed class dev.yveskalume.elevenlabs.error/ElevenLabsException : kotlin/Exception { // dev.yveskalume.elevenlabs.error/ElevenLabsException|null[0]
     abstract val kind // dev.yveskalume.elevenlabs.error/ElevenLabsException.kind|{}kind[0]
         abstract fun <get-kind>(): dev.yveskalume.elevenlabs.error/ElevenLabsErrorKind // dev.yveskalume.elevenlabs.error/ElevenLabsException.kind.<get-kind>|<get-kind>(){}[0]
+    final val errorCode // dev.yveskalume.elevenlabs.error/ElevenLabsException.errorCode|{}errorCode[0]
+        final fun <get-errorCode>(): kotlin/String? // dev.yveskalume.elevenlabs.error/ElevenLabsException.errorCode.<get-errorCode>|<get-errorCode>(){}[0]
     final val isRetryable // dev.yveskalume.elevenlabs.error/ElevenLabsException.isRetryable|{}isRetryable[0]
         final fun <get-isRetryable>(): kotlin/Boolean // dev.yveskalume.elevenlabs.error/ElevenLabsException.isRetryable.<get-isRetryable>|<get-isRetryable>(){}[0]
+    final val requestId // dev.yveskalume.elevenlabs.error/ElevenLabsException.requestId|{}requestId[0]
+        final fun <get-requestId>(): kotlin/String? // dev.yveskalume.elevenlabs.error/ElevenLabsException.requestId.<get-requestId>|<get-requestId>(){}[0]
+    final val responseBody // dev.yveskalume.elevenlabs.error/ElevenLabsException.responseBody|{}responseBody[0]
+        final fun <get-responseBody>(): kotlin/String? // dev.yveskalume.elevenlabs.error/ElevenLabsException.responseBody.<get-responseBody>|<get-responseBody>(){}[0]
+    final val statusCode // dev.yveskalume.elevenlabs.error/ElevenLabsException.statusCode|{}statusCode[0]
+        final fun <get-statusCode>(): kotlin/Int? // dev.yveskalume.elevenlabs.error/ElevenLabsException.statusCode.<get-statusCode>|<get-statusCode>(){}[0]
 
-    final class Realtime : dev.yveskalume.elevenlabs.error/RealtimeServerError // dev.yveskalume.elevenlabs.error/ElevenLabsException.Realtime|null[0]
+    final class MissingCredentials : dev.yveskalume.elevenlabs.error/ElevenLabsException { // dev.yveskalume.elevenlabs.error/ElevenLabsException.MissingCredentials|null[0]
+        final val kind // dev.yveskalume.elevenlabs.error/ElevenLabsException.MissingCredentials.kind|{}kind[0]
+            final fun <get-kind>(): dev.yveskalume.elevenlabs.error/ElevenLabsErrorKind // dev.yveskalume.elevenlabs.error/ElevenLabsException.MissingCredentials.kind.<get-kind>|<get-kind>(){}[0]
+    }
+
+    final class Network : dev.yveskalume.elevenlabs.error/ElevenLabsException { // dev.yveskalume.elevenlabs.error/ElevenLabsException.Network|null[0]
+        final val kind // dev.yveskalume.elevenlabs.error/ElevenLabsException.Network.kind|{}kind[0]
+            final fun <get-kind>(): dev.yveskalume.elevenlabs.error/ElevenLabsErrorKind // dev.yveskalume.elevenlabs.error/ElevenLabsException.Network.kind.<get-kind>|<get-kind>(){}[0]
+    }
+
+    final class RealtimeServer : dev.yveskalume.elevenlabs.error/ElevenLabsException { // dev.yveskalume.elevenlabs.error/ElevenLabsException.RealtimeServer|null[0]
+        final val closeCode // dev.yveskalume.elevenlabs.error/ElevenLabsException.RealtimeServer.closeCode|{}closeCode[0]
+            final fun <get-closeCode>(): kotlin/Short? // dev.yveskalume.elevenlabs.error/ElevenLabsException.RealtimeServer.closeCode.<get-closeCode>|<get-closeCode>(){}[0]
+        final val kind // dev.yveskalume.elevenlabs.error/ElevenLabsException.RealtimeServer.kind|{}kind[0]
+            final fun <get-kind>(): dev.yveskalume.elevenlabs.error/ElevenLabsErrorKind // dev.yveskalume.elevenlabs.error/ElevenLabsException.RealtimeServer.kind.<get-kind>|<get-kind>(){}[0]
+    }
 
     final class Serialization : dev.yveskalume.elevenlabs.error/ElevenLabsException { // dev.yveskalume.elevenlabs.error/ElevenLabsException.Serialization|null[0]
         final val kind // dev.yveskalume.elevenlabs.error/ElevenLabsException.Serialization.kind|{}kind[0]
             final fun <get-kind>(): dev.yveskalume.elevenlabs.error/ElevenLabsErrorKind // dev.yveskalume.elevenlabs.error/ElevenLabsException.Serialization.kind.<get-kind>|<get-kind>(){}[0]
     }
 
-    final class UnexpectedResponse : dev.yveskalume.elevenlabs.error/ElevenLabsException { // dev.yveskalume.elevenlabs.error/ElevenLabsException.UnexpectedResponse|null[0]
-        final val details // dev.yveskalume.elevenlabs.error/ElevenLabsException.UnexpectedResponse.details|{}details[0]
-            final fun <get-details>(): dev.yveskalume.elevenlabs.error/ElevenLabsErrorDetails // dev.yveskalume.elevenlabs.error/ElevenLabsException.UnexpectedResponse.details.<get-details>|<get-details>(){}[0]
-        final val kind // dev.yveskalume.elevenlabs.error/ElevenLabsException.UnexpectedResponse.kind|{}kind[0]
-            final fun <get-kind>(): dev.yveskalume.elevenlabs.error/ElevenLabsErrorKind // dev.yveskalume.elevenlabs.error/ElevenLabsException.UnexpectedResponse.kind.<get-kind>|<get-kind>(){}[0]
+    final class Timeout : dev.yveskalume.elevenlabs.error/ElevenLabsException { // dev.yveskalume.elevenlabs.error/ElevenLabsException.Timeout|null[0]
+        final val kind // dev.yveskalume.elevenlabs.error/ElevenLabsException.Timeout.kind|{}kind[0]
+            final fun <get-kind>(): dev.yveskalume.elevenlabs.error/ElevenLabsErrorKind // dev.yveskalume.elevenlabs.error/ElevenLabsException.Timeout.kind.<get-kind>|<get-kind>(){}[0]
+    }
+
+    final class Unknown : dev.yveskalume.elevenlabs.error/ElevenLabsException { // dev.yveskalume.elevenlabs.error/ElevenLabsException.Unknown|null[0]
+        final val kind // dev.yveskalume.elevenlabs.error/ElevenLabsException.Unknown.kind|{}kind[0]
+            final fun <get-kind>(): dev.yveskalume.elevenlabs.error/ElevenLabsErrorKind // dev.yveskalume.elevenlabs.error/ElevenLabsException.Unknown.kind.<get-kind>|<get-kind>(){}[0]
     }
 }

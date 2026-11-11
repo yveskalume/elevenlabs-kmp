@@ -1,7 +1,7 @@
 package dev.yveskalume.elevenlabs.stt
 
 /** Configuration applied when opening a realtime speech-to-text connection. */
-public data class RealtimeSttOptions(
+public data class RealtimeSttOptions @Throws(IllegalArgumentException::class) constructor(
     /** Realtime speech-to-text model identifier. */
     val modelId: String = "scribe_v2_realtime",
     /** Encoding and sample rate of submitted audio. */

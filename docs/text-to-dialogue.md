@@ -78,7 +78,7 @@ session.stream(
 ElevenLabs closes the whole connection on any protocol error, such as a line for a voice that was
 not registered on its context. The SDK checks voices and lines before sending, so these mistakes
 throw `IllegalArgumentException` and the session stays open. Any remaining server error fails the
-session and every open context with a `RealtimeServerError`, whose `errorCode` (for example
+session and every open context with an `ElevenLabsException.RealtimeServer`, whose `errorCode` (for example
 `authentication_required`) and `kind` identify the cause.
 
 Contexts are closed by ElevenLabs after 20 seconds without input. Automatic keepalive

@@ -12,37 +12,41 @@ public data class ElevenLabsValidationError(
     public val type: String? = null,
 )
 
-/** Structured details associated with a failed ElevenLabs operation. */
-public data class ElevenLabsErrorDetails(
-    /** HTTP status code, or `null` when no HTTP response was received. */
-    public val statusCode: Int?,
-    /** Human-readable error suitable for logs or a fallback UI message. */
-    public val message: String,
-    /** ElevenLabs request identifier, useful when contacting support. */
-    public val requestId: String? = null,
-    /** Diagnostic response body, capped by the SDK and potentially containing sensitive information. */
-    public val responseBody: String? = null,
-    /** Machine-readable code reported by ElevenLabs, when present. */
-    public val errorCode: String? = null,
-    /** Field-level failures from ElevenLabs' `detail` array. */
-    public val validationErrors: List<ElevenLabsValidationError> = emptyList(),
-)
-
 /**
  * Base exception for failures produced by the ElevenLabs SDK.
  *
  * Invalid arguments are reported as [IllegalArgumentException], and coroutine cancellation is
- * propagated unchanged. Use [kind] when application code needs stable classification without
- * matching every concrete subtype.
+ * propagated unchanged. Use [kind] when application code needs stable classification: it covers
+ * HTTP and realtime failures alike, while a concrete subtype only describes where a failure
+ * happened.
  */
 public sealed class ElevenLabsException(
     message: String,
     cause: Throwable? = null,
+    /** HTTP status code, or `null` when the failure did not come from an HTTP response. */
+    public val statusCode: Int? = null,
+    /** ElevenLabs request identifier, useful when contacting support. */
+    public val requestId: String? = null,
+    /**
+     * Machine-readable code reported by ElevenLabs, such as `quota_exceeded` or `auth_error`, when
+     * present. Codes are defined by the service and may change; use them for logging and targeted
+     * handling, with a fallback for unknown values.
+     */
+    public val errorCode: String? = null,
+    responseBody: String? = null,
 ) : Exception(message, cause) {
     /** Stable category intended for application-level handling. */
     public abstract val kind: ElevenLabsErrorKind
 
-    /** Whether retrying the same operation may succeed without changing the request. */
+    /** Diagnostic server payload, capped by the SDK and potentially containing sensitive information. */
+    public val responseBody: String? = responseBody.truncateDiagnosticBody()
+
+    /**
+     * Whether retrying the same operation may succeed without changing the request.
+     *
+     * A retry repeats the operation: a timed-out generation may already have used credits, so
+     * retrying it can bill the same text twice.
+     */
     public val isRetryable: Boolean
         get() = when (kind) {
             ElevenLabsErrorKind.Network,
@@ -53,98 +57,72 @@ public sealed class ElevenLabsException(
             else -> false
         }
 
-    /** The server response could not be decoded into the expected response type. */
-    public class Serialization internal constructor(
-        details: ElevenLabsErrorDetails,
+    /** The request failed before an HTTP response was received. */
+    public class Network internal constructor(
         cause: Throwable,
-    ) : ElevenLabsException(details.message, cause) {
+        message: String = "Network request failed. Check the connection.",
+    ) : ElevenLabsException(message, cause) {
+        override val kind: ElevenLabsErrorKind = ElevenLabsErrorKind.Network
+    }
+
+    /** The request or realtime operation exceeded a configured timeout. */
+    public class Timeout internal constructor(
+        cause: Throwable? = null,
+        message: String = "The request timed out.",
+    ) : ElevenLabsException(message, cause) {
+        override val kind: ElevenLabsErrorKind = ElevenLabsErrorKind.Timeout
+    }
+
+    /** A successful response or realtime message could not be decoded. */
+    public class Serialization internal constructor(
+        cause: Throwable,
+        message: String = "Failed to decode the ElevenLabs response.",
+        responseBody: String? = null,
+    ) : ElevenLabsException(message, cause, responseBody = responseBody) {
         override val kind: ElevenLabsErrorKind = ElevenLabsErrorKind.Serialization
     }
 
-    /**
-     * Legacy generic HTTP error. New HTTP requests throw a typed [ApiException] instead.
-     */
-    @Deprecated("Use ApiException and inspect its kind or statusCode.", ReplaceWith("ApiException"))
-    public class UnexpectedResponse internal constructor(
-        public val details: ElevenLabsErrorDetails,
-    ) : ElevenLabsException(details.message) {
-        override val kind: ElevenLabsErrorKind = ElevenLabsErrorKind.Unknown
+    /** A realtime WebSocket protocol error or unexpected server close. */
+    public class RealtimeServer internal constructor(
+        message: String,
+        /** WebSocket close code, when the server supplied one. */
+        public val closeCode: Short? = null,
+        responseBody: String? = null,
+        cause: Throwable? = null,
+        errorCode: String? = null,
+    ) : ElevenLabsException(message, cause, errorCode = errorCode, responseBody = responseBody) {
+        /**
+         * The category of a recognized [errorCode], such as [ElevenLabsErrorKind.Quota] for
+         * `quota_exceeded` or [ElevenLabsErrorKind.Authentication] for `auth_error`, so realtime
+         * failures can be handled like HTTP ones. [ElevenLabsErrorKind.Realtime] when there is no
+         * code or it is not recognized.
+         */
+        override val kind: ElevenLabsErrorKind = realtimeErrorKind(errorCode)
     }
 
     /**
-     * @deprecated Use [RealtimeServerError] for WebSocket protocol failures and the specific
-     * transport exception for network, timeout, or serialization failures.
+     * No usable credentials could be obtained, so nothing was sent to ElevenLabs.
+     *
+     * No API key was configured, or a provider returned a blank value or threw. In the last case
+     * [cause] holds what the provider threw. A provider that throws an [ElevenLabsException] has
+     * that exception reported as is instead.
      */
-    @Deprecated("Use RealtimeServerError or a specific transport exception.")
-    public class Realtime internal constructor(
+    public class MissingCredentials internal constructor(
         message: String,
-        closeCode: Short? = null,
-        responseBody: String? = null,
         cause: Throwable? = null,
-    ) : RealtimeServerError(message, closeCode, responseBody, cause)
+    ) : ElevenLabsException(message, cause) {
+        override val kind: ElevenLabsErrorKind = ElevenLabsErrorKind.Authentication
+    }
+
+    /** An unexpected SDK or transport failure that could not be classified more precisely. */
+    public class Unknown internal constructor(
+        cause: Throwable,
+    ) : ElevenLabsException("An unexpected ElevenLabs error occurred.", cause) {
+        override val kind: ElevenLabsErrorKind = ElevenLabsErrorKind.Unknown
+    }
 }
 
-/** The request failed before an HTTP response was received. */
-public class NetworkError internal constructor(
-    cause: Throwable,
-    message: String = "Network request failed. Check the connection.",
-) : ElevenLabsException(message, cause) {
-    override val kind: ElevenLabsErrorKind = ElevenLabsErrorKind.Network
-}
-
-/** The request or realtime operation exceeded a configured timeout. */
-public class TimeoutError internal constructor(
-    cause: Throwable? = null,
-    message: String = "The request timed out.",
-) : ElevenLabsException(message, cause) {
-    override val kind: ElevenLabsErrorKind = ElevenLabsErrorKind.Timeout
-}
-
-/** A successful response or realtime message could not be decoded. */
-public class SerializationError internal constructor(
-    cause: Throwable,
-    details: ElevenLabsErrorDetails? = null,
-) : ElevenLabsException(details?.message ?: "Failed to decode the ElevenLabs response.", cause) {
-    public val details: ElevenLabsErrorDetails? = details?.copy(
-        responseBody = details.responseBody.truncateDiagnosticBody(),
-    )
-    override val kind: ElevenLabsErrorKind = ElevenLabsErrorKind.Serialization
-}
-
-/** A realtime WebSocket protocol error or unexpected server close. */
-public open class RealtimeServerError internal constructor(
-    message: String,
-    /** WebSocket close code, when the server supplied one. */
-    public val closeCode: Short? = null,
-    /** Capped diagnostic server payload, which may contain sensitive information. */
-    rawResponseBody: String? = null,
-    cause: Throwable? = null,
-    /**
-     * Machine-readable code reported by ElevenLabs, such as `quota_exceeded` or `auth_error`, when
-     * present. Codes are defined by the service and may change; use them for logging and targeted
-     * handling, with a fallback for unknown values.
-     */
-    public val errorCode: String? = null,
-) : ElevenLabsException(message, cause) {
-    public val responseBody: String? = rawResponseBody.truncateDiagnosticBody()
-
-    /**
-     * The category of a recognized [errorCode], such as [ElevenLabsErrorKind.Quota] for
-     * `quota_exceeded` or [ElevenLabsErrorKind.Authentication] for `auth_error`, so realtime
-     * failures can be handled like HTTP ones. [ElevenLabsErrorKind.Realtime] when there is no code
-     * or it is not recognized.
-     */
-    override val kind: ElevenLabsErrorKind = realtimeErrorKind(errorCode)
-}
-
-/** An unexpected SDK or transport failure that could not be classified more precisely. */
-public class UnknownError internal constructor(
-    cause: Throwable
-) : ElevenLabsException("An unexpected ElevenLabs error occurred.", cause) {
-    override val kind: ElevenLabsErrorKind = ElevenLabsErrorKind.Unknown
-}
-
-internal fun String?.truncateDiagnosticBody(): String? = this?.let { body ->
+private fun String?.truncateDiagnosticBody(): String? = this?.let { body ->
     if (body.length <= MAX_DIAGNOSTIC_BODY_LENGTH) body
     else body.take(MAX_DIAGNOSTIC_BODY_LENGTH) + "… [truncated]"
 }

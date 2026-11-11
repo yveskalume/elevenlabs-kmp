@@ -1,7 +1,7 @@
 package dev.yveskalume.elevenlabs.tts
 
 /** Configuration applied when opening a realtime text-to-speech connection. */
-public data class RealtimeTtsOptions(
+public data class RealtimeTtsOptions @Throws(IllegalArgumentException::class) constructor(
     /** Model identifier, or `null` to use the service default. */
     val modelId: String? = null,
     /** Language code, or `null` to let the selected model infer it. */

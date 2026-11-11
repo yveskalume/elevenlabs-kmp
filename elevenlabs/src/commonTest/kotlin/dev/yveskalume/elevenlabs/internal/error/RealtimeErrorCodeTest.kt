@@ -1,5 +1,6 @@
 package dev.yveskalume.elevenlabs.internal.error
 
+import dev.yveskalume.elevenlabs.error.ElevenLabsException
 import dev.yveskalume.elevenlabs.internal.realtime.MultiContextInbound
 import dev.yveskalume.elevenlabs.internal.stt.dtos.DecodedRealtimeSttMessage
 import dev.yveskalume.elevenlabs.internal.stt.dtos.RealtimeSttMessages
@@ -7,7 +8,6 @@ import dev.yveskalume.elevenlabs.internal.tts.dtos.DecodedRealtimeTtsMessage
 import dev.yveskalume.elevenlabs.internal.tts.dtos.MultiContextTtsProtocol
 import dev.yveskalume.elevenlabs.internal.tts.dtos.RealtimeTtsMessages
 import dev.yveskalume.elevenlabs.error.ElevenLabsErrorKind
-import dev.yveskalume.elevenlabs.error.RealtimeServerError
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -35,10 +35,10 @@ class RealtimeErrorCodeTest {
     }
 
     @Test
-    fun `the kind drives isRetryable on RealtimeServerError`() {
-        val throttled = RealtimeServerError(message = "Slow down", errorCode = "rate_limited")
-        val quota = RealtimeServerError(message = "No credits", errorCode = "quota_exceeded")
-        val closed = RealtimeServerError(message = "Closed", closeCode = 1011.toShort())
+    fun `the kind drives isRetryable on realtime server errors`() {
+        val throttled = ElevenLabsException.RealtimeServer(message = "Slow down", errorCode = "rate_limited")
+        val quota = ElevenLabsException.RealtimeServer(message = "No credits", errorCode = "quota_exceeded")
+        val closed = ElevenLabsException.RealtimeServer(message = "Closed", closeCode = 1011.toShort())
 
         assertEquals(ElevenLabsErrorKind.RateLimit, throttled.kind)
         assertTrue(throttled.isRetryable)

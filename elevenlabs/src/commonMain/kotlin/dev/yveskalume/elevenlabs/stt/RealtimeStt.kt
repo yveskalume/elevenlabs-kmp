@@ -13,9 +13,9 @@ public interface RealtimeSttSession {
     /**
      * A buffered, single-consumer stream of server events.
      *
-     * Collection terminates with [dev.yveskalume.elevenlabs.error.RealtimeServerError] for a server
-     * protocol failure, [dev.yveskalume.elevenlabs.error.NetworkError] for transport failure, or
-     * [dev.yveskalume.elevenlabs.error.SerializationError] when a server message cannot be decoded.
+     * Collection terminates with [dev.yveskalume.elevenlabs.error.ElevenLabsException.RealtimeServer] for a server
+     * protocol failure, [dev.yveskalume.elevenlabs.error.ElevenLabsException.Network] for transport failure, or
+     * [dev.yveskalume.elevenlabs.error.ElevenLabsException.Serialization] when a server message cannot be decoded.
      */
     public val events: Flow<RealtimeSttEvent>
 
@@ -24,17 +24,30 @@ public interface RealtimeSttSession {
      * When [commit] is true, the accumulated audio is committed after this chunk.
      *
      * @throws IllegalArgumentException if [audio] is empty.
-     * @throws IllegalStateException if the session is closed.
+     * @throws IllegalStateException if you already called [close].
+     * @throws ElevenLabsException with the original failure if the session has failed, for example
+     * because the server closed the connection.
      */
-    @Throws(ElevenLabsException::class, CancellationException::class)
+    @Throws(
+        ElevenLabsException::class,
+        IllegalArgumentException::class,
+        IllegalStateException::class,
+        CancellationException::class,
+    )
     public suspend fun sendAudio(audio: ByteArray, commit: Boolean = false)
 
     /**
      * Commits the audio accumulated since the previous commit.
      *
-     * @throws IllegalStateException if the session is closed.
+     * @throws IllegalStateException if you already called [close].
+     * @throws ElevenLabsException with the original failure if the session has failed.
      */
-    @Throws(ElevenLabsException::class, CancellationException::class)
+    @Throws(
+        ElevenLabsException::class,
+        IllegalArgumentException::class,
+        IllegalStateException::class,
+        CancellationException::class,
+    )
     public suspend fun commit()
 
     /** Immediately closes the realtime session. */

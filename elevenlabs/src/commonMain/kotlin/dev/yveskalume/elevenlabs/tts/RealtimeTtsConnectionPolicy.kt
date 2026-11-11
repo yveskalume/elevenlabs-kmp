@@ -1,7 +1,7 @@
 package dev.yveskalume.elevenlabs.tts
 
 /** Time limits applied to a realtime text-to-speech session. */
-public data class RealtimeTtsTimeouts(
+public data class RealtimeTtsTimeouts @Throws(IllegalArgumentException::class) constructor(
     /** Maximum time allowed to establish a connection, in milliseconds. */
     val connectTimeoutMillis: Long = 10_000,
     /** Maximum time allowed for a session send operation, in milliseconds. */
@@ -22,7 +22,7 @@ public data class RealtimeTtsTimeouts(
 }
 
 /** Keeps an otherwise idle ElevenLabs TTS WebSocket session open. */
-public data class RealtimeTtsKeepAlive(
+public data class RealtimeTtsKeepAlive @Throws(IllegalArgumentException::class) constructor(
     /** Whether keepalive messages are sent. */
     val enabled: Boolean = true,
     /** Delay between keepalive messages, in milliseconds. */
@@ -42,7 +42,7 @@ public sealed interface RealtimeTtsReconnectPolicy {
      * Reconnect only before the first audio chunk is received, when replaying buffered text
      * cannot duplicate audio already delivered to the caller.
      */
-    public data class BeforeFirstAudio(
+    public data class BeforeFirstAudio @Throws(IllegalArgumentException::class) constructor(
         /** Maximum number of reconnection attempts. */
         val maxAttempts: Int = 3,
         /** Delay before the first retry, in milliseconds. */

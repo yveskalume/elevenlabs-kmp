@@ -1,7 +1,7 @@
 package dev.yveskalume.elevenlabs.tts
 
 /** Optional controls that tune the generated voice. */
-public data class VoiceSettings(
+public data class VoiceSettings @Throws(IllegalArgumentException::class) constructor(
     /** Voice consistency from 0 to 1, or `null` to use the service default. */
     val stability: Double? = null,
     /** Similarity to the source voice from 0 to 1. */

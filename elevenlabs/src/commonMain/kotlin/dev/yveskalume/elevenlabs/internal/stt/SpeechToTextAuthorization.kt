@@ -1,6 +1,7 @@
 package dev.yveskalume.elevenlabs.internal.stt
 
 import dev.yveskalume.elevenlabs.internal.http.ElevenLabsHttpClient
+import dev.yveskalume.elevenlabs.internal.http.resolveCredential
 import dev.yveskalume.elevenlabs.stt.SpeechToTextAuthorization
 
 internal data class SpeechToTextCredentials(
@@ -15,11 +16,9 @@ internal suspend fun SpeechToTextAuthorization.resolveCredentials(
         apiKey = http.resolveApiKey(),
     )
     is SpeechToTextAuthorization.SingleUseToken -> SpeechToTextCredentials(token = token)
-    is SpeechToTextAuthorization.TokenProvider -> {
-        val token = provider.getToken()
-        require(token.isNotBlank()) {
-            "The ElevenLabs speech-to-text token provider returned a blank token."
-        }
-        SpeechToTextCredentials(token = token)
-    }
+    is SpeechToTextAuthorization.TokenProvider -> SpeechToTextCredentials(
+        token = resolveCredential("ElevenLabs speech-to-text token provider") {
+            provider.getToken()
+        },
+    )
 }

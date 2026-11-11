@@ -9,7 +9,7 @@ import dev.yveskalume.elevenlabs.tts.TextNormalization
  * Connection-level configuration for a [MultiContextDialogueSession]. Speakers and their settings
  * are chosen per context, in [MultiContextDialogueSession.openContext].
  */
-public data class MultiContextDialogueOptions(
+public data class MultiContextDialogueOptions @Throws(IllegalArgumentException::class) constructor(
     /**
      * Eleven v3 model identifier, or `null` for the service default, `eleven_v3_conversational`,
      * which allows one voice per context.
@@ -62,7 +62,7 @@ public data class MultiContextDialogueOptions(
 }
 
 /** Configuration of a single context in a [MultiContextDialogueSession]. */
-public data class MultiContextDialogueContextOptions(
+public data class MultiContextDialogueContextOptions @Throws(IllegalArgumentException::class) constructor(
     /**
      * Voice stability from 0 to 1, or `null` for the default. Lower values give a broader emotional
      * range. It is the only voice setting Eleven v3 dialogue supports.
@@ -77,7 +77,7 @@ public data class MultiContextDialogueContextOptions(
 }
 
 /** Client-side time limits for a [MultiContextDialogueSession]. */
-public data class MultiContextDialogueTimeouts(
+public data class MultiContextDialogueTimeouts @Throws(IllegalArgumentException::class) constructor(
     /** Maximum time allowed to establish the connection, in milliseconds. */
     val connectTimeoutMillis: Long = 10_000,
     /** Maximum time allowed for a send operation, in milliseconds. */

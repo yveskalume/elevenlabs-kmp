@@ -1,21 +1,32 @@
 package dev.yveskalume.elevenlabs.error
 
+/** A parsed non-successful HTTP response. */
+internal data class ElevenLabsErrorDetails(
+    val statusCode: Int,
+    val message: String,
+    val requestId: String? = null,
+    val responseBody: String? = null,
+    val errorCode: String? = null,
+    val validationErrors: List<ElevenLabsValidationError> = emptyList(),
+)
+
 /**
  * Base class for a non-successful HTTP response from ElevenLabs.
  *
- * [details] contains the complete structured response. [kind] provides a stable category for
- * application-level handling, while [statusCode] and [errorCode] remain available for precise
- * protocol-specific decisions.
+ * [kind] provides a stable category for application-level handling, while [statusCode] and
+ * [errorCode] remain available for precise protocol-specific decisions.
  */
-public sealed class ApiException(
-    /** Complete parsed server error details. */
-    public val details: ElevenLabsErrorDetails,
+public sealed class ApiException private constructor(
+    details: ElevenLabsErrorDetails,
     override val kind: ElevenLabsErrorKind,
-) : ElevenLabsException(details.message) {
-    public val statusCode: Int = requireNotNull(details.statusCode)
-    public val errorCode: String? = details.errorCode
-    public val requestId: String? = details.requestId
-    public val responseBody: String? = details.responseBody
+) : ElevenLabsException(
+    message = details.message,
+    statusCode = details.statusCode,
+    requestId = details.requestId,
+    errorCode = details.errorCode,
+    responseBody = details.responseBody,
+) {
+    /** Field-level failures from ElevenLabs' `detail` array. */
     public val validationErrors: List<ElevenLabsValidationError> = details.validationErrors
 
     /** ElevenLabs rejected a malformed or invalid request with HTTP 400. */

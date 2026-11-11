@@ -43,7 +43,7 @@ Realtime text-to-speech sessions take their limits from `RealtimeTtsOptions.time
 | `finishTimeoutMillis` | 30 s | How long `finish()` waits for ElevenLabs to deliver the last audio. |
 | `inactivityTimeoutSeconds` | 60 s | Sent to ElevenLabs. The server closes the connection after this much silence. Accepts 1 to 180. |
 
-A local timeout fails the session with `TimeoutError`.
+A local timeout fails the session with `ElevenLabsException.Timeout`.
 
 ```kotlin
 val options = RealtimeTtsOptions(

@@ -28,12 +28,18 @@ public interface MultiContextTtsSession {
      * message ID in your application; otherwise a unique ID is generated.
      *
      * @throws IllegalArgumentException if [contextId] is blank or was already used in this session.
-     * @throws IllegalStateException if [MultiContextTtsSession.MAX_CONTEXTS] contexts are already open, or if the session
-     * is finishing, closed, or failed.
-     * @throws dev.yveskalume.elevenlabs.error.TimeoutError if sending the registration times out.
-     * @throws dev.yveskalume.elevenlabs.error.NetworkError for a transport failure.
+     * @throws IllegalStateException if [MultiContextTtsSession.MAX_CONTEXTS] contexts are already open, or if you
+     * already called [finish] or [close].
+     * @throws dev.yveskalume.elevenlabs.error.ElevenLabsException.Timeout if sending the registration times out.
+     * @throws dev.yveskalume.elevenlabs.error.ElevenLabsException.Network for a transport failure.
+     * @throws ElevenLabsException with the original failure if the session has failed.
      */
-    @Throws(ElevenLabsException::class, CancellationException::class)
+    @Throws(
+        ElevenLabsException::class,
+        IllegalArgumentException::class,
+        IllegalStateException::class,
+        CancellationException::class,
+    )
     public suspend fun openContext(
         options: MultiContextTtsContextOptions = MultiContextTtsContextOptions(),
         contextId: String? = null,
@@ -72,11 +78,16 @@ public interface MultiContextTtsSession {
      * Open contexts keep delivering their remaining audio and then emit [RealtimeTtsEvent.Finished].
      * Calling [finish] on a session that is already finishing or closed does nothing.
      *
-     * @throws dev.yveskalume.elevenlabs.error.TimeoutError if the connection does not close within
+     * @throws dev.yveskalume.elevenlabs.error.ElevenLabsException.Timeout if the connection does not close within
      * [RealtimeTtsTimeouts.finishTimeoutMillis]; the session is closed in that case.
      * @throws ElevenLabsException if the connection fails while finishing.
      */
-    @Throws(ElevenLabsException::class, CancellationException::class)
+    @Throws(
+        ElevenLabsException::class,
+        IllegalArgumentException::class,
+        IllegalStateException::class,
+        CancellationException::class,
+    )
     public suspend fun finish()
 
     /**
@@ -101,8 +112,9 @@ public interface MultiContextTtsSession {
  * [close] stops it immediately. Closing or failing one context never affects the others.
  *
  * If a context stays idle longer than the ElevenLabs inactivity timeout, the server closes it and
- * [events] completes with [RealtimeTtsEvent.Finished]. Automatic keepalive, enabled by default in
- * [MultiContextTtsOptions.keepAlive], prevents this while the context is open.
+ * [events] completes with [RealtimeTtsEvent.Finished]. Later sends then throw
+ * [dev.yveskalume.elevenlabs.error.ElevenLabsException.RealtimeServer]. Automatic keepalive, enabled
+ * by default in [MultiContextTtsOptions.keepAlive], prevents this while the context is open.
  */
 public interface MultiContextTtsContext : RealtimeTtsSession {
     /** Identifier of this context, unique within its session. */
@@ -115,11 +127,11 @@ public interface MultiContextTtsContext : RealtimeTtsSession {
      * Audio still buffered or in flight when [close] is called is discarded. Events are buffered
      * without limit so that a slow consumer of one context never delays the others.
      *
-     * Collection terminates with [dev.yveskalume.elevenlabs.error.RealtimeServerError] when
+     * Collection terminates with [dev.yveskalume.elevenlabs.error.ElevenLabsException.RealtimeServer] when
      * ElevenLabs reports an error for this context or the connection closes unexpectedly,
-     * [dev.yveskalume.elevenlabs.error.TimeoutError] when [finish] does not complete in time,
-     * [dev.yveskalume.elevenlabs.error.NetworkError] for transport failures, or
-     * [dev.yveskalume.elevenlabs.error.SerializationError] when a message cannot be decoded.
+     * [dev.yveskalume.elevenlabs.error.ElevenLabsException.Timeout] when [finish] does not complete in time,
+     * [dev.yveskalume.elevenlabs.error.ElevenLabsException.Network] for transport failures, or
+     * [dev.yveskalume.elevenlabs.error.ElevenLabsException.Serialization] when a message cannot be decoded.
      */
     override val events: Flow<RealtimeTtsEvent>
 
@@ -129,8 +141,14 @@ public interface MultiContextTtsContext : RealtimeTtsSession {
      * This is only needed when [MultiContextTtsOptions.keepAlive] is disabled.
      *
      * @throws IllegalStateException if the context or session is finishing or closed.
+     * @throws ElevenLabsException with the original failure if the context or session has failed.
      */
-    @Throws(ElevenLabsException::class, CancellationException::class)
+    @Throws(
+        ElevenLabsException::class,
+        IllegalArgumentException::class,
+        IllegalStateException::class,
+        CancellationException::class,
+    )
     public suspend fun keepAlive()
 
     /**

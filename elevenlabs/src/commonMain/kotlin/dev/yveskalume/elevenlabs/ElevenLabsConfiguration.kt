@@ -19,6 +19,7 @@ public class ElevenLabsConfiguration {
      *
      * @throws IllegalArgumentException if [value] is blank.
      */
+    @Throws(IllegalArgumentException::class)
     public fun apiKey(value: String) {
         require(value.isNotBlank()) { "The ElevenLabs API key cannot be blank." }
         apiKeyProvider = ApiKeyProvider { value }

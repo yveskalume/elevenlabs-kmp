@@ -81,5 +81,5 @@ An app that only uses tokens can create the client without calling `apiKey()`:
 val elevenLabs = ElevenLabs {}
 ```
 
-Calls that need a key, which are `generate()`, `stream()`, voices, and models, then fail with a "No
-ElevenLabs API key is configured" error. Route those through your backend.
+Calls that need a key, which are `generate()`, `stream()`, voices, and models, then fail with
+`ElevenLabsException.MissingCredentials`. Route those through your backend.
