@@ -90,7 +90,8 @@ public interface MultiContextDialogueContext {
     public val voiceIds: List<String>
 
     /**
-     * A buffered, single-consumer stream of this context's audio and turn boundaries.
+     * A buffered stream of this context's audio and turn boundaries, for one collector at a time.
+     * A second concurrent collector fails with [IllegalStateException].
      *
      * The flow completes after [DialogueEvent.Finished], or without it once [close] is called. It
      * terminates with the session's failure if the connection fails.
@@ -183,17 +184,19 @@ public data class DialogueLine @Throws(IllegalArgumentException::class) construc
     }
 }
 
-/** Event emitted by a [MultiContextDialogueContext]. */
+/**
+ * Event emitted by a [MultiContextDialogueContext].
+ *
+ * Later SDK versions can add event types, so give a `when` over these events an `else` branch.
+ */
 public sealed interface DialogueEvent {
     /** A generated audio chunk. */
     public class Audio internal constructor(
-        bytes: ByteArray,
+        /** Generated audio. The array belongs to the caller; the SDK never reads or changes it again. */
+        public val bytes: ByteArray,
         /** Character timing for this chunk, when [MultiContextDialogueOptions.syncAlignment] is enabled. */
         public val alignment: Alignment? = null,
     ) : DialogueEvent {
-        /** Generated audio bytes owned by this event. */
-        public val bytes: ByteArray = bytes
-
         override fun equals(other: Any?): Boolean =
             other is Audio && bytes.contentEquals(other.bytes) && alignment == other.alignment
 
@@ -207,4 +210,9 @@ public sealed interface DialogueEvent {
 
     /** The context is complete and no more events will be emitted. */
     public data object Finished : DialogueEvent
+
+    /** A forward-compatible server message for this context not recognized by this SDK version. */
+    public data class Unknown(
+        public val rawMessage: String,
+    ) : DialogueEvent
 }

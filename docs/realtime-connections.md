@@ -6,7 +6,7 @@ drops.
 
 ## Flows close themselves, sessions don't
 
-`textToSpeech.realtime()` returns a cold flow. Collecting it opens a connection, and the connection
+`textToSpeech.streamRealtime()` returns a cold flow. Collecting it opens a connection, and the connection
 closes when collection ends, whether it completes, fails, or is cancelled. You never touch the
 socket.
 

@@ -77,12 +77,12 @@ internal class TextToSpeechApiImpl(
         }
     }
 
-    override fun realtime(
+    override fun streamRealtime(
         voiceId: String,
         text: Flow<String>,
         options: RealtimeTtsOptions,
         authorization: Authorization,
-    ): Flow<AudioChunk> = flow {
+    ): Flow<RealtimeTtsEvent> = flow {
         coroutineScope {
             val session = openRealtimeSession(voiceId, options, authorization)
             val sender = launch {
@@ -93,11 +93,7 @@ internal class TextToSpeechApiImpl(
             }
 
             try {
-                session.events.collect { event ->
-                    if (event is RealtimeTtsEvent.Audio) {
-                        emit(AudioChunk(event.bytes))
-                    }
-                }
+                session.events.collect { event -> emit(event) }
                 sender.join()
             } finally {
                 sender.cancel()

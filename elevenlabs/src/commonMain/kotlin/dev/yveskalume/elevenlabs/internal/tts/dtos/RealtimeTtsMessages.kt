@@ -1,13 +1,18 @@
+@file:OptIn(ExperimentalSerializationApi::class)
+
 package dev.yveskalume.elevenlabs.internal.tts.dtos
 
 import dev.yveskalume.elevenlabs.internal.error.realtimeErrorCode
 import dev.yveskalume.elevenlabs.internal.http.JSON
+import dev.yveskalume.elevenlabs.internal.realtime.hasUnrecognizedFields
 import dev.yveskalume.elevenlabs.realtime.Alignment
 import dev.yveskalume.elevenlabs.tts.RealtimeTtsEvent
 import dev.yveskalume.elevenlabs.tts.RealtimeTtsOptions
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonNames
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.contentOrNull
@@ -16,7 +21,9 @@ import kotlin.io.encoding.Base64
 internal sealed interface DecodedRealtimeTtsMessage {
     data class Event(val value: RealtimeTtsEvent) : DecodedRealtimeTtsMessage
     data class Error(val message: String, val errorCode: String? = null) : DecodedRealtimeTtsMessage
-    data object Unknown : DecodedRealtimeTtsMessage
+
+    /** A recognized message with nothing to deliver, such as an audio message without audio. */
+    data object Ignored : DecodedRealtimeTtsMessage
 }
 
 internal object RealtimeTtsMessages {
@@ -64,12 +71,18 @@ internal object RealtimeTtsMessages {
         val error = message.error?.findMessage()
             ?: message.detail?.findMessage()
             ?: message.message?.findMessage()
-        return if (error == null) {
-            DecodedRealtimeTtsMessage.Unknown
-        } else {
-            DecodedRealtimeTtsMessage.Error(error, realtimeErrorCode(value))
+        return when {
+            error != null -> DecodedRealtimeTtsMessage.Error(error, realtimeErrorCode(value))
+            hasUnrecognizedFields(value, KNOWN_FIELDS) ->
+                DecodedRealtimeTtsMessage.Event(RealtimeTtsEvent.Unknown(value))
+            else -> DecodedRealtimeTtsMessage.Ignored
         }
     }
+
+    private val KNOWN_FIELDS = setOf(
+        "audio", "alignment", "normalizedAlignment", "normalized_alignment", "isFinal", "is_final",
+        "message", "error", "detail",
+    )
 
     private fun JsonElement.findMessage(): String? = when (this) {
         is JsonPrimitive -> contentOrNull
@@ -113,9 +126,12 @@ private data class RealtimeTtsIncomingDto(
     val audio: String? = null,
     @SerialName("alignment")
     val alignment: RealtimeTtsAlignmentDto? = null,
-    @SerialName("normalized_alignment")
+    // ElevenLabs documents camelCase; snake_case is accepted too, as for multi-context messages.
+    @SerialName("normalizedAlignment")
+    @JsonNames("normalized_alignment")
     val normalizedAlignment: RealtimeTtsAlignmentDto? = null,
-    @SerialName("is_final")
+    @SerialName("isFinal")
+    @JsonNames("is_final")
     val isFinal: Boolean? = null,
     @SerialName("message")
     val message: JsonElement? = null,
@@ -129,9 +145,11 @@ private data class RealtimeTtsIncomingDto(
 private data class RealtimeTtsAlignmentDto(
     @SerialName("chars")
     val characters: List<String> = emptyList(),
-    @SerialName("char_start_times_ms")
+    @SerialName("charStartTimesMs")
+    @JsonNames("char_start_times_ms")
     val characterStartTimesMs: List<Int> = emptyList(),
-    @SerialName("char_durations_ms")
+    @SerialName("charDurationsMs")
+    @JsonNames("char_durations_ms")
     val characterDurationsMs: List<Int> = emptyList(),
 ) {
     fun toPublic() = Alignment(

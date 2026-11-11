@@ -1,6 +1,10 @@
 package dev.yveskalume.elevenlabs.stt
 
-/** Event emitted by a [RealtimeSttSession]. */
+/**
+ * Event emitted by a [RealtimeSttSession].
+ *
+ * Later SDK versions can add event types, so give a `when` over these events an `else` branch.
+ */
 public sealed interface RealtimeSttEvent {
     /** The server accepted the connection and assigned [sessionId]. */
     public data class SessionStarted(public val sessionId: String) : RealtimeSttEvent

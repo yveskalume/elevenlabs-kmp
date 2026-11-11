@@ -134,8 +134,8 @@ abstract interface dev.yveskalume.elevenlabs.tts/RealtimeTtsSession { // dev.yve
 }
 
 abstract interface dev.yveskalume.elevenlabs.tts/TextToSpeechApi { // dev.yveskalume.elevenlabs.tts/TextToSpeechApi|null[0]
-    abstract fun realtime(kotlin/String, kotlinx.coroutines.flow/Flow<kotlin/String>, dev.yveskalume.elevenlabs.tts/RealtimeTtsOptions = ..., dev.yveskalume.elevenlabs/Authorization = ...): kotlinx.coroutines.flow/Flow<dev.yveskalume.elevenlabs.tts/AudioChunk> // dev.yveskalume.elevenlabs.tts/TextToSpeechApi.realtime|realtime(kotlin.String;kotlinx.coroutines.flow.Flow<kotlin.String>;dev.yveskalume.elevenlabs.tts.RealtimeTtsOptions;dev.yveskalume.elevenlabs.Authorization){}[0]
     abstract fun stream(dev.yveskalume.elevenlabs.tts/TextToSpeechRequest): kotlinx.coroutines.flow/Flow<dev.yveskalume.elevenlabs.tts/AudioChunk> // dev.yveskalume.elevenlabs.tts/TextToSpeechApi.stream|stream(dev.yveskalume.elevenlabs.tts.TextToSpeechRequest){}[0]
+    abstract fun streamRealtime(kotlin/String, kotlinx.coroutines.flow/Flow<kotlin/String>, dev.yveskalume.elevenlabs.tts/RealtimeTtsOptions = ..., dev.yveskalume.elevenlabs/Authorization = ...): kotlinx.coroutines.flow/Flow<dev.yveskalume.elevenlabs.tts/RealtimeTtsEvent> // dev.yveskalume.elevenlabs.tts/TextToSpeechApi.streamRealtime|streamRealtime(kotlin.String;kotlinx.coroutines.flow.Flow<kotlin.String>;dev.yveskalume.elevenlabs.tts.RealtimeTtsOptions;dev.yveskalume.elevenlabs.Authorization){}[0]
     abstract suspend fun generate(dev.yveskalume.elevenlabs.tts/TextToSpeechRequest): dev.yveskalume.elevenlabs.tts/Audio // dev.yveskalume.elevenlabs.tts/TextToSpeechApi.generate|generate(dev.yveskalume.elevenlabs.tts.TextToSpeechRequest){}[0]
     abstract suspend fun openMultiContextSession(kotlin/String, dev.yveskalume.elevenlabs.tts/MultiContextTtsOptions = ..., dev.yveskalume.elevenlabs/Authorization = ...): dev.yveskalume.elevenlabs.tts/MultiContextTtsSession // dev.yveskalume.elevenlabs.tts/TextToSpeechApi.openMultiContextSession|openMultiContextSession(kotlin.String;dev.yveskalume.elevenlabs.tts.MultiContextTtsOptions;dev.yveskalume.elevenlabs.Authorization){}[0]
     abstract suspend fun openRealtimeSession(kotlin/String, dev.yveskalume.elevenlabs.tts/RealtimeTtsOptions = ..., dev.yveskalume.elevenlabs/Authorization = ...): dev.yveskalume.elevenlabs.tts/RealtimeTtsSession // dev.yveskalume.elevenlabs.tts/TextToSpeechApi.openRealtimeSession|openRealtimeSession(kotlin.String;dev.yveskalume.elevenlabs.tts.RealtimeTtsOptions;dev.yveskalume.elevenlabs.Authorization){}[0]
@@ -156,6 +156,19 @@ sealed interface dev.yveskalume.elevenlabs.dialogue/DialogueEvent { // dev.yvesk
         final fun equals(kotlin/Any?): kotlin/Boolean // dev.yveskalume.elevenlabs.dialogue/DialogueEvent.Audio.equals|equals(kotlin.Any?){}[0]
         final fun hashCode(): kotlin/Int // dev.yveskalume.elevenlabs.dialogue/DialogueEvent.Audio.hashCode|hashCode(){}[0]
         final fun toString(): kotlin/String // dev.yveskalume.elevenlabs.dialogue/DialogueEvent.Audio.toString|toString(){}[0]
+    }
+
+    final class Unknown : dev.yveskalume.elevenlabs.dialogue/DialogueEvent { // dev.yveskalume.elevenlabs.dialogue/DialogueEvent.Unknown|null[0]
+        constructor <init>(kotlin/String) // dev.yveskalume.elevenlabs.dialogue/DialogueEvent.Unknown.<init>|<init>(kotlin.String){}[0]
+
+        final val rawMessage // dev.yveskalume.elevenlabs.dialogue/DialogueEvent.Unknown.rawMessage|{}rawMessage[0]
+            final fun <get-rawMessage>(): kotlin/String // dev.yveskalume.elevenlabs.dialogue/DialogueEvent.Unknown.rawMessage.<get-rawMessage>|<get-rawMessage>(){}[0]
+
+        final fun component1(): kotlin/String // dev.yveskalume.elevenlabs.dialogue/DialogueEvent.Unknown.component1|component1(){}[0]
+        final fun copy(kotlin/String = ...): dev.yveskalume.elevenlabs.dialogue/DialogueEvent.Unknown // dev.yveskalume.elevenlabs.dialogue/DialogueEvent.Unknown.copy|copy(kotlin.String){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // dev.yveskalume.elevenlabs.dialogue/DialogueEvent.Unknown.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // dev.yveskalume.elevenlabs.dialogue/DialogueEvent.Unknown.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // dev.yveskalume.elevenlabs.dialogue/DialogueEvent.Unknown.toString|toString(){}[0]
     }
 
     final object Finished : dev.yveskalume.elevenlabs.dialogue/DialogueEvent { // dev.yveskalume.elevenlabs.dialogue/DialogueEvent.Finished|null[0]
@@ -271,6 +284,19 @@ sealed interface dev.yveskalume.elevenlabs.tts/RealtimeTtsEvent { // dev.yveskal
         final fun equals(kotlin/Any?): kotlin/Boolean // dev.yveskalume.elevenlabs.tts/RealtimeTtsEvent.Audio.equals|equals(kotlin.Any?){}[0]
         final fun hashCode(): kotlin/Int // dev.yveskalume.elevenlabs.tts/RealtimeTtsEvent.Audio.hashCode|hashCode(){}[0]
         final fun toString(): kotlin/String // dev.yveskalume.elevenlabs.tts/RealtimeTtsEvent.Audio.toString|toString(){}[0]
+    }
+
+    final class Unknown : dev.yveskalume.elevenlabs.tts/RealtimeTtsEvent { // dev.yveskalume.elevenlabs.tts/RealtimeTtsEvent.Unknown|null[0]
+        constructor <init>(kotlin/String) // dev.yveskalume.elevenlabs.tts/RealtimeTtsEvent.Unknown.<init>|<init>(kotlin.String){}[0]
+
+        final val rawMessage // dev.yveskalume.elevenlabs.tts/RealtimeTtsEvent.Unknown.rawMessage|{}rawMessage[0]
+            final fun <get-rawMessage>(): kotlin/String // dev.yveskalume.elevenlabs.tts/RealtimeTtsEvent.Unknown.rawMessage.<get-rawMessage>|<get-rawMessage>(){}[0]
+
+        final fun component1(): kotlin/String // dev.yveskalume.elevenlabs.tts/RealtimeTtsEvent.Unknown.component1|component1(){}[0]
+        final fun copy(kotlin/String = ...): dev.yveskalume.elevenlabs.tts/RealtimeTtsEvent.Unknown // dev.yveskalume.elevenlabs.tts/RealtimeTtsEvent.Unknown.copy|copy(kotlin.String){}[0]
+        final fun equals(kotlin/Any?): kotlin/Boolean // dev.yveskalume.elevenlabs.tts/RealtimeTtsEvent.Unknown.equals|equals(kotlin.Any?){}[0]
+        final fun hashCode(): kotlin/Int // dev.yveskalume.elevenlabs.tts/RealtimeTtsEvent.Unknown.hashCode|hashCode(){}[0]
+        final fun toString(): kotlin/String // dev.yveskalume.elevenlabs.tts/RealtimeTtsEvent.Unknown.toString|toString(){}[0]
     }
 
     final object Finished : dev.yveskalume.elevenlabs.tts/RealtimeTtsEvent { // dev.yveskalume.elevenlabs.tts/RealtimeTtsEvent.Finished|null[0]
@@ -1246,3 +1272,5 @@ sealed class dev.yveskalume.elevenlabs.error/ElevenLabsException : kotlin/Except
             final fun <get-kind>(): dev.yveskalume.elevenlabs.error/ElevenLabsErrorKind // dev.yveskalume.elevenlabs.error/ElevenLabsException.Unknown.kind.<get-kind>|<get-kind>(){}[0]
     }
 }
+
+final fun (kotlinx.coroutines.flow/Flow<dev.yveskalume.elevenlabs.tts/RealtimeTtsEvent>).dev.yveskalume.elevenlabs.tts/audioOnly(): kotlinx.coroutines.flow/Flow<dev.yveskalume.elevenlabs.tts/AudioChunk> // dev.yveskalume.elevenlabs.tts/audioOnly|audioOnly@kotlinx.coroutines.flow.Flow<dev.yveskalume.elevenlabs.tts.RealtimeTtsEvent>(){}[0]

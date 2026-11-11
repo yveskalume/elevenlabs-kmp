@@ -61,7 +61,7 @@ try {
                     is RealtimeSttEvent.PartialTranscript -> showLiveText(event.text)
                     is RealtimeSttEvent.FinalTranscript -> Unit
                     is RealtimeSttEvent.CommittedTranscript -> appendToTranscript(event.text)
-                    is RealtimeSttEvent.Unknown -> Unit
+                    else -> Unit
                 }
             }
         }

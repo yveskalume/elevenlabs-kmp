@@ -11,7 +11,8 @@ import kotlinx.coroutines.flow.Flow
  */
 public interface RealtimeSttSession {
     /**
-     * A buffered, single-consumer stream of server events.
+     * A buffered stream of server events, for one collector at a time.
+     * A second concurrent collector fails with [IllegalStateException].
      *
      * Collection terminates with [dev.yveskalume.elevenlabs.error.ElevenLabsException.RealtimeServer] for a server
      * protocol failure, [dev.yveskalume.elevenlabs.error.ElevenLabsException.Network] for transport failure, or

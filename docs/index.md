@@ -16,7 +16,7 @@ Android, iOS, and the JVM.
 | --- | --- | --- |
 | Turn text into an audio file | `textToSpeech.generate()` | [Text to speech](text-to-speech.md) |
 | Start playback before the whole file is ready | `textToSpeech.stream()` | [Text to speech](text-to-speech.md) |
-| Speak an LLM reply while it's still being written | `textToSpeech.realtime()` | [Text to speech](text-to-speech.md) |
+| Speak an LLM reply while it's still being written | `textToSpeech.streamRealtime()` | [Text to speech](text-to-speech.md) |
 | Run several interruptible streams on one connection | `textToSpeech.openMultiContextSession()` | [Text to speech](text-to-speech.md) |
 | Voice a conversation between several speakers | `textToDialogue.openMultiContextSession()` | [Text to dialogue](text-to-dialogue.md) |
 | Transcribe a recording | `speechToText.transcribe()` | [Speech to text](speech-to-text.md) |
@@ -25,8 +25,16 @@ Android, iOS, and the JVM.
 
 ## How the API is shaped
 
-One-shot calls are `suspend` functions. Streaming calls return cold `Flow`s, so nothing is sent until
-you collect, and cancelling the collector cancels the request.
+One-shot calls are `suspend` functions. Streaming calls are named `stream…()` and return cold
+`Flow`s, so nothing is sent until you collect, and cancelling the collector cancels the request.
+
+Byte arrays the SDK returns, such as `Audio.bytes` or an audio event's `bytes`, belong to you. The
+SDK never reads or changes them again, so you can keep, change, or pass them on without copying.
+Arrays you pass in, such as `SpeechToTextRequest.audio`, are used as they are, so don't change them
+while the call is running.
+
+Event types can grow: later SDK versions can add events and error kinds. Give every `when` over
+events or `ElevenLabsErrorKind` an `else` branch.
 
 When you need to drive a WebSocket yourself, for example to flush text at sentence boundaries or
 commit audio at the end of an utterance, you open a session. Sessions are yours to close. See

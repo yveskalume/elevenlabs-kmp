@@ -6,7 +6,7 @@ Choose an API based on how the input text becomes available.
 | --- | --- |
 | `generate()` | You need one complete audio result. |
 | `stream()` | All text is available, but audio should arrive incrementally over HTTP. |
-| `realtime()` | Text arrives incrementally, such as tokens from a language model. |
+| `streamRealtime()` | Text arrives incrementally, such as tokens from a language model. |
 | `openRealtimeSession()` | You need explicit send, flush, finish, or alignment control. |
 | `openMultiContextSession()` | One connection must host several independent streams, such as an agent that can be interrupted. |
 
@@ -43,20 +43,23 @@ frame or audio container.
 ```kotlin
 val llmText: Flow<String> = languageModel.responses()
 
-elevenLabs.textToSpeech.realtime(
+elevenLabs.textToSpeech.streamRealtime(
     voiceId = voiceId,
     text = llmText,
     options = RealtimeTtsOptions(
         modelId = ModelId.ElevenFlashV2_5,
         outputFormat = OutputFormat.Pcm_24000,
     ),
-).collect { chunk ->
+).audioOnly().collect { chunk ->
     audioPipeline.write(chunk.bytes)
 }
 ```
 
 The returned flow is cold. Every collection opens a new session, resolves fresh credentials, sends
 each non-empty input value, and closes the session on completion, cancellation, or failure.
+
+It emits the session's events, ending with `Finished`. `audioOnly()` keeps just the audio. Collect
+the events themselves when you need the alignment from `RealtimeTtsOptions(syncAlignment = true)`.
 
 ## Controllable realtime session
 
@@ -74,7 +77,7 @@ coroutineScope {
                     audioPipeline.write(event.bytes)
                     updateCaptions(event.normalizedAlignment)
                 }
-                RealtimeTtsEvent.Finished -> Unit
+                else -> Unit
             }
         }
     }

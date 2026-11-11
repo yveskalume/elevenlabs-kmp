@@ -36,7 +36,7 @@ coroutineScope {
             when (event) {
                 is DialogueEvent.Audio -> player.write(event.bytes)
                 DialogueEvent.TurnFinished -> markTurnBoundary()
-                DialogueEvent.Finished -> Unit
+                else -> Unit
             }
         }
     }

@@ -121,7 +121,8 @@ public interface MultiContextTtsContext : RealtimeTtsSession {
     public val id: String
 
     /**
-     * A buffered, single-consumer stream of the audio generated for this context.
+     * A buffered stream of the audio generated for this context, for one collector at a time.
+     * A second concurrent collector fails with [IllegalStateException].
      *
      * The flow completes after [RealtimeTtsEvent.Finished], or without it once [close] is called.
      * Audio still buffered or in flight when [close] is called is discarded. Events are buffered

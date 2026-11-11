@@ -294,6 +294,8 @@ internal class MultiContextLogicHandler(
                     RealtimeTtsEvent.Finished -> {
                         item.generated = true
                     }
+
+                    else -> Unit
                 }
                 publish()
             }
