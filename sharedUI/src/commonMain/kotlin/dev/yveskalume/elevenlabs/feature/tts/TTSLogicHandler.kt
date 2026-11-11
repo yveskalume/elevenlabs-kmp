@@ -9,6 +9,7 @@ import dev.yveskalume.elevenlabs.models.ModelId
 import dev.yveskalume.elevenlabs.tts.OutputFormat
 import dev.yveskalume.elevenlabs.tts.RealtimeTtsOptions
 import dev.yveskalume.elevenlabs.tts.TextToSpeechRequest
+import dev.yveskalume.elevenlabs.tts.audioOnly
 import dev.yveskalume.elevenlabs.voices.ListVoicesRequest
 import dev.yveskalume.elevenlabs.voices.Voice
 import kotlinx.coroutines.CancellationException
@@ -97,7 +98,7 @@ internal class TTSLogicHandler(
 
     private suspend fun loadVoices() {
         val result = try {
-            LoadingState.Idle(client.voices.list(ListVoicesRequest(pageSize = 100)).voices)
+            LoadingState.Idle(client.voices.list(ListVoicesRequest { pageSize = 100 }).voices)
         } catch (cancellation: CancellationException) {
             throw cancellation
         } catch (throwable: Throwable) {
@@ -147,14 +148,14 @@ internal class TTSLogicHandler(
 
     private suspend fun realtime(text: String, voice: Voice) {
         audioPlayer.startStream(REALTIME_SAMPLE_RATE)
-        client.textToSpeech.realtime(
+        client.textToSpeech.streamRealtime(
             voiceId = voice.id,
             text = text.asRealtimeInput(),
-            options = RealtimeTtsOptions(
-                modelId = ModelId.ElevenFlashV2_5,
-                outputFormat = OutputFormat.Pcm_24000,
-            ),
-        ).collect { chunk -> audioPlayer.writeStream(chunk.bytes) }
+            options = RealtimeTtsOptions {
+                modelId = ModelId.ElevenFlashV2_5
+                outputFormat = OutputFormat.Pcm_24000
+            },
+        ).audioOnly().collect { chunk -> audioPlayer.writeStream(chunk.bytes) }
         audioPlayer.finishStream()
     }
 

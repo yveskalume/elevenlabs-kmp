@@ -1,6 +1,11 @@
 package dev.yveskalume.elevenlabs.error
 
-/** Stable, transport-independent category for an SDK failure. */
+/**
+ * Stable, transport-independent category for an SDK failure.
+ *
+ * Later SDK versions can add kinds without a major release, so give a `when` over kinds an
+ * `else` branch.
+ */
 public enum class ElevenLabsErrorKind {
     /** The API rejected the request with an HTTP response. */
     Api,

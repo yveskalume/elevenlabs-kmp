@@ -5,6 +5,7 @@ import dev.yveskalume.elevenlabs.internal.tts.dtos.DecodedRealtimeTtsMessage
 import dev.yveskalume.elevenlabs.internal.tts.dtos.RealtimeTtsMessages
 import dev.yveskalume.elevenlabs.internal.error.toConnectionLost
 import dev.yveskalume.elevenlabs.internal.error.toRealtimeFailure
+import dev.yveskalume.elevenlabs.internal.realtime.receiveAsSingleCollectorFlow
 import dev.yveskalume.elevenlabs.tts.RealtimeTtsEvent
 import dev.yveskalume.elevenlabs.tts.RealtimeTtsOptions
 import dev.yveskalume.elevenlabs.tts.RealtimeTtsReconnectPolicy
@@ -22,7 +23,6 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -70,7 +70,7 @@ internal class RealtimeTtsSessionImpl private constructor(
     private var keepAliveJob: Job? = null
     private var finishTimeoutJob: Job? = null
 
-    override val events: Flow<RealtimeTtsEvent> = eventChannel.receiveAsFlow()
+    override val events: Flow<RealtimeTtsEvent> = eventChannel.receiveAsSingleCollectorFlow()
 
     override suspend fun sendText(text: String, flush: Boolean) {
         require(text.isNotEmpty()) { "Realtime TTS text cannot be empty. Call finish() to end the session." }
@@ -495,7 +495,7 @@ internal class RealtimeTtsSessionImpl private constructor(
                 responseBody = rawMessage,
                 errorCode = decoded.errorCode,
             )
-            DecodedRealtimeTtsMessage.Unknown -> Unit
+            DecodedRealtimeTtsMessage.Ignored -> Unit
         }
         return false
     }

@@ -47,6 +47,8 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             api(libs.kotlinx.coroutines.core)
+            // SpeechToTextRequest takes a kotlinx-io RawSource.
+            api(libs.kotlinx.io.core)
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.client.content.negotiation)
             implementation(libs.ktor.client.serialization.json)

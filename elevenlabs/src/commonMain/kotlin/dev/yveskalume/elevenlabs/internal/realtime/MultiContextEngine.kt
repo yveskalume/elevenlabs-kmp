@@ -17,7 +17,6 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
@@ -111,7 +110,7 @@ internal class MultiContextEngine<E : Any>(
         @Volatile
         var discarded = false
 
-        val events: Flow<E> = channel.receiveAsFlow().takeWhile { !discarded }
+        val events: Flow<E> = channel.receiveAsSingleCollectorFlow().takeWhile { !discarded }
 
         fun cancelJobs() {
             keepAliveJob?.cancel()

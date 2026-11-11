@@ -165,11 +165,11 @@ internal class STTLogicHandler(
 
     private companion object {
         const val STT_SAMPLE_RATE = 16_000
-        val SESSION_OPTIONS = RealtimeSttOptions(
-            audioFormat = RealtimeSttAudioFormat.Pcm16000,
-            commitStrategy = RealtimeSttCommitStrategy.Manual,
-            includeTimestamps = true,
-            includeLanguageDetection = true,
-        )
+        val SESSION_OPTIONS = RealtimeSttOptions {
+            audioFormat = RealtimeSttAudioFormat.Pcm16000
+            commitStrategy = RealtimeSttCommitStrategy.Manual
+            includeTimestamps = true
+            includeLanguageDetection = true
+        }
     }
 }

@@ -43,7 +43,7 @@ xi-api-key: <your key>
 
 | Token type | Use it for |
 | --- | --- |
-| `tts_websocket` | `textToSpeech.realtime()` and `textToSpeech.openRealtimeSession()` |
+| `tts_websocket` | `textToSpeech.streamRealtime()` and `textToSpeech.openRealtimeSession()` |
 | `realtime_scribe` | `speechToText.openRealtimeSession()` |
 | `batch_scribe` | `speechToText.transcribe()` |
 
@@ -60,11 +60,11 @@ val authorization = Authorization.TokenProvider(
     },
 )
 
-elevenLabs.textToSpeech.realtime(
+elevenLabs.textToSpeech.streamRealtime(
     voiceId = voiceId,
     text = textParts,
     authorization = authorization,
-).collect { chunk ->
+).audioOnly().collect { chunk ->
     player.write(chunk.bytes)
 }
 ```

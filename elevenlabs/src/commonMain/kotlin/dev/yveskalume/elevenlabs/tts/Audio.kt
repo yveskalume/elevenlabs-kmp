@@ -2,9 +2,8 @@ package dev.yveskalume.elevenlabs.tts
 
 /** A complete generated audio response. */
 public class Audio internal constructor(
-    bytes: ByteArray,
+    /** Generated audio. The array belongs to the caller; the SDK never reads or changes it again. */
+    public val bytes: ByteArray,
     public val contentType: String?,
     public val requestId: String?,
-) {
-    public val bytes: ByteArray = bytes.copyOf()
-}
+)

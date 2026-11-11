@@ -7,6 +7,7 @@ import dev.yveskalume.elevenlabs.internal.error.realtimeErrorCode
 import dev.yveskalume.elevenlabs.internal.http.JSON
 import dev.yveskalume.elevenlabs.internal.realtime.MultiContextInbound
 import dev.yveskalume.elevenlabs.internal.realtime.MultiContextProtocol
+import dev.yveskalume.elevenlabs.internal.realtime.hasUnrecognizedFields
 import dev.yveskalume.elevenlabs.realtime.Alignment
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -90,8 +91,16 @@ internal object MultiContextDialogueProtocol : MultiContextProtocol<DialogueEven
                 add(MultiContextInbound.Event(contextId, DialogueEvent.TurnFinished))
             }
             if (message.isFinal == true) add(MultiContextInbound.ContextFinished(contextId))
+            if (isEmpty() && hasUnrecognizedFields(raw, KNOWN_FIELDS)) {
+                add(MultiContextInbound.Event(contextId, DialogueEvent.Unknown(raw)))
+            }
         }
     }
+
+    private val KNOWN_FIELDS = setOf(
+        "context_id", "audio", "alignment", "normalized_alignment", "is_final_audio_for_turn",
+        "is_final", "message", "error", "error_code", "code", "param",
+    )
 
     private fun JsonElement.text(): String? =
         (this as? JsonPrimitive)?.contentOrNull?.takeIf { it.isNotBlank() }

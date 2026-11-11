@@ -5,6 +5,7 @@ import dev.yveskalume.elevenlabs.internal.stt.dtos.DecodedRealtimeSttMessage
 import dev.yveskalume.elevenlabs.internal.stt.dtos.RealtimeSttMessages
 import dev.yveskalume.elevenlabs.internal.error.toConnectionLost
 import dev.yveskalume.elevenlabs.internal.error.toRealtimeFailure
+import dev.yveskalume.elevenlabs.internal.realtime.receiveAsSingleCollectorFlow
 import dev.yveskalume.elevenlabs.stt.RealtimeSttEvent
 import dev.yveskalume.elevenlabs.stt.RealtimeSttSession
 import kotlinx.coroutines.CancellationException
@@ -16,7 +17,6 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -40,7 +40,7 @@ internal class RealtimeSttSessionImpl(
     private val eventChannel = Channel<RealtimeSttEvent>(Channel.BUFFERED)
     private val receiverJob: Job
 
-    override val events: Flow<RealtimeSttEvent> = eventChannel.receiveAsFlow()
+    override val events: Flow<RealtimeSttEvent> = eventChannel.receiveAsSingleCollectorFlow()
 
     init {
         receiverJob = scope.launch { receiveEvents() }

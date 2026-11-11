@@ -1,12 +1,18 @@
 package dev.yveskalume.elevenlabs.tts
 
 import dev.yveskalume.elevenlabs.realtime.Alignment
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.mapNotNull
 
-/** Event emitted by a [RealtimeTtsSession]. */
+/**
+ * Event emitted by a [RealtimeTtsSession].
+ *
+ * Later SDK versions can add event types, so give a `when` over these events an `else` branch.
+ */
 public sealed interface RealtimeTtsEvent {
     /** A generated audio chunk */
     public data class Audio(
-        /** Generated audio bytes owned by this event */
+        /** Generated audio. The array belongs to the caller; the SDK never reads or changes it again. */
         public val bytes: ByteArray,
         /** Timing for the submitted text, when requested and available. */
         public val alignment: Alignment? = null,
@@ -36,4 +42,13 @@ public sealed interface RealtimeTtsEvent {
 
     /** The server has completed generation and no more events will be emitted. */
     public data object Finished : RealtimeTtsEvent
+
+    /** A forward-compatible server message not recognized by this SDK version. */
+    public data class Unknown(
+        public val rawMessage: String,
+    ) : RealtimeTtsEvent
 }
+
+/** Keeps only the audio of these events, for callers that don't need alignment. */
+public fun Flow<RealtimeTtsEvent>.audioOnly(): Flow<AudioChunk> =
+    mapNotNull { event -> (event as? RealtimeTtsEvent.Audio)?.let { AudioChunk(it.bytes) } }

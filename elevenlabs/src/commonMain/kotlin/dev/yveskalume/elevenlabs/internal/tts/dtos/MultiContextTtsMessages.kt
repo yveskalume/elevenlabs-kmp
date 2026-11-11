@@ -6,6 +6,7 @@ import dev.yveskalume.elevenlabs.internal.error.realtimeErrorCode
 import dev.yveskalume.elevenlabs.internal.http.JSON
 import dev.yveskalume.elevenlabs.internal.realtime.MultiContextInbound
 import dev.yveskalume.elevenlabs.internal.realtime.MultiContextProtocol
+import dev.yveskalume.elevenlabs.internal.realtime.hasUnrecognizedFields
 import dev.yveskalume.elevenlabs.realtime.Alignment
 import dev.yveskalume.elevenlabs.tts.MultiContextTtsContextOptions
 import dev.yveskalume.elevenlabs.tts.RealtimeTtsEvent
@@ -106,8 +107,16 @@ internal object MultiContextTtsProtocol : MultiContextProtocol<RealtimeTtsEvent>
                 )
             }
             if (message.isFinal == true) add(MultiContextInbound.ContextFinished(contextId))
+            if (isEmpty() && hasUnrecognizedFields(raw, KNOWN_FIELDS)) {
+                add(MultiContextInbound.Event(contextId, RealtimeTtsEvent.Unknown(raw)))
+            }
         }
     }
+
+    private val KNOWN_FIELDS = setOf(
+        "contextId", "context_id", "audio", "alignment", "normalizedAlignment", "normalized_alignment",
+        "isFinal", "is_final", "message", "error", "detail",
+    )
 
     private fun JsonElement.findMessage(): String? = when (this) {
         is JsonPrimitive -> contentOrNull

@@ -12,7 +12,8 @@ import kotlinx.coroutines.flow.Flow
  */
 public interface RealtimeTtsSession {
     /**
-     * A buffered, single-consumer stream of events received from ElevenLabs.
+     * A buffered stream of events received from ElevenLabs, for one collector at a time.
+     * A second concurrent collector fails with [IllegalStateException].
      *
      * Collection terminates with [dev.yveskalume.elevenlabs.error.ElevenLabsException.RealtimeServer] for a server
      * protocol failure, [dev.yveskalume.elevenlabs.error.ElevenLabsException.Network] for transport failure,

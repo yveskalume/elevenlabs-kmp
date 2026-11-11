@@ -12,6 +12,7 @@ import dev.yveskalume.elevenlabs.stt.SpeechToTextApi
 import dev.yveskalume.elevenlabs.stt.SpeechToTextRequest
 import dev.yveskalume.elevenlabs.stt.Transcription
 import io.ktor.client.call.body
+import io.ktor.client.request.forms.InputProvider
 import io.ktor.client.request.forms.MultiPartFormDataContent
 import io.ktor.client.request.forms.formData
 import io.ktor.client.request.header
@@ -21,6 +22,7 @@ import io.ktor.client.request.setBody
 import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
 import kotlinx.coroutines.CancellationException
+import kotlinx.io.buffered
 
 internal class SpeechToTextApiImpl(
     private val http: ElevenLabsHttpClient,
@@ -42,7 +44,8 @@ internal class SpeechToTextApiImpl(
                     formData {
                         append(
                             key = "file",
-                            value = request.audio,
+                            // Ktor closes the source after the upload.
+                            value = InputProvider(request.audioSize) { request.openAudio().buffered() },
                             headers = Headers.build {
                                 append(
                                     HttpHeaders.ContentDisposition,

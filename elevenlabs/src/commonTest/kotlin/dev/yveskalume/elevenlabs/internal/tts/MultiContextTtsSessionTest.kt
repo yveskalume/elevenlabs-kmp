@@ -55,16 +55,16 @@ class MultiContextTtsSessionTest {
             buildMultiContextTtsUrl(
                 baseUrl = "https://api.elevenlabs.io",
                 voiceId = "voice-1",
-                options = MultiContextTtsOptions(
-                    modelId = ModelId.ElevenFlashV2_5,
-                    languageCode = "en",
-                    outputFormat = OutputFormat.Pcm_24000,
-                    syncAlignment = true,
-                    autoMode = true,
-                    textNormalization = TextNormalization.Off,
-                    seed = 42,
-                    timeouts = RealtimeTtsTimeouts(inactivityTimeoutSeconds = 90),
-                ),
+                options = MultiContextTtsOptions {
+                    modelId = ModelId.ElevenFlashV2_5
+                    languageCode = "en"
+                    outputFormat = OutputFormat.Pcm_24000
+                    syncAlignment = true
+                    autoMode = true
+                    textNormalization = TextNormalization.Off
+                    seed = 42
+                    timeouts = RealtimeTtsTimeouts { inactivityTimeoutSeconds = 90 }
+                },
                 singleUseToken = "token-1",
             ),
         )
@@ -101,14 +101,14 @@ class MultiContextTtsSessionTest {
 
     @Test
     fun `options reject invalid values`() {
-        assertFailsWith<IllegalArgumentException> { MultiContextTtsOptions(seed = -1) }
-        assertFailsWith<IllegalArgumentException> { MultiContextTtsOptions(seed = 4_294_967_296) }
+        assertFailsWith<IllegalArgumentException> { MultiContextTtsOptions { seed = -1 } }
+        assertFailsWith<IllegalArgumentException> { MultiContextTtsOptions { seed = 4_294_967_296 } }
         assertFailsWith<IllegalArgumentException> { PronunciationDictionaryLocator(" ", "v1") }
         assertFailsWith<IllegalArgumentException> { PronunciationDictionaryLocator("dict", " ") }
         assertFailsWith<IllegalArgumentException> {
-            MultiContextTtsContextOptions(
-                pronunciationDictionaries = List(4) { PronunciationDictionaryLocator("dict-$it", "v1") },
-            )
+            MultiContextTtsContextOptions {
+                pronunciationDictionaries = List(4) { PronunciationDictionaryLocator("dict-$it", "v1") }
+            }
         }
     }
 
@@ -123,11 +123,11 @@ class MultiContextTtsSessionTest {
 
         val context = session.openContext(
             contextId = "answer-1",
-            options = MultiContextTtsContextOptions(
-                voiceSettings = VoiceSettings(stability = 0.5),
-                generationConfig = RealtimeTtsGenerationConfig(listOf(50, 100)),
-                pronunciationDictionaries = listOf(PronunciationDictionaryLocator("dict", "v2")),
-            ),
+            options = MultiContextTtsContextOptions {
+                voiceSettings = VoiceSettings { stability = 0.5 }
+                generationConfig = RealtimeTtsGenerationConfig(listOf(50, 100))
+                pronunciationDictionaries = listOf(PronunciationDictionaryLocator("dict", "v2"))
+            },
         )
         context.sendText("Hello", flush = true)
         context.sendText("world")
@@ -456,7 +456,7 @@ class MultiContextTtsSessionTest {
         val connection = FakeConnection()
         val session = openSession(
             connection,
-            timeouts = RealtimeTtsTimeouts(finishTimeoutMillis = 1_000),
+            timeouts = RealtimeTtsTimeouts { finishTimeoutMillis = 1_000 },
         )
         val slow = session.openContext()
         val other = session.openContext()
@@ -501,7 +501,7 @@ class MultiContextTtsSessionTest {
         val connection = FakeConnection()
         val session = openSession(
             connection,
-            timeouts = RealtimeTtsTimeouts(finishTimeoutMillis = 1_000),
+            timeouts = RealtimeTtsTimeouts { finishTimeoutMillis = 1_000 },
         )
         val context = session.openContext()
 
@@ -537,7 +537,10 @@ class MultiContextTtsSessionTest {
         val connection = FakeConnection()
         val session = openSession(
             connection,
-            keepAlive = KeepAlive(enabled = true, intervalMillis = 1_000),
+            keepAlive = KeepAlive {
+                enabled = true
+                intervalMillis = 1_000
+            },
         )
         val context = session.openContext(contextId = "a")
 
@@ -614,10 +617,13 @@ class MultiContextTtsSessionTest {
     private suspend fun TestScope.openSession(
         connection: FakeConnection,
         timeouts: RealtimeTtsTimeouts = RealtimeTtsTimeouts(),
-        keepAlive: KeepAlive = KeepAlive(enabled = false),
+        keepAlive: KeepAlive = KeepAlive { enabled = false },
     ): MultiContextTtsSession = MultiContextTtsSessionImpl.open(
         openConnection = { connection },
-        options = MultiContextTtsOptions(timeouts = timeouts, keepAlive = keepAlive),
+        options = MultiContextTtsOptions {
+            this.timeouts = timeouts
+            this.keepAlive = keepAlive
+        },
         dispatcher = StandardTestDispatcher(testScheduler),
     )
 

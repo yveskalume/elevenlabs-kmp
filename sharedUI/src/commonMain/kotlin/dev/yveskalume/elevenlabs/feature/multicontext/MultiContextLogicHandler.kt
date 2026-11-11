@@ -294,6 +294,8 @@ internal class MultiContextLogicHandler(
                     RealtimeTtsEvent.Finished -> {
                         item.generated = true
                     }
+
+                    else -> Unit
                 }
                 publish()
             }
@@ -386,7 +388,7 @@ internal class MultiContextLogicHandler(
         voicesJob?.cancel()
         voicesJob = scope.launch {
             val result = try {
-                LoadingState.Idle(client.voices.list(ListVoicesRequest(pageSize = 100)).voices)
+                LoadingState.Idle(client.voices.list(ListVoicesRequest { pageSize = 100 }).voices)
             } catch (cancellation: CancellationException) {
                 throw cancellation
             } catch (throwable: Throwable) {
@@ -409,15 +411,15 @@ internal class MultiContextLogicHandler(
         private val FOLLOW_INTERVAL = 50.milliseconds
         private const val END_GRACE_MILLIS = 2_000L
 
-        private val TTS_OPTIONS = MultiContextTtsOptions(
-            modelId = ModelId.ElevenFlashV2_5,
-            outputFormat = OutputFormat.Pcm_24000,
+        private val TTS_OPTIONS = MultiContextTtsOptions {
+            modelId = ModelId.ElevenFlashV2_5
+            outputFormat = OutputFormat.Pcm_24000
             // Character timings, to follow along with the audio.
-            syncAlignment = true,
+            syncAlignment = true
             // Whole sentences are sent, so generation can start without waiting for more text.
-            autoMode = true,
+            autoMode = true
             // A long paragraph can take a while to generate when the service is busy.
-            timeouts = RealtimeTtsTimeouts(finishTimeoutMillis = 60_000),
-        )
+            timeouts = RealtimeTtsTimeouts { finishTimeoutMillis = 60_000 }
+        }
     }
 }

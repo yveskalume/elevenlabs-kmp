@@ -36,19 +36,23 @@ public interface TextToSpeechApi {
     public fun stream(request: TextToSpeechRequest): Flow<AudioChunk>
 
     /**
-     * Streams partial text input to ElevenLabs and emits audio as it becomes available.
-     * The returned flow is cold and opens a new realtime session for each collection.
-     * Empty input values are ignored, and normal input completion gracefully finishes the session.
+     * Streams partial text input to ElevenLabs and emits the session's events as they arrive,
+     * ending with [RealtimeTtsEvent.Finished].
+     *
+     * The returned flow is cold and opens a new realtime session for each collection. Empty input
+     * values are ignored, and normal input completion gracefully finishes the session. Audio events
+     * carry alignment when [RealtimeTtsOptions.syncAlignment] is enabled; call [audioOnly] on the
+     * result when you only need the audio.
      *
      * Collection terminates with [dev.yveskalume.elevenlabs.error.ElevenLabsException.RealtimeServer] for a server
      * protocol failure, [ElevenLabsException.Network] for transport failure, or [ElevenLabsException.Timeout] for a timeout.
      */
-    public fun realtime(
+    public fun streamRealtime(
         voiceId: String,
         text: Flow<String>,
         options: RealtimeTtsOptions = RealtimeTtsOptions(),
         authorization: Authorization = Authorization.ConfiguredApiKey,
-    ): Flow<AudioChunk>
+    ): Flow<RealtimeTtsEvent>
 
     /**
      * Opens a controllable realtime text-to-speech session for [voiceId].
@@ -79,7 +83,7 @@ public interface TextToSpeechApi {
      * Use it for conversational agents that need to interrupt speech, prepare the next utterance
      * while the current one is playing, or speak several streams with different voice settings,
      * without opening a new connection each time. For a single stream of text, prefer
-     * [openRealtimeSession] or [realtime].
+     * [openRealtimeSession] or [streamRealtime].
      *
      * The caller owns the returned session and must call [MultiContextTtsSession.finish] or
      * [MultiContextTtsSession.close].

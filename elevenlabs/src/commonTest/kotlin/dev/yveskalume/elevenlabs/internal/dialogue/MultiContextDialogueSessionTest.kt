@@ -48,14 +48,14 @@ class MultiContextDialogueSessionTest {
         val url = Url(
             buildMultiContextDialogueUrl(
                 baseUrl = "https://api.elevenlabs.io",
-                options = MultiContextDialogueOptions(
-                    modelId = ModelId.ElevenV3,
-                    languageCode = "fr",
-                    outputFormat = OutputFormat.Pcm_24000,
-                    syncAlignment = true,
-                    textNormalization = TextNormalization.On,
-                    seed = 7,
-                ),
+                options = MultiContextDialogueOptions {
+                    modelId = ModelId.ElevenV3
+                    languageCode = "fr"
+                    outputFormat = OutputFormat.Pcm_24000
+                    syncAlignment = true
+                    textNormalization = TextNormalization.On
+                    seed = 7
+                },
                 singleUseToken = "token-1",
             ),
         )
@@ -74,12 +74,12 @@ class MultiContextDialogueSessionTest {
 
     @Test
     fun `options reject values ElevenLabs would refuse`() {
-        assertFailsWith<IllegalArgumentException> { MultiContextDialogueOptions(modelId = ModelId.ElevenFlashV2_5) }
-        assertFailsWith<IllegalArgumentException> { MultiContextDialogueOptions(seed = 0) }
+        assertFailsWith<IllegalArgumentException> { MultiContextDialogueOptions { modelId = ModelId.ElevenFlashV2_5 } }
+        assertFailsWith<IllegalArgumentException> { MultiContextDialogueOptions { seed = 0 } }
         assertFailsWith<IllegalArgumentException> {
-            MultiContextDialogueOptions(keepAlive = KeepAlive(intervalMillis = 20_000))
+            MultiContextDialogueOptions { keepAlive = KeepAlive { intervalMillis = 20_000 } }
         }
-        assertFailsWith<IllegalArgumentException> { MultiContextDialogueContextOptions(stability = 1.5) }
+        assertFailsWith<IllegalArgumentException> { MultiContextDialogueContextOptions { stability = 1.5 } }
         assertFailsWith<IllegalArgumentException> { DialogueLine("alice", "") }
     }
 
@@ -90,14 +90,14 @@ class MultiContextDialogueSessionTest {
 
         val scene = session.openContext(
             voiceIds = listOf("alice", "bob"),
-            options = MultiContextDialogueContextOptions(
-                stability = 0.3,
-                pronunciationDictionaries = listOf(PronunciationDictionaryLocator("dict", "v1")),
-            ),
+            options = MultiContextDialogueContextOptions {
+                stability = 0.3
+                pronunciationDictionaries = listOf(PronunciationDictionaryLocator("dict", "v1"))
+            },
             contextId = "scene-1",
         )
-        scene.send(DialogueLine("alice", "Did you hear that?", newTurn = true))
-        scene.send(listOf(DialogueLine("bob", "Hear what?", newTurn = true), DialogueLine("bob", " Nothing.")))
+        scene.send(DialogueLine("alice", "Did you hear that?") { newTurn = true })
+        scene.send(listOf(DialogueLine("bob", "Hear what?") { newTurn = true }, DialogueLine("bob", " Nothing.")))
         scene.flush()
         scene.keepAlive()
         scene.finish()
@@ -227,7 +227,7 @@ class MultiContextDialogueSessionTest {
 
         val chunks = session.stream(
             voiceIds = listOf("alice"),
-            lines = flowOf(DialogueLine("alice", "Hello!", newTurn = true)),
+            lines = flowOf(DialogueLine("alice", "Hello!") { newTurn = true }),
         ).toList()
 
         assertContentEquals(byteArrayOf(5), chunks.single().bytes)
@@ -256,7 +256,7 @@ class MultiContextDialogueSessionTest {
     @Test
     fun `keepalive uses the dialogue keep_alive flag`() = runTest {
         val connection = FakeConnection()
-        val session = openSession(connection, keepAlive = KeepAlive(intervalMillis = 1_000))
+        val session = openSession(connection, keepAlive = KeepAlive { intervalMillis = 1_000 })
         session.openContext(listOf("alice"), contextId = "a")
 
         advanceTimeBy(1_001)
@@ -269,10 +269,13 @@ class MultiContextDialogueSessionTest {
     private suspend fun TestScope.openSession(
         connection: FakeConnection,
         modelId: ModelId? = null,
-        keepAlive: KeepAlive = KeepAlive(enabled = false),
+        keepAlive: KeepAlive = KeepAlive { enabled = false },
     ): MultiContextDialogueSession = MultiContextDialogueSessionImpl.open(
         openConnection = { connection },
-        options = MultiContextDialogueOptions(modelId = modelId, keepAlive = keepAlive),
+        options = MultiContextDialogueOptions {
+            this.modelId = modelId
+            this.keepAlive = keepAlive
+        },
         dispatcher = StandardTestDispatcher(testScheduler),
     )
 
