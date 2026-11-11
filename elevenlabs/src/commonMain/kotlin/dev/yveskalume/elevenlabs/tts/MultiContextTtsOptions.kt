@@ -215,7 +215,7 @@ public class MultiContextTtsContextOptions private constructor(
         public fun build(): MultiContextTtsContextOptions = MultiContextTtsContextOptions(
             voiceSettings,
             generationConfig,
-            pronunciationDictionaries,
+            pronunciationDictionaries.toList(),
         )
     }
 

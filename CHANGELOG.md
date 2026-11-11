@@ -53,6 +53,9 @@ The project follows [Semantic Versioning](https://semver.org/).
 - `ModelsApi.list()` reports a blank `model_id` in the response as `ElevenLabsException.Serialization` instead of an `IllegalArgumentException` from `ModelId`.
 - The `SpeechToTextRequest` overload that takes a `ByteArray` always uploads the array's length. Setting `audioSize` in its `configure` block could send a wrong length.
 - `Authorization.SingleUseToken.toString()` hides the token, so logging it doesn't leak a credential.
+- `RealtimeTtsReconnectPolicy.BeforeFirstAudio.maxAttempts` allows that many reconnects, as documented. The first connection used to count toward it, so a session got one reconnect fewer.
+- Options keep their own copies of `keyterms`, `secondaryLanguages`, `pronunciationDictionaries`, and `chunkLengthSchedule`. Changing the list you passed in can no longer bypass validation or change an existing options object.
+- `RealtimeTtsEvent.Audio.toString()` shows the byte count instead of an array reference, like `DialogueEvent.Audio`.
 
 ### Removed
 

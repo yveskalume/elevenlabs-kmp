@@ -60,6 +60,7 @@ class RealtimeMessagesTest {
 
         val event = assertIs<RealtimeTtsEvent.Audio>(assertIs<DecodedRealtimeTtsMessage.Event>(audio).value)
         assertEquals(listOf(7), event.alignment?.characterDurationsMs)
+        assertTrue(event.toString().startsWith("Audio(bytes=1,"))
     }
 
     @Test

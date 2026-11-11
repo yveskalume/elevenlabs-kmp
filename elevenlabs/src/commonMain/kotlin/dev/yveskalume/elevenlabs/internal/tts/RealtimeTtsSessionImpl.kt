@@ -382,7 +382,8 @@ internal class RealtimeTtsSessionImpl private constructor(
     private fun canRetry(failure: Throwable): Boolean {
         val policy = options.reconnectPolicy as? RealtimeTtsReconnectPolicy.BeforeFirstAudio
             ?: return false
-        if (audioReceived || connectionAttempts >= policy.maxAttempts) return false
+        // connectionAttempts includes the first connection; maxAttempts counts only reconnects.
+        if (audioReceived || connectionAttempts > policy.maxAttempts) return false
         return when (failure) {
             is CancellationException -> false
             // A token provider that could not reach its backend is as transient as the socket.

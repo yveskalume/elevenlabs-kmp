@@ -88,7 +88,8 @@ ElevenLabs speak the same text twice, so the SDK fails the session instead and l
 you.
 
 A reconnect is attempted for network errors, timeouts, and server closes with the "going away",
-"internal error", or "service restart" close codes. Decoding failures and errors that came with a
+"internal error", "service restart", or "try again later" close codes, or with no code.
+`maxAttempts` counts reconnects, so `maxAttempts = 3` allows up to four connections in all. Decoding failures and errors that came with a
 server response body are not retried, because a new connection would fail the same way. Delays grow
 exponentially from `initialDelayMillis` up to `maxDelayMillis`, with `jitterFactor` (default 0.2)
 spreading out retries from many clients.

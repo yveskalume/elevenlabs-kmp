@@ -211,7 +211,7 @@ public class MultiContextDialogueContextOptions private constructor(
         @Throws(IllegalArgumentException::class)
         public fun build(): MultiContextDialogueContextOptions = MultiContextDialogueContextOptions(
             stability,
-            pronunciationDictionaries,
+            pronunciationDictionaries.toList(),
         )
     }
 
