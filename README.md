@@ -1,6 +1,6 @@
 # ElevenLabs KMP
 
-[![Maven Central](https://img.shields.io/maven-central/v/io.github.yveskalume/elevenlabs-kmp?label=Maven%20Central)](https://central.sonatype.com/artifact/io.github.yveskalume/elevenlabs-kmp/0.1.0)
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.yveskalume/elevenlabs-kmp?label=Maven%20Central)](https://central.sonatype.com/artifact/io.github.yveskalume/elevenlabs-kmp/0.2.0)
 [![CI](https://github.com/yveskalume/elevenlabs-kmp/actions/workflows/ci.yml/badge.svg)](https://github.com/yveskalume/elevenlabs-kmp/actions/workflows/ci.yml)
 [![Documentation](https://github.com/yveskalume/elevenlabs-kmp/actions/workflows/docs.yml/badge.svg)](https://github.com/yveskalume/elevenlabs-kmp/actions/workflows/docs.yml)
 
@@ -26,7 +26,7 @@ dependencyResolutionManagement {
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            implementation("io.github.yveskalume:elevenlabs-kmp:0.1.0")
+            implementation("io.github.yveskalume:elevenlabs-kmp:0.2.0")
         }
     }
 }
@@ -51,7 +51,7 @@ dependencyResolutionManagement {
 }
 ```
 
-Then use `0.1.0-SNAPSHOT` as the version.
+Then use `0.2.1-SNAPSHOT` as the version.
 
 ## Quick start
 

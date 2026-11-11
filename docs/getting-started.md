@@ -22,7 +22,7 @@ Then add the dependency to the common source set of your shared module:
 kotlin {
     sourceSets {
         commonMain.dependencies {
-            implementation("io.github.yveskalume:elevenlabs-kmp:0.1.0")
+            implementation("io.github.yveskalume:elevenlabs-kmp:0.2.0")
         }
     }
 }
@@ -31,7 +31,7 @@ kotlin {
 ### Snapshots
 
 Development snapshots go to the Central Portal snapshots repository. Add it before Maven Central and
-use `0.1.0-SNAPSHOT` as the version:
+use `0.2.1-SNAPSHOT` as the version:
 
 ```kotlin
 // settings.gradle.kts
