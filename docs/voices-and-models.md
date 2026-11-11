@@ -11,10 +11,10 @@ to 100:
 
 ```kotlin
 val page = elevenLabs.voices.list(
-    ListVoicesRequest(
-        pageSize = 25,
-        search = "narrator",
-    ),
+    ListVoicesRequest {
+        pageSize = 25
+        search = "narrator"
+    },
 )
 
 page.voices.forEach { voice ->
@@ -30,13 +30,13 @@ To fetch the next page, pass the token from the current one back in:
 ```kotlin
 suspend fun allVoices(): List<Voice> {
     val voices = mutableListOf<Voice>()
-    var request = ListVoicesRequest(pageSize = 100)
+    var request = ListVoicesRequest { pageSize = 100 }
     while (true) {
         val page = elevenLabs.voices.list(request)
         voices += page.voices
         val token = page.nextPageToken
         if (!page.hasMore || token == null) return voices
-        request = request.copy(nextPageToken = token)
+        request = request.toBuilder().apply { nextPageToken = token }.build()
     }
 }
 ```

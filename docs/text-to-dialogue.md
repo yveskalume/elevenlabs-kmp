@@ -7,10 +7,10 @@ prepare the next scene while the current one plays.
 
 ```kotlin
 val session = elevenLabs.textToDialogue.openMultiContextSession(
-    options = MultiContextDialogueOptions(
-        modelId = ModelId.ElevenV3,
-        outputFormat = OutputFormat.Pcm_24000,
-    ),
+    options = MultiContextDialogueOptions {
+        modelId = ModelId.ElevenV3
+        outputFormat = OutputFormat.Pcm_24000
+    },
 )
 ```
 
@@ -27,7 +27,7 @@ says it. `ModelId.ElevenV3` allows up to ten voices per context
 ```kotlin
 val scene = session.openContext(
     voiceIds = listOf(aliceVoiceId, bobVoiceId),
-    options = MultiContextDialogueContextOptions(stability = 0.4),
+    options = MultiContextDialogueContextOptions { stability = 0.4 },
 )
 
 coroutineScope {
@@ -41,8 +41,8 @@ coroutineScope {
         }
     }
 
-    scene.send(DialogueLine(aliceVoiceId, "Did you hear that?", newTurn = true))
-    scene.send(DialogueLine(bobVoiceId, "Hear what? I didn't hear anything.", newTurn = true))
+    scene.send(DialogueLine(aliceVoiceId, "Did you hear that?") { newTurn = true })
+    scene.send(DialogueLine(bobVoiceId, "Hear what? I didn't hear anything.") { newTurn = true })
     scene.finish()
 }
 

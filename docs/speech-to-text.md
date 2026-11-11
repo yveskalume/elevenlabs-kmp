@@ -12,9 +12,10 @@ val transcript = elevenLabs.speechToText.transcribe(
         audio = recording,
         fileName = "recording.m4a",
         contentType = "audio/mp4",
-        modelId = ModelId.ScribeV2,
-        diarize = true,
-    ),
+    ) {
+        modelId = ModelId.ScribeV2
+        diarize = true
+    },
 )
 
 println(transcript.text)
@@ -23,9 +24,24 @@ transcript.words.forEach { word ->
 }
 ```
 
-`fileName` and `contentType` are sent with the upload, so set them to match the file. Most audio and
-video containers work as-is. If you're uploading raw 16 kHz 16-bit PCM with no header, set
+`fileName` and `contentType` are required and sent with the upload, so set them to match the
+file. Most audio and video containers work as-is. If you're uploading raw 16 kHz 16-bit PCM with no header, set
 `fileFormat = SpeechToTextFileFormat.PcmS16Le16` so ElevenLabs doesn't try to detect a container.
+
+A recording on disk doesn't have to fit in memory. Pass a function that opens it instead, and
+the SDK streams the file while it uploads. It calls the function once per upload and closes
+what it returns, so the same request can be sent again, for example on retry:
+
+```kotlin
+val path = Path("recordings/meeting.m4a")
+val request = SpeechToTextRequest(
+    fileName = path.name,
+    contentType = "audio/mp4",
+    openAudio = { SystemFileSystem.source(path) },
+) {
+    audioSize = SystemFileSystem.metadataOrNull(path)?.size
+}
+```
 
 `words` holds one entry per word by default. Set `timestampsGranularity` to `Character` for
 per-character timing or `None` if you only need the text. With `diarize = true`, each word also has a
@@ -41,11 +57,11 @@ compressed audio, so the format has to match what your microphone code produces:
 
 ```kotlin
 val session = elevenLabs.speechToText.openRealtimeSession(
-    options = RealtimeSttOptions(
-        audioFormat = RealtimeSttAudioFormat.Pcm16000,
-        commitStrategy = RealtimeSttCommitStrategy.VoiceActivityDetection,
-        includeTimestamps = true,
-    ),
+    options = RealtimeSttOptions {
+        audioFormat = RealtimeSttAudioFormat.Pcm16000
+        commitStrategy = RealtimeSttCommitStrategy.VoiceActivityDetection
+        includeTimestamps = true
+    },
 )
 ```
 

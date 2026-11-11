@@ -102,7 +102,10 @@ class RealtimeMessagesTest {
             http = unusedHttp(),
             realtimeConnectionFactory = { _, _, _ -> connection },
         )
-        val options = RealtimeTtsOptions(syncAlignment = true, keepAlive = KeepAlive(enabled = false))
+        val options = RealtimeTtsOptions {
+            syncAlignment = true
+            keepAlive = KeepAlive { enabled = false }
+        }
 
         val events = api.streamRealtime("voice-1", flowOf("Hi"), options).toList()
 

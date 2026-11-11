@@ -167,22 +167,80 @@ public interface MultiContextDialogueContext {
 }
 
 /** One line of dialogue. */
-public data class DialogueLine @Throws(IllegalArgumentException::class) constructor(
+public class DialogueLine private constructor(
     /** Voice that speaks this line. It must be registered for the context. */
-    val voiceId: String,
+    public val voiceId: String,
     /** Non-empty text of the line. */
-    val text: String,
+    public val text: String,
     /**
      * Whether this line starts a new speaker turn. ElevenLabs then finalizes the previous turn's
      * delivery before this line, and reports its end with [DialogueEvent.TurnFinished].
      */
-    val newTurn: Boolean = false,
+    public val newTurn: Boolean,
 ) {
     init {
         require(voiceId.isNotBlank()) { "voiceId cannot be blank." }
         require(text.isNotEmpty()) { "Dialogue text cannot be empty." }
     }
+
+    /** Returns a builder with these values, to create a changed copy. */
+    public fun toBuilder(): Builder = Builder(voiceId = voiceId, text = text).also {
+        it.newTurn = newTurn
+    }
+
+    /**
+     * Builds a [DialogueLine]. Required values are constructor parameters; the others start at
+     * their defaults.
+     */
+    public class Builder(
+        /** Voice that speaks this line. It must be registered for the context. */
+        public var voiceId: String,
+        /** Non-empty text of the line. */
+        public var text: String,
+    ) {
+        /**
+         * Whether this line starts a new speaker turn. ElevenLabs then finalizes the previous
+         * turn's
+         * delivery before this line, and reports its end with [DialogueEvent.TurnFinished].
+         */
+        public var newTurn: Boolean = false
+
+        /**
+         * Creates the [DialogueLine].
+         *
+         * @throws IllegalArgumentException if a value is invalid.
+         */
+        @Throws(IllegalArgumentException::class)
+        public fun build(): DialogueLine = DialogueLine(voiceId, text, newTurn)
+    }
+
+    override fun equals(other: Any?): Boolean =
+        other is DialogueLine &&
+            voiceId == other.voiceId &&
+            text == other.text &&
+            newTurn == other.newTurn
+
+    override fun hashCode(): Int {
+        var result = voiceId.hashCode()
+        result = 31 * result + text.hashCode()
+        result = 31 * result + newTurn.hashCode()
+        return result
+    }
+
+    override fun toString(): String = "DialogueLine(voiceId=$voiceId, text=$text, newTurn=$newTurn)"
 }
+
+/**
+ * Creates a [DialogueLine]. Set optional values in [configure].
+ *
+ * @throws IllegalArgumentException if a value is invalid.
+ */
+@Throws(IllegalArgumentException::class)
+public fun DialogueLine(
+    voiceId: String,
+    text: String,
+    configure: DialogueLine.Builder.() -> Unit = {},
+): DialogueLine = DialogueLine.Builder(voiceId, text).apply(configure).build()
 
 /**
  * Event emitted by a [MultiContextDialogueContext].

@@ -33,6 +33,10 @@ SDK never reads or changes them again, so you can keep, change, or pass them on 
 Arrays you pass in, such as `SpeechToTextRequest.audio`, are used as they are, so don't change them
 while the call is running.
 
+Requests and options are built with a trailing lambda, where you set only the values you need,
+such as `RealtimeTtsOptions { syncAlignment = true }`. Required values, such as a voice ID, go in
+the parentheses. `toBuilder()` gives you a builder to create a changed copy.
+
 Event types can grow: later SDK versions can add events and error kinds. Give every `when` over
 events or `ElevenLabsErrorKind` an `else` branch.
 

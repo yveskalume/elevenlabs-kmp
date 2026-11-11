@@ -77,8 +77,9 @@ val audio = elevenLabs.textToSpeech.generate(
     TextToSpeechRequest(
         voiceId = "JBFqnCBsd6RMkjVDRZzb",
         text = "Hello from Kotlin Multiplatform.",
-        modelId = ModelId.ElevenMultilingualV2,
-    ),
+    ) {
+        modelId = ModelId.ElevenMultilingualV2
+    },
 )
 
 // MP3 by default. Write audio.bytes to a file or pass it to a player.
@@ -98,8 +99,9 @@ val transcript = elevenLabs.speechToText.transcribe(
         audio = recording,
         fileName = "meeting.m4a",
         contentType = "audio/mp4",
-        diarize = true,
-    ),
+    ) {
+        diarize = true
+    },
 )
 
 println(transcript.text)
