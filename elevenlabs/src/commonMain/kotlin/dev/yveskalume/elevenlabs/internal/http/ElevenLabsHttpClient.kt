@@ -5,11 +5,6 @@ import dev.yveskalume.elevenlabs.ElevenLabsConfiguration
 import dev.yveskalume.elevenlabs.error.ApiException
 import dev.yveskalume.elevenlabs.error.ElevenLabsErrorDetails
 import dev.yveskalume.elevenlabs.error.ElevenLabsException
-import dev.yveskalume.elevenlabs.error.NetworkError
-import dev.yveskalume.elevenlabs.error.SerializationError
-import dev.yveskalume.elevenlabs.error.TimeoutError
-import dev.yveskalume.elevenlabs.error.UnknownError
-import dev.yveskalume.elevenlabs.error.truncateDiagnosticBody
 import dev.yveskalume.elevenlabs.internal.error.ElevenLabsErrorPayload
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
@@ -51,12 +46,10 @@ internal class ElevenLabsHttpClient(
     }
 
     suspend fun resolveApiKey(): String {
-        val provider = checkNotNull(apiKeyProvider) {
-            "No ElevenLabs API key is configured. Configure one on the client or use a single-use token for realtime TTS."
-        }
-        val apiKey = provider.getApiKey()
-        require(apiKey.isNotBlank()) { "The ElevenLabs API key provider returned a blank key." }
-        return apiKey
+        val provider = apiKeyProvider ?: throw ElevenLabsException.MissingCredentials(
+            "No ElevenLabs API key is configured. Configure one on the client or use a single-use token for realtime TTS.",
+        )
+        return resolveCredential("ElevenLabs API key provider") { provider.getApiKey() }
     }
 
     fun close() {
@@ -109,13 +102,13 @@ internal fun Throwable.toHttpFailure(): Throwable = when (this) {
 
     is HttpRequestTimeoutException,
     is ConnectTimeoutException,
-    is SocketTimeoutException -> TimeoutError(this)
+    is SocketTimeoutException -> ElevenLabsException.Timeout(this)
 
     is ContentConvertException,
-    is SerializationException -> SerializationError(this)
+    is SerializationException -> ElevenLabsException.Serialization(this)
 
-    is IOException -> NetworkError(this)
-    else -> UnknownError(this)
+    is IOException -> ElevenLabsException.Network(this)
+    else -> ElevenLabsException.Unknown(this)
 }
 
 private suspend fun HttpResponse.toApiException(): ApiException {
@@ -127,7 +120,7 @@ private suspend fun HttpResponse.toApiException(): ApiException {
         statusCode = status.value,
         message = payload?.parsedMessage ?: "ElevenLabs returned HTTP ${status.value}.",
         requestId = headers[ElevenLabsHttpClient.REQUEST_ID_HEADER],
-        responseBody = body.takeIf(String::isNotBlank).truncateDiagnosticBody(),
+        responseBody = body.takeIf(String::isNotBlank),
         errorCode = payload?.parsedCode,
         validationErrors = payload?.validationErrors.orEmpty(),
     )

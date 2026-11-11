@@ -6,8 +6,8 @@ import dev.yveskalume.elevenlabs.internal.error.realtimeErrorCode
 import dev.yveskalume.elevenlabs.internal.http.JSON
 import dev.yveskalume.elevenlabs.internal.realtime.MultiContextInbound
 import dev.yveskalume.elevenlabs.internal.realtime.MultiContextProtocol
+import dev.yveskalume.elevenlabs.realtime.Alignment
 import dev.yveskalume.elevenlabs.tts.MultiContextTtsContextOptions
-import dev.yveskalume.elevenlabs.tts.RealtimeTtsAlignment
 import dev.yveskalume.elevenlabs.tts.RealtimeTtsEvent
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.SerialName
@@ -197,7 +197,7 @@ private data class MultiContextAlignmentDto(
     @JsonNames("charDurationsMs", "char_durations_ms")
     val characterDurationsMs: List<Int> = emptyList(),
 ) {
-    fun toPublic() = RealtimeTtsAlignment(
+    fun toPublic() = Alignment(
         characters = characters,
         characterStartTimesMs = characterStartTimesMs,
         characterDurationsMs = characterDurationsMs,

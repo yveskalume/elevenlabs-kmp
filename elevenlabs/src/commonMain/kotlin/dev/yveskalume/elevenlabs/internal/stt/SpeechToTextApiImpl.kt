@@ -1,13 +1,14 @@
 package dev.yveskalume.elevenlabs.internal.stt
 
+import dev.yveskalume.elevenlabs.Authorization
 import dev.yveskalume.elevenlabs.error.ElevenLabsException
 import dev.yveskalume.elevenlabs.internal.http.ElevenLabsHttpClient
 import dev.yveskalume.elevenlabs.internal.error.toRealtimeFailure
+import dev.yveskalume.elevenlabs.internal.http.resolveCredentials
 import dev.yveskalume.elevenlabs.internal.stt.dtos.SpeechToTextResponseDto
 import dev.yveskalume.elevenlabs.stt.RealtimeSttOptions
 import dev.yveskalume.elevenlabs.stt.RealtimeSttSession
 import dev.yveskalume.elevenlabs.stt.SpeechToTextApi
-import dev.yveskalume.elevenlabs.stt.SpeechToTextAuthorization
 import dev.yveskalume.elevenlabs.stt.SpeechToTextRequest
 import dev.yveskalume.elevenlabs.stt.Transcription
 import io.ktor.client.call.body
@@ -29,12 +30,12 @@ internal class SpeechToTextApiImpl(
 
     override suspend fun transcribe(
         request: SpeechToTextRequest,
-        authorization: SpeechToTextAuthorization,
+        authorization: Authorization,
     ): Transcription {
         val credentials = authorization.resolveCredentials(http)
         val response = http.client.post(http.url("v1", "speech-to-text")) {
             credentials.apiKey?.let { header(ElevenLabsHttpClient.API_KEY_HEADER, it) }
-            credentials.token?.let { parameter("token", it) }
+            credentials.singleUseToken?.let { parameter("token", it) }
             parameter("enable_logging", request.enableLogging)
             setBody(
                 MultiPartFormDataContent(
@@ -50,7 +51,7 @@ internal class SpeechToTextApiImpl(
                                 append(HttpHeaders.ContentType, request.contentType)
                             },
                         )
-                        append("model_id", request.modelId)
+                        append("model_id", request.modelId.value)
                         request.languageCode?.let { append("language_code", it) }
                         append("tag_audio_events", request.tagAudioEvents.toString())
                         request.numberOfSpeakers?.let { append("num_speakers", it.toString()) }
@@ -66,7 +67,7 @@ internal class SpeechToTextApiImpl(
 
     override suspend fun openRealtimeSession(
         options: RealtimeSttOptions,
-        authorization: SpeechToTextAuthorization,
+        authorization: Authorization,
     ): RealtimeSttSession = try {
         RealtimeSttSessionImpl(
             realtimeConnectionFactory.open(options, authorization),

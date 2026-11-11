@@ -1,10 +1,10 @@
 package dev.yveskalume.elevenlabs.internal.tts
 
+import dev.yveskalume.elevenlabs.Authorization
 import dev.yveskalume.elevenlabs.internal.http.ElevenLabsHttpClient
+import dev.yveskalume.elevenlabs.internal.http.resolveCredentials
 import dev.yveskalume.elevenlabs.tts.MultiContextTtsOptions
-import dev.yveskalume.elevenlabs.tts.RealtimeTtsAuthorization
 import dev.yveskalume.elevenlabs.tts.TextNormalization
-import dev.yveskalume.elevenlabs.tts.resolveCredentials
 import io.ktor.client.plugins.websocket.webSocketSession
 import io.ktor.client.request.header
 import io.ktor.client.request.url
@@ -17,7 +17,7 @@ internal fun interface MultiContextTtsConnectionFactory {
     suspend fun open(
         voiceId: String,
         options: MultiContextTtsOptions,
-        authorization: RealtimeTtsAuthorization,
+        authorization: Authorization,
     ): RealtimeTtsConnection
 }
 
@@ -27,7 +27,7 @@ internal class MultiContextTtsConnectionFactoryImpl(
     override suspend fun open(
         voiceId: String,
         options: MultiContextTtsOptions,
-        authorization: RealtimeTtsAuthorization,
+        authorization: Authorization,
     ): RealtimeTtsConnection {
         val credentials = authorization.resolveCredentials(http)
         val endpoint = buildMultiContextTtsUrl(
@@ -63,7 +63,7 @@ internal fun buildMultiContextTtsUrl(
     parameters.append("auto_mode", options.autoMode.toString())
     parameters.append("enable_ssml_parsing", options.enableSsmlParsing.toString())
     parameters.append("inactivity_timeout", options.timeouts.inactivityTimeoutSeconds.toString())
-    options.modelId?.let { parameters.append("model_id", it) }
+    options.modelId?.let { parameters.append("model_id", it.value) }
     options.languageCode?.let { parameters.append("language_code", it) }
     options.textNormalization?.let { parameters.append("apply_text_normalization", it.wireValue) }
     options.seed?.let { parameters.append("seed", it.toString()) }

@@ -1,9 +1,11 @@
 package dev.yveskalume.elevenlabs.stt
 
+import dev.yveskalume.elevenlabs.models.ModelId
+
 /** Configuration applied when opening a realtime speech-to-text connection. */
-public data class RealtimeSttOptions(
-    /** Realtime speech-to-text model identifier. */
-    val modelId: String = "scribe_v2_realtime",
+public data class RealtimeSttOptions @Throws(IllegalArgumentException::class) constructor(
+    /** Realtime speech-to-text model, or `null` to use the service default. */
+    val modelId: ModelId? = null,
     /** Encoding and sample rate of submitted audio. */
     val audioFormat: RealtimeSttAudioFormat = RealtimeSttAudioFormat.Pcm16000,
     /** Expected language code, or `null` for automatic detection. */
@@ -24,7 +26,6 @@ public data class RealtimeSttOptions(
     val enableLogging: Boolean = true,
 ) {
     init {
-        require(modelId.isNotBlank()) { "modelId cannot be blank." }
         require(languageCode == null || languageCode.isNotBlank()) { "languageCode cannot be blank." }
         require(secondaryLanguages.all(String::isNotBlank)) { "secondaryLanguages cannot contain blanks." }
         require(keyterms.size <= 50) { "Realtime STT supports at most 50 keyterms." }

@@ -18,7 +18,7 @@ internal data class TTSBody(
 
 internal fun TextToSpeechRequest.toBody() = TTSBody(
     text = text,
-    modelId = modelId,
+    modelId = modelId?.value,
     languageCode = languageCode,
     voiceSettings = voiceSettings?.let {
         TTSVoiceSettingsDto(

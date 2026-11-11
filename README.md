@@ -51,225 +51,55 @@ dependencyResolutionManagement {
 }
 ```
 
-Then replace `0.1.0` with `0.1.0-SNAPSHOT` in the dependency declaration.
+Then use `0.1.0-SNAPSHOT` as the version.
 
 ## Quick start
-
-Create a client in a trusted environment:
 
 ```kotlin
 val elevenLabs = ElevenLabs {
     apiKey(System.getenv("ELEVENLABS_API_KEY"))
 }
-```
 
-The configured key is used automatically by every service.
-
-List available voices:
-
-```kotlin
-val page = elevenLabs.voices.list(
-    ListVoicesRequest(
-        pageSize = 25,
-        search = "narrator",
-    ),
-)
-```
-
-Generate speech:
-
-```kotlin
 val audio = elevenLabs.textToSpeech.generate(
     TextToSpeechRequest(
         voiceId = "JBFqnCBsd6RMkjVDRZzb",
         text = "Hello from Kotlin Multiplatform.",
-        modelId = "eleven_multilingual_v2",
     ),
 )
-
-saveAudio(audio.bytes)
+// audio.bytes is MP3 by default.
 ```
 
-Call `elevenLabs.close()` when the client is no longer needed.
+Don't put an API key in an Android or iOS app. Have your backend issue single-use tokens instead,
+as described in the [authentication guide](https://yveskalume.github.io/elevenlabs-kmp/authentication/).
 
-## Text to speech
+## Features
 
-Choose the API based on how text becomes available:
-
-| API | Use it when |
-| --- | --- |
-| `generate()` | You need the complete audio as one result. |
-| `stream()` | The complete text is available, but audio should arrive incrementally over HTTP. |
-| `realtime()` | Text arrives incrementally, such as tokens from an LLM. |
-| `openRealtimeSession()` | You need explicit control over sending, flushing, or alignment events. |
-| `openMultiContextSession()` | One connection must host several independent streams, such as an agent that can be interrupted. |
-
-Stream audio over HTTP:
-
-```kotlin
-elevenLabs.textToSpeech.stream(
-    TextToSpeechRequest(
-        voiceId = "JBFqnCBsd6RMkjVDRZzb",
-        text = "A longer passage to synthesize.",
-    ),
-).collect { chunk ->
-    audioPipeline.write(chunk.bytes)
-}
-```
-
-An `AudioChunk` is an arbitrary transport chunk and may not contain a complete codec frame.
-
-Stream text and audio in realtime:
-
-```kotlin
-val llmText: Flow<String> = languageModel.responses()
-
-elevenLabs.textToSpeech.realtime(
-    voiceId = "JBFqnCBsd6RMkjVDRZzb",
-    text = llmText,
-    options = RealtimeTtsOptions(
-        modelId = "eleven_flash_v2_5",
-        outputFormat = OutputFormat.Pcm_24000,
-    ),
-).collect { chunk ->
-    audioPipeline.write(chunk.bytes)
-}
-```
-
-For explicit control, open a session:
-
-```kotlin
-val session = elevenLabs.textToSpeech.openRealtimeSession(
-    voiceId = "JBFqnCBsd6RMkjVDRZzb",
-    options = RealtimeTtsOptions(syncAlignment = true),
-)
-
-coroutineScope {
-    launch {
-        session.events.collect { event ->
-            when (event) {
-                is RealtimeTtsEvent.Audio -> {
-                    audioPipeline.write(event.bytes)
-                    updateCaptions(event.normalizedAlignment)
-                }
-                RealtimeTtsEvent.Finished -> Unit
-            }
-        }
-    }
-
-    session.sendText("Hello ")
-    session.sendText("from realtime TTS.", flush = true)
-    session.finish()
-}
-```
-
-Use `finish()` to complete a session gracefully or `close()` to cancel it immediately.
-
-## Text to dialogue
-
-Generate a conversation between several voices with Eleven v3, in realtime:
-
-```kotlin
-val session = elevenLabs.textToDialogue.openMultiContextSession(
-    options = MultiContextDialogueOptions(modelId = "eleven_v3"),
-)
-
-session.stream(
-    voiceIds = listOf(aliceVoiceId, bobVoiceId),
-    lines = flowOf(
-        DialogueLine(aliceVoiceId, "Did you hear that?", newTurn = true),
-        DialogueLine(bobVoiceId, "Hear what?", newTurn = true),
-    ),
-).collect { chunk -> audioPipeline.write(chunk.bytes) }
-
-session.finish()
-```
-
-See the [text-to-dialogue guide](https://yveskalume.github.io/elevenlabs-kmp/text-to-dialogue/).
-
-## Speech to text
-
-Transcribe a complete audio or video file with Scribe:
-
-```kotlin
-val transcript = elevenLabs.speechToText.transcribe(
-    SpeechToTextRequest(
-        audio = recordedAudio,
-        fileName = "recording.m4a",
-        contentType = "audio/mp4",
-        modelId = "scribe_v2",
-        diarize = true,
-    ),
-)
-
-println(transcript.text)
-```
-
-For live microphone transcription, open a realtime session and send audio in the format declared by its options:
-
-```kotlin
-val session = elevenLabs.speechToText.openRealtimeSession(
-    options = RealtimeSttOptions(
-        audioFormat = RealtimeSttAudioFormat.Pcm16000,
-        commitStrategy = RealtimeSttCommitStrategy.VoiceActivityDetection,
-        includeTimestamps = true,
-    ),
-)
-
-coroutineScope {
-    launch {
-        session.events.collect { event ->
-            when (event) {
-                is RealtimeSttEvent.PartialTranscript -> showLiveText(event.text)
-                is RealtimeSttEvent.CommittedTranscript -> saveText(event.text)
-                else -> Unit
-            }
-        }
-    }
-
-    microphone.pcm16MonoChunks(sampleRate = 16_000).collect { chunk ->
-        session.sendAudio(chunk)
-    }
-    session.commit()
-}
-```
-
-Close the session when microphone capture ends.
-
-## Authentication and security
-
-For rotating credentials, configure a provider instead of a static key:
-
-```kotlin
-val elevenLabs = ElevenLabs {
-    apiKey(
-        ApiKeyProvider {
-            credentialsStore.currentElevenLabsKey()
-        },
-    )
-}
-```
-
-Never embed an ElevenLabs API key in a production Android or iOS application. Use short-lived
-credentials issued by a trusted backend instead. See the [authentication guide](https://yveskalume.github.io/elevenlabs-kmp/authentication/).
-
-## Supported features
-
-- Paginated voice listing and voice retrieval
-- Model listing
-- Complete and HTTP-streamed text-to-speech generation
-- Realtime text-to-speech over WebSockets, including multi-context sessions
-- Realtime multi-speaker text-to-dialogue with Eleven v3
-- Batch speech-to-text transcription
-- Realtime speech-to-text over WebSockets
-- API-key and endpoint-specific token authentication
+- Text to speech: complete files, HTTP streaming, and realtime WebSocket sessions that accept text as
+  it's generated, including multi-context sessions that host several streams on one connection
+- Text to dialogue: realtime multi-speaker conversations with Eleven v3
+- Speech to text: file transcription with diarization, and live transcription from raw PCM
+- Voice and model discovery, with pagination
+- API keys, rotating key providers, and single-use tokens
+- Typed errors with a `kind` and `isRetryable` on every failure
 
 ## Documentation
-[https://yveskalume.github.io/elevenlabs-kmp](https://yveskalume.github.io/elevenlabs-kmp)
+
+The guides are at [yveskalume.github.io/elevenlabs-kmp](https://yveskalume.github.io/elevenlabs-kmp):
+
+- [Getting started](https://yveskalume.github.io/elevenlabs-kmp/getting-started/)
+- [Text to speech](https://yveskalume.github.io/elevenlabs-kmp/text-to-speech/)
+- [Text to dialogue](https://yveskalume.github.io/elevenlabs-kmp/text-to-dialogue/)
+- [Speech to text](https://yveskalume.github.io/elevenlabs-kmp/speech-to-text/)
+- [Voices and models](https://yveskalume.github.io/elevenlabs-kmp/voices-and-models/)
+- [Realtime connections](https://yveskalume.github.io/elevenlabs-kmp/realtime-connections/)
+- [Error handling](https://yveskalume.github.io/elevenlabs-kmp/error-handling/)
+- [API reference](https://yveskalume.github.io/elevenlabs-kmp/api/)
 
 ## Running the samples
 
-The Android and iOS sample apps use the same Compose Multiplatform UI in `sharedUI` for text-to-speech and live microphone transcription. Development keys configured for these samples are embedded in the resulting app and must not be used for production builds.
+The Android and iOS sample apps share one Compose Multiplatform UI, in `sharedUI`, with screens for
+text to speech and live transcription. The samples build your development key into the app, so never
+ship a build made this way.
 
 For Android, add the following to the ignored `local.properties` file:
 

@@ -1,10 +1,6 @@
 package dev.yveskalume.elevenlabs.internal.error
 
 import dev.yveskalume.elevenlabs.error.ElevenLabsException
-import dev.yveskalume.elevenlabs.error.NetworkError
-import dev.yveskalume.elevenlabs.error.RealtimeServerError
-import dev.yveskalume.elevenlabs.error.SerializationError
-import dev.yveskalume.elevenlabs.error.TimeoutError
 import io.ktor.client.network.sockets.ConnectTimeoutException
 import io.ktor.client.network.sockets.SocketTimeoutException
 import io.ktor.client.plugins.HttpRequestTimeoutException
@@ -19,14 +15,21 @@ internal fun Throwable.toRealtimeFailure(): Throwable = when (this) {
     is ElevenLabsException -> this
     is HttpRequestTimeoutException,
     is ConnectTimeoutException,
-    is SocketTimeoutException -> TimeoutError(this)
+    is SocketTimeoutException -> ElevenLabsException.Timeout(this)
 
     is ContentConvertException,
-    is SerializationException -> SerializationError(this)
+    is SerializationException -> ElevenLabsException.Serialization(this)
 
-    is IOException -> NetworkError(this)
-    else -> RealtimeServerError(
+    is IOException -> ElevenLabsException.Network(this)
+    else -> ElevenLabsException.RealtimeServer(
         message = message ?: "The realtime ElevenLabs session failed.",
         cause = this,
     )
 }
+
+/**
+ * A transport cancelled underneath a session that the caller did not close. Reported as a lost
+ * connection rather than leaking a [CancellationException] into callers that were not cancelled.
+ */
+internal fun CancellationException.toConnectionLost(label: String): ElevenLabsException.Network =
+    ElevenLabsException.Network(cause = this, message = "The $label connection was lost.")

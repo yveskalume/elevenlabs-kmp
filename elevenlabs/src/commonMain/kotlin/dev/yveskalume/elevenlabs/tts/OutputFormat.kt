@@ -6,7 +6,7 @@ package dev.yveskalume.elevenlabs.tts
  * Construct this type with a service-supported value when a newer format is not yet exposed as
  * a companion constant.
  */
-public data class OutputFormat(public val value: String) {
+public data class OutputFormat @Throws(IllegalArgumentException::class) constructor(public val value: String) {
     init {
         require(value.isNotBlank()) { "The output format cannot be blank." }
     }

@@ -5,6 +5,7 @@ import dev.yveskalume.elevenlabs.ElevenLabs
 import dev.yveskalume.elevenlabs.feature.LoadingState
 import dev.yveskalume.elevenlabs.feature.LogicHandler
 import dev.yveskalume.elevenlabs.feature.userMessage
+import dev.yveskalume.elevenlabs.models.ModelId
 import dev.yveskalume.elevenlabs.tts.MultiContextTtsContext
 import dev.yveskalume.elevenlabs.tts.MultiContextTtsOptions
 import dev.yveskalume.elevenlabs.tts.MultiContextTtsSession
@@ -402,7 +403,6 @@ internal class MultiContextLogicHandler(
          * but audio that is skipped is still generated and billed.
          */
         private const val LOOK_AHEAD = 2
-        private const val MODEL_ID = "eleven_flash_v2_5"
 
         private const val SAMPLE_RATE = 24_000
         private const val BYTES_PER_SAMPLE = 2
@@ -410,7 +410,7 @@ internal class MultiContextLogicHandler(
         private const val END_GRACE_MILLIS = 2_000L
 
         private val TTS_OPTIONS = MultiContextTtsOptions(
-            modelId = MODEL_ID,
+            modelId = ModelId.ElevenFlashV2_5,
             outputFormat = OutputFormat.Pcm_24000,
             // Character timings, to follow along with the audio.
             syncAlignment = true,

@@ -1,7 +1,7 @@
 package dev.yveskalume.elevenlabs.dialogue
 
+import dev.yveskalume.elevenlabs.Authorization
 import dev.yveskalume.elevenlabs.error.ElevenLabsException
-import dev.yveskalume.elevenlabs.tts.RealtimeTtsAuthorization
 import kotlin.coroutines.cancellation.CancellationException
 
 /** Generates multi-speaker dialogue with Eleven v3 models. */
@@ -16,13 +16,18 @@ public interface TextToDialogueApi {
      * The caller owns the returned session and must call [MultiContextDialogueSession.finish] or
      * [MultiContextDialogueSession.close].
      *
-     * @throws dev.yveskalume.elevenlabs.error.RealtimeServerError for a realtime protocol failure.
-     * @throws dev.yveskalume.elevenlabs.error.NetworkError for a transport failure.
-     * @throws dev.yveskalume.elevenlabs.error.TimeoutError when opening times out.
+     * @throws dev.yveskalume.elevenlabs.error.ElevenLabsException.RealtimeServer for a realtime protocol failure.
+     * @throws dev.yveskalume.elevenlabs.error.ElevenLabsException.Network for a transport failure.
+     * @throws dev.yveskalume.elevenlabs.error.ElevenLabsException.Timeout when opening times out.
      */
-    @Throws(ElevenLabsException::class, CancellationException::class)
+    @Throws(
+        ElevenLabsException::class,
+        IllegalArgumentException::class,
+        IllegalStateException::class,
+        CancellationException::class,
+    )
     public suspend fun openMultiContextSession(
         options: MultiContextDialogueOptions = MultiContextDialogueOptions(),
-        authorization: RealtimeTtsAuthorization = RealtimeTtsAuthorization.ConfiguredApiKey,
+        authorization: Authorization = Authorization.ConfiguredApiKey,
     ): MultiContextDialogueSession
 }

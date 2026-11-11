@@ -12,11 +12,59 @@ The project follows [Semantic Versioning](https://semver.org/).
 - `MultiContextTtsSession.stream()` speaks a `Flow<String>` in a new context; cancelling the collection interrupts only that context.
 - `MultiContextTtsContext` extends `RealtimeTtsSession`, so code written for a single realtime session also works with one context.
 - Realtime text-to-dialogue with `ElevenLabs.textToDialogue.openMultiContextSession()`: multi-speaker Eleven v3 dialogue over one WebSocket, with voices registered per context, `DialogueLine` inputs with speaker turns, and `DialogueEvent.TurnFinished` boundaries. It shares its engine with multi-context text-to-speech.
-- `RealtimeServerError.errorCode` exposes the machine-readable code ElevenLabs reports for realtime TTS, multi-context TTS, and realtime STT errors, such as `quota_exceeded` or `auth_error`.
+- `ElevenLabsException.errorCode` exposes the machine-readable code ElevenLabs reports for realtime TTS, multi-context TTS, and realtime STT errors, such as `quota_exceeded` or `auth_error`.
+
+- `ElevenLabsException.MissingCredentials`, with kind `Authentication`, for a request with no usable credentials. `cause` holds what a failing provider threw.
+- `statusCode`, `requestId`, `errorCode`, and `responseBody` on every `ElevenLabsException`, so there is one place to read them.
+- `ModelId`, with constants for the models this SDK version knows about. `Model.id` is a `ModelId`, so a listed model can be passed straight to a request.
+- `RealtimeSttCommitStrategy.TurnPrediction`.
 
 ### Changed
 
-- `RealtimeServerError.kind` now reflects a recognized `errorCode` (for example `Authentication`, `Quota`, `RateLimit`, `Server`) instead of always being `Realtime`. As a result, `isRetryable` is `true` for realtime rate-limit and server errors. Errors without a recognized code are unchanged.
+- `ElevenLabsException.RealtimeServer.kind` now reflects a recognized `errorCode` (for example `Authentication`, `Quota`, `RateLimit`, `Server`) instead of always being `Realtime`. As a result, `isRetryable` is `true` for realtime rate-limit and server errors. Errors without a recognized code are unchanged.
+- **Breaking:** Error types are nested under `ElevenLabsException`. `UnknownError` no longer clashes with `java.lang.UnknownError`, and the top-level `*Error` types are gone.
+- **Breaking:** A missing or blank key, a blank token, and an exception thrown by `ApiKeyProvider`, `RealtimeTokenProvider`, or `SpeechToTextTokenProvider` now throw `ElevenLabsException.MissingCredentials`. These were `IllegalStateException`, `IllegalArgumentException`, `UnknownError`, `RealtimeServerError`, or the provider's own exception, depending on the call. Cancellation and an `ElevenLabsException` from a provider pass through unchanged.
+- **Breaking:** Sending on a realtime session or context that the server or transport ended now throws the original `ElevenLabsException`, or `ElevenLabsException.RealtimeServer` if the server closed it without an error, instead of `IllegalStateException`. `IllegalStateException` is now only for a session or context you finished or closed yourself. `finish()` and `close()` on a session that already ended still do nothing.
+- **Breaking:** A failed send on a realtime TTS or STT session now fails the session, as it already did for multi-context sessions: `events` terminates with that failure and later sends rethrow it.
+- **Breaking (Swift):** Constructors that validate their arguments and `ElevenLabsConfiguration.apiKey(String)` now need `try`.
+- **Breaking:** One `Authorization` type, in the root package, replaces `RealtimeTtsAuthorization` and `SpeechToTextAuthorization`, and `SingleUseTokenProvider` replaces `RealtimeTokenProvider` and `SpeechToTextTokenProvider`. `TextToSpeechApi`, `TextToDialogueApi`, and `SpeechToTextApi` all take it.
+- **Breaking:** `RealtimeTtsKeepAlive` and `RealtimeTtsAlignment` are now `KeepAlive` and `Alignment` in `dev.yveskalume.elevenlabs.realtime`, since text-to-dialogue uses them too.
+- **Breaking:** `RealtimeSttAudioFormat`, `SpeechToTextFileFormat`, `TimestampsGranularity`, and `RealtimeSttCommitStrategy` are open value types instead of enums, like `OutputFormat`. Their constants keep the same names, so code that uses them still compiles, but a `when` over them now needs an `else` branch, and `entries` and `name` are gone. Construct one from a string to use a value ElevenLabs added after this release.
+- **Breaking:** Every `modelId` is a `ModelId` instead of a `String`. `null` means the service default everywhere it is allowed. `RealtimeSttOptions.modelId` now defaults to `null`, which ElevenLabs resolves to `scribe_v2_realtime`. `SpeechToTextRequest.modelId` still defaults to `scribe_v2`, because batch transcription requires a model.
+- A realtime TTS or STT transport cancelled underneath the session now fails with `ElevenLabsException.Network`, as multi-context sessions already did, instead of a `CancellationException` reaching callers that were not cancelled.
+
+### Fixed
+
+- Text-to-dialogue accepts Eleven v4 models, and allows one voice per context with them. It previously rejected any model that didn't start with `eleven_v3`, and would have allowed ten voices for a v4 model.
+- On iOS, `IllegalArgumentException` and `IllegalStateException` no longer crash the app. Public suspend functions and validating constructors now report them as Swift errors, and Swift implementations of `ApiKeyProvider` and the token providers can throw. Two cases still crash because the functions can't declare the exception: collecting a failing `Flow` directly from Swift, and calling `doCopy` with an invalid value.
+
+### Removed
+
+- **Breaking:** `ElevenLabsException.UnexpectedResponse` and `ElevenLabsException.Realtime`, deprecated since 0.1.1, and the unused old `ElevenLabsException.Serialization`.
+- **Breaking:** `ElevenLabsErrorDetails`, along with `ApiException.details` and `SerializationError.details`. Read the same values from the exception.
+
+### Migration
+
+| Before | After |
+| --- | --- |
+| `NetworkError` | `ElevenLabsException.Network` |
+| `TimeoutError` | `ElevenLabsException.Timeout` |
+| `SerializationError` | `ElevenLabsException.Serialization` |
+| `RealtimeServerError` | `ElevenLabsException.RealtimeServer` |
+| `UnknownError` | `ElevenLabsException.Unknown` |
+| `ElevenLabsException.UnexpectedResponse` | `ApiException` |
+| `ElevenLabsException.Realtime` | `ElevenLabsException.RealtimeServer` |
+| `error.details.requestId` (also `message`, `errorCode`, `responseBody`, `validationErrors`) | `error.requestId` (and so on) |
+| `error.details.statusCode`, `error.statusCode` as `Int` | `error.statusCode`, now `Int?` |
+| `catch (e: IllegalStateException)` around a missing key | `catch (e: ElevenLabsException.MissingCredentials)` |
+| `catch (e: IllegalStateException)` around a send, then reading `e.cause` | `catch (e: ElevenLabsException)` |
+| Swift: `VoiceSettings(...)` | Swift: `try VoiceSettings(...)` |
+| `RealtimeTtsAuthorization`, `SpeechToTextAuthorization` | `Authorization` |
+| `RealtimeTokenProvider`, `SpeechToTextTokenProvider` | `SingleUseTokenProvider` |
+| `dev.yveskalume.elevenlabs.tts.RealtimeTtsKeepAlive` | `dev.yveskalume.elevenlabs.realtime.KeepAlive` |
+| `dev.yveskalume.elevenlabs.tts.RealtimeTtsAlignment` | `dev.yveskalume.elevenlabs.realtime.Alignment` |
+| `modelId = "eleven_flash_v2_5"` | `modelId = ModelId.ElevenFlashV2_5`, or `ModelId("eleven_flash_v2_5")` |
+| `when (format) { ... }` over an STT enum | Add an `else` branch |
 
 ## 0.1.1 - 2026-08-22
 

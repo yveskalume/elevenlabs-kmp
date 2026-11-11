@@ -1,10 +1,8 @@
 package dev.yveskalume.elevenlabs.stt
 
+import dev.yveskalume.elevenlabs.Authorization
 import dev.yveskalume.elevenlabs.error.ApiException
 import dev.yveskalume.elevenlabs.error.ElevenLabsException
-import dev.yveskalume.elevenlabs.error.NetworkError
-import dev.yveskalume.elevenlabs.error.SerializationError
-import dev.yveskalume.elevenlabs.error.TimeoutError
 import kotlin.coroutines.cancellation.CancellationException
 
 /** Transcribes complete files and realtime audio streams. */
@@ -14,14 +12,19 @@ public interface SpeechToTextApi {
      *
      * @throws IllegalArgumentException when a request field or credential is invalid.
      * @throws ApiException when ElevenLabs returns a non-successful HTTP response.
-     * @throws NetworkError when no HTTP response can be obtained.
-     * @throws TimeoutError when the request exceeds a transport timeout.
-     * @throws SerializationError when the response does not match the documented schema.
+     * @throws ElevenLabsException.Network when no HTTP response can be obtained.
+     * @throws ElevenLabsException.Timeout when the request exceeds a transport timeout.
+     * @throws ElevenLabsException.Serialization when the response does not match the documented schema.
      */
-    @Throws(ElevenLabsException::class, CancellationException::class)
+    @Throws(
+        ElevenLabsException::class,
+        IllegalArgumentException::class,
+        IllegalStateException::class,
+        CancellationException::class,
+    )
     public suspend fun transcribe(
         request: SpeechToTextRequest,
-        authorization: SpeechToTextAuthorization = SpeechToTextAuthorization.ConfiguredApiKey,
+        authorization: Authorization = Authorization.ConfiguredApiKey,
     ): Transcription
 
     /**
@@ -30,13 +33,18 @@ public interface SpeechToTextApi {
      * The caller owns the returned session and must call [RealtimeSttSession.close].
      *
      * @throws IllegalArgumentException when an option or credential is invalid.
-     * @throws dev.yveskalume.elevenlabs.error.RealtimeServerError for a realtime protocol failure.
-     * @throws NetworkError for a transport failure.
-     * @throws TimeoutError when opening times out.
+     * @throws dev.yveskalume.elevenlabs.error.ElevenLabsException.RealtimeServer for a realtime protocol failure.
+     * @throws ElevenLabsException.Network for a transport failure.
+     * @throws ElevenLabsException.Timeout when opening times out.
      */
-    @Throws(ElevenLabsException::class, CancellationException::class)
+    @Throws(
+        ElevenLabsException::class,
+        IllegalArgumentException::class,
+        IllegalStateException::class,
+        CancellationException::class,
+    )
     public suspend fun openRealtimeSession(
         options: RealtimeSttOptions = RealtimeSttOptions(),
-        authorization: SpeechToTextAuthorization = SpeechToTextAuthorization.ConfiguredApiKey,
+        authorization: Authorization = Authorization.ConfiguredApiKey,
     ): RealtimeSttSession
 }

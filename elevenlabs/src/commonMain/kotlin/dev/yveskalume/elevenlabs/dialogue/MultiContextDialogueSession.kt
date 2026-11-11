@@ -1,8 +1,8 @@
 package dev.yveskalume.elevenlabs.dialogue
 
 import dev.yveskalume.elevenlabs.error.ElevenLabsException
+import dev.yveskalume.elevenlabs.realtime.Alignment
 import dev.yveskalume.elevenlabs.tts.AudioChunk
-import dev.yveskalume.elevenlabs.tts.RealtimeTtsAlignment
 import kotlin.coroutines.cancellation.CancellationException
 import kotlinx.coroutines.flow.Flow
 
@@ -20,15 +20,21 @@ public interface MultiContextDialogueSession {
     /**
      * Opens a new dialogue context whose lines can be spoken by [voiceIds].
      *
-     * `eleven_v3_conversational`, the default model, supports one voice per context; other Eleven
-     * v3 models support up to [MultiContextDialogueSession.MAX_VOICES_PER_CONTEXT].
+     * `eleven_v3` supports up to [MultiContextDialogueSession.MAX_VOICES_PER_CONTEXT] voices per
+     * context. The default model, `eleven_v3_conversational`, and the Eleven v4 models support one.
      *
      * @throws IllegalArgumentException if [voiceIds] is empty, has blank or duplicate IDs, or has
      * more voices than the model allows, or if [contextId] is blank or was already used.
-     * @throws IllegalStateException if [MultiContextDialogueSession.MAX_CONTEXTS] contexts are already open, or if the session
-     * is finishing, closed, or failed.
+     * @throws IllegalStateException if [MultiContextDialogueSession.MAX_CONTEXTS] contexts are already open, or if you
+     * already called [finish] or [close].
+     * @throws ElevenLabsException with the original failure if the session has failed.
      */
-    @Throws(ElevenLabsException::class, CancellationException::class)
+    @Throws(
+        ElevenLabsException::class,
+        IllegalArgumentException::class,
+        IllegalStateException::class,
+        CancellationException::class,
+    )
     public suspend fun openContext(
         voiceIds: List<String>,
         options: MultiContextDialogueContextOptions = MultiContextDialogueContextOptions(),
@@ -52,10 +58,15 @@ public interface MultiContextDialogueSession {
      * Asks ElevenLabs to complete every open context and close the connection, then suspends until
      * the connection is closed. Calling it on a session that is finishing or closed does nothing.
      *
-     * @throws dev.yveskalume.elevenlabs.error.TimeoutError if the connection does not close within
+     * @throws dev.yveskalume.elevenlabs.error.ElevenLabsException.Timeout if the connection does not close within
      * [MultiContextDialogueTimeouts.finishTimeoutMillis]; the session is closed in that case.
      */
-    @Throws(ElevenLabsException::class, CancellationException::class)
+    @Throws(
+        ElevenLabsException::class,
+        IllegalArgumentException::class,
+        IllegalStateException::class,
+        CancellationException::class,
+    )
     public suspend fun finish()
 
     /** Immediately closes the connection and every context. Calling it more than once is safe. */
@@ -65,7 +76,7 @@ public interface MultiContextDialogueSession {
         /** Maximum number of contexts that may be open at the same time on one connection. */
         public const val MAX_CONTEXTS: Int = 5
 
-        /** Maximum number of voices one context can register, with models other than `eleven_v3_conversational`. */
+        /** Maximum number of voices one context can register with `eleven_v3`. Other models allow one. */
         public const val MAX_VOICES_PER_CONTEXT: Int = 10
     }
 }
@@ -92,30 +103,56 @@ public interface MultiContextDialogueContext {
      *
      * @throws IllegalArgumentException if the line's voice is not registered for this context.
      * @throws IllegalStateException if the context or session is finishing or closed.
+     * @throws ElevenLabsException with the original failure if the context or session has failed.
      */
-    @Throws(ElevenLabsException::class, CancellationException::class)
+    @Throws(
+        ElevenLabsException::class,
+        IllegalArgumentException::class,
+        IllegalStateException::class,
+        CancellationException::class,
+    )
     public suspend fun send(line: DialogueLine)
 
     /** Appends several [lines] in one message, in order. */
-    @Throws(ElevenLabsException::class, CancellationException::class)
+    @Throws(
+        ElevenLabsException::class,
+        IllegalArgumentException::class,
+        IllegalStateException::class,
+        CancellationException::class,
+    )
     public suspend fun send(lines: List<DialogueLine>)
 
     /** Generates the text buffered so far without closing the context. */
-    @Throws(ElevenLabsException::class, CancellationException::class)
+    @Throws(
+        ElevenLabsException::class,
+        IllegalArgumentException::class,
+        IllegalStateException::class,
+        CancellationException::class,
+    )
     public suspend fun flush()
 
     /**
      * Resets the 20-second inactivity timeout of this context. Only needed when
      * [MultiContextDialogueOptions.keepAlive] is disabled.
      */
-    @Throws(ElevenLabsException::class, CancellationException::class)
+    @Throws(
+        ElevenLabsException::class,
+        IllegalArgumentException::class,
+        IllegalStateException::class,
+        CancellationException::class,
+    )
     public suspend fun keepAlive()
 
     /**
      * Generates the remaining text and closes the context. Completion is reported by
      * [DialogueEvent.Finished] on [events]. Calling it again does nothing.
      */
-    @Throws(ElevenLabsException::class, CancellationException::class)
+    @Throws(
+        ElevenLabsException::class,
+        IllegalArgumentException::class,
+        IllegalStateException::class,
+        CancellationException::class,
+    )
     public suspend fun finish()
 
     /**
@@ -129,7 +166,7 @@ public interface MultiContextDialogueContext {
 }
 
 /** One line of dialogue. */
-public data class DialogueLine(
+public data class DialogueLine @Throws(IllegalArgumentException::class) constructor(
     /** Voice that speaks this line. It must be registered for the context. */
     val voiceId: String,
     /** Non-empty text of the line. */
@@ -152,7 +189,7 @@ public sealed interface DialogueEvent {
     public class Audio internal constructor(
         bytes: ByteArray,
         /** Character timing for this chunk, when [MultiContextDialogueOptions.syncAlignment] is enabled. */
-        public val alignment: RealtimeTtsAlignment? = null,
+        public val alignment: Alignment? = null,
     ) : DialogueEvent {
         /** Generated audio bytes owned by this event. */
         public val bytes: ByteArray = bytes

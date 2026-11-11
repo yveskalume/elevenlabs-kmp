@@ -1,12 +1,15 @@
 package dev.yveskalume.elevenlabs.internal.http
 
 import dev.yveskalume.elevenlabs.ApiKeyProvider
+import dev.yveskalume.elevenlabs.Authorization
 import dev.yveskalume.elevenlabs.error.ApiException
 import dev.yveskalume.elevenlabs.error.ElevenLabsErrorKind
-import dev.yveskalume.elevenlabs.error.SerializationError
-import dev.yveskalume.elevenlabs.error.UnknownError
+import dev.yveskalume.elevenlabs.error.ElevenLabsException
+import dev.yveskalume.elevenlabs.internal.stt.SpeechToTextApiImpl
 import dev.yveskalume.elevenlabs.internal.tts.TextToSpeechApiImpl
 import dev.yveskalume.elevenlabs.internal.voices.VoicesApiImpl
+import dev.yveskalume.elevenlabs.models.ModelId
+import dev.yveskalume.elevenlabs.stt.SpeechToTextRequest
 import dev.yveskalume.elevenlabs.tts.OutputFormat
 import dev.yveskalume.elevenlabs.tts.TextToSpeechRequest
 import dev.yveskalume.elevenlabs.voices.ListVoicesRequest
@@ -22,7 +25,10 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.http.headersOf
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.serialization.ContentConvertException
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.runTest
+import kotlinx.io.IOException
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
@@ -110,7 +116,7 @@ class ElevenLabsHttpContractTest {
             TextToSpeechRequest(
                 voiceId = "voice-1",
                 text = "Hello",
-                modelId = "eleven_flash_v2_5",
+                modelId = ModelId.ElevenFlashV2_5,
                 languageCode = "en",
                 outputFormat = OutputFormat.Pcm_24000,
                 enableLogging = false,
@@ -201,7 +207,7 @@ class ElevenLabsHttpContractTest {
         }
         val api = VoicesApiImpl(http(engine) { "secret" })
 
-        val exception = assertFailsWith<SerializationError> { api.list() }
+        val exception = assertFailsWith<ElevenLabsException.Serialization> { api.list() }
 
         assertIs<ContentConvertException>(exception.cause)
         assertEquals(ElevenLabsErrorKind.Serialization, exception.kind)
@@ -212,17 +218,115 @@ class ElevenLabsHttpContractTest {
         val engine = MockEngine { error("mock engine failed") }
         val api = VoicesApiImpl(http(engine) { "secret" })
 
-        val exception = assertFailsWith<UnknownError> { api.list() }
+        val exception = assertFailsWith<ElevenLabsException.Unknown> { api.list() }
 
         assertEquals(ElevenLabsErrorKind.Unknown, exception.kind)
+    }
+
+    @Test
+    fun `a request without a configured key fails with missing credentials`() = runTest {
+        val api = TextToSpeechApiImpl(httpWithProvider(apiKeyProvider = null))
+
+        val exception = assertFailsWith<ElevenLabsException.MissingCredentials> {
+            api.generate(TextToSpeechRequest(voiceId = "voice-1", text = "Hello"))
+        }
+
+        assertEquals(ElevenLabsErrorKind.Authentication, exception.kind)
+        assertFalse(exception.isRetryable)
+    }
+
+    @Test
+    fun `a blank key fails with missing credentials`() = runTest {
+        val api = VoicesApiImpl(httpWithProvider { "  " })
+
+        assertFailsWith<ElevenLabsException.MissingCredentials> { api.list() }
+    }
+
+    @Test
+    fun `a throwing key provider fails with missing credentials and keeps the cause`() = runTest {
+        val providerFailure = IllegalStateException("keychain locked")
+        val api = VoicesApiImpl(httpWithProvider { throw providerFailure })
+
+        val exception = assertFailsWith<ElevenLabsException.MissingCredentials> { api.list() }
+
+        assertEquals(providerFailure, exception.cause)
+    }
+
+    @Test
+    fun `credential failures keep their type on streaming flows`() = runTest {
+        val api = TextToSpeechApiImpl(httpWithProvider(apiKeyProvider = null))
+
+        assertFailsWith<ElevenLabsException.MissingCredentials> {
+            api.stream(TextToSpeechRequest(voiceId = "voice-1", text = "Hello")).toList()
+        }
+    }
+
+    @Test
+    fun `credential failures keep their type when opening realtime sessions`() = runTest {
+        val api = TextToSpeechApiImpl(httpWithProvider(apiKeyProvider = null))
+
+        assertFailsWith<ElevenLabsException.MissingCredentials> {
+            api.openRealtimeSession("voice-1")
+        }
+        assertFailsWith<ElevenLabsException.MissingCredentials> {
+            api.openRealtimeSession(
+                voiceId = "voice-1",
+                authorization = Authorization.TokenProvider { " " },
+            )
+        }
+        assertFailsWith<ElevenLabsException.MissingCredentials> {
+            api.openMultiContextSession(
+                voiceId = "voice-1",
+                authorization = Authorization.TokenProvider { error("backend down") },
+            )
+        }
+    }
+
+    @Test
+    fun `speech to text token provider failures become missing credentials`() = runTest {
+        val api = SpeechToTextApiImpl(httpWithProvider(apiKeyProvider = null))
+        val request = SpeechToTextRequest(audio = byteArrayOf(1))
+
+        assertFailsWith<ElevenLabsException.MissingCredentials> { api.transcribe(request) }
+        assertFailsWith<ElevenLabsException.MissingCredentials> {
+            api.transcribe(request, Authorization.TokenProvider { "" })
+        }
+        val exception = assertFailsWith<ElevenLabsException.MissingCredentials> {
+            api.transcribe(request, Authorization.TokenProvider { error("backend down") })
+        }
+        assertIs<IllegalStateException>(exception.cause)
+    }
+
+    @Test
+    fun `an sdk exception from a provider is reported as is`() = runTest {
+        val providerFailure = ElevenLabsException.Network(IOException("offline"))
+        val api = VoicesApiImpl(httpWithProvider { throw providerFailure })
+
+        val exception = assertFailsWith<ElevenLabsException.Network> { api.list() }
+
+        assertEquals(providerFailure, exception)
+        assertTrue(exception.isRetryable)
+    }
+
+    @Test
+    fun `cancellation from a provider passes through unchanged`() = runTest {
+        val api = VoicesApiImpl(httpWithProvider { throw CancellationException("stopped") })
+
+        assertFailsWith<CancellationException> { api.list() }
     }
 
     private fun http(
         engine: MockEngine,
         apiKey: suspend () -> String,
+    ): ElevenLabsHttpClient = httpWithProvider(engine) { apiKey() }
+
+    /** The default engine fails the test's assertions if a request is ever sent. */
+    private fun httpWithProvider(
+        engine: MockEngine = MockEngine { error("No request should be sent.") },
+        apiKeyProvider: ApiKeyProvider?,
     ): ElevenLabsHttpClient = ElevenLabsHttpClient(
         baseUrl = "https://api.elevenlabs.io",
-        apiKeyProvider = ApiKeyProvider { apiKey() },
+        apiKeyProvider = apiKeyProvider,
         client = HttpClient(engine) {
             install(ContentNegotiation) {
                 json(JSON)

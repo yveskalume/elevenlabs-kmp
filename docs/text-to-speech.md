@@ -47,7 +47,7 @@ elevenLabs.textToSpeech.realtime(
     voiceId = voiceId,
     text = llmText,
     options = RealtimeTtsOptions(
-        modelId = "eleven_flash_v2_5",
+        modelId = ModelId.ElevenFlashV2_5,
         outputFormat = OutputFormat.Pcm_24000,
     ),
 ).collect { chunk ->
@@ -100,7 +100,7 @@ voice but need different settings.
 val session = elevenLabs.textToSpeech.openMultiContextSession(
     voiceId = voiceId,
     options = MultiContextTtsOptions(
-        modelId = "eleven_flash_v2_5",
+        modelId = ModelId.ElevenFlashV2_5,
         outputFormat = OutputFormat.Pcm_24000,
     ),
 )
@@ -164,7 +164,7 @@ session.finish()
 Failures are scoped to what they affect. An error ElevenLabs reports for one context, or a context
 that does not finish within `RealtimeTtsTimeouts.finishTimeoutMillis`, fails only that context's
 `events`. A connection failure fails every open context with the same error, and later calls throw
-`IllegalStateException` with that error as the cause.
+that error too.
 
 Each context's events are buffered without limit so that a slow consumer never stalls the others
 sharing the connection. Collect every context you open, or close it when its audio is no longer
@@ -172,7 +172,7 @@ needed.
 
 Automatic keepalive (`MultiContextTtsOptions.keepAlive`) keeps idle contexts from hitting the
 ElevenLabs inactivity timeout. A context that the server closes anyway completes with `Finished`,
-and further `sendText()` calls throw `IllegalStateException`.
+and further `sendText()` calls throw `ElevenLabsException.RealtimeServer`.
 
 Multi-context sessions do not reconnect automatically. Replaying text on a new connection could
 duplicate audio across several contexts, so reconnecting is left to the application.

@@ -1,10 +1,7 @@
 package dev.yveskalume.elevenlabs.internal.realtime
 
-import dev.yveskalume.elevenlabs.error.ElevenLabsErrorDetails
-import dev.yveskalume.elevenlabs.error.NetworkError
-import dev.yveskalume.elevenlabs.error.RealtimeServerError
-import dev.yveskalume.elevenlabs.error.SerializationError
-import dev.yveskalume.elevenlabs.error.TimeoutError
+import dev.yveskalume.elevenlabs.error.ElevenLabsException
+import dev.yveskalume.elevenlabs.internal.error.toConnectionLost
 import dev.yveskalume.elevenlabs.internal.error.toRealtimeFailure
 import dev.yveskalume.elevenlabs.internal.tts.RealtimeConnectionFrame
 import dev.yveskalume.elevenlabs.internal.tts.RealtimeTtsConnection
@@ -131,6 +128,9 @@ internal class MultiContextEngine<E : Any>(
     /** Contexts that are open or finishing. A closed context is removed so late frames are dropped. */
     private val contexts = LinkedHashMap<String, ContextRecord>()
     private val usedContextIds = mutableSetOf<String>()
+
+    /** Why the server ended a context the caller had not finished, reported to later sends. */
+    private val failedContexts = mutableMapOf<String, Throwable>()
     private var generatedIdCounter = 0
 
     private val scope = CoroutineScope(SupervisorJob() + dispatcher)
@@ -238,7 +238,7 @@ internal class MultiContextEngine<E : Any>(
             receiverJob?.join()
         }
         if (closed == null) {
-            val timeout = TimeoutError(
+            val timeout = ElevenLabsException.Timeout(
                 message = "${config.label} did not close within ${config.finishTimeoutMillis} ms.",
             )
             failSession(timeout)
@@ -283,7 +283,7 @@ internal class MultiContextEngine<E : Any>(
                             completeAfterNormalClose()
                             return
                         }
-                        throw RealtimeServerError(
+                        throw ElevenLabsException.RealtimeServer(
                             // Ktor reports a missing close reason as "", not null.
                             message = frame.reason?.takeIf { it.isNotBlank() }
                                 ?: "The ${config.label} connection closed unexpectedly.",
@@ -296,14 +296,7 @@ internal class MultiContextEngine<E : Any>(
             val closedLocally = lock.withLock {
                 state == SessionState.Closed || state is SessionState.Failed
             }
-            // The transport was cancelled underneath us. Report it as a lost connection rather
-            // than leaking a CancellationException into collectors that were not cancelled.
-            if (!closedLocally) {
-                failure = NetworkError(
-                    cause = cancellation,
-                    message = "The ${config.label} connection was lost.",
-                )
-            }
+            if (!closedLocally) failure = cancellation.toConnectionLost(config.label)
         } catch (throwable: Throwable) {
             failure = throwable.toRealtimeFailure()
         }
@@ -314,12 +307,9 @@ internal class MultiContextEngine<E : Any>(
         val messages = try {
             protocol.decode(raw)
         } catch (throwable: Throwable) {
-            throw SerializationError(
-                details = ElevenLabsErrorDetails(
-                    statusCode = null,
-                    message = "Could not decode an ElevenLabs ${config.label} message.",
-                    responseBody = raw,
-                ),
+            throw ElevenLabsException.Serialization(
+                message = "Could not decode an ElevenLabs ${config.label} message.",
+                responseBody = raw,
                 cause = throwable,
             )
         }
@@ -333,6 +323,12 @@ internal class MultiContextEngine<E : Any>(
 
                 is MultiContextInbound.ContextFinished -> lock.withLock {
                     contexts.remove(message.contextId)?.let { record ->
+                        // The caller never asked to finish, so later sends are not a caller mistake.
+                        if (record.state == ContextState.Open) {
+                            failedContexts[record.id] = ElevenLabsException.RealtimeServer(
+                                message = "The server ended the ${config.label} context '${record.id}'.",
+                            )
+                        }
                         record.cancelJobs()
                         record.channel.trySend(protocol.finishedEvent)
                         record.channel.close()
@@ -341,20 +337,20 @@ internal class MultiContextEngine<E : Any>(
 
                 is MultiContextInbound.ContextError -> lock.withLock {
                     contexts.remove(message.contextId)?.let { record ->
-                        record.cancelJobs()
-                        record.channel.close(
-                            RealtimeServerError(
-                                message = message.message,
-                                rawResponseBody = raw,
-                                errorCode = message.errorCode,
-                            ),
+                        val failure = ElevenLabsException.RealtimeServer(
+                            message = message.message,
+                            responseBody = raw,
+                            errorCode = message.errorCode,
                         )
+                        failedContexts[record.id] = failure
+                        record.cancelJobs()
+                        record.channel.close(failure)
                     }
                 }
 
-                is MultiContextInbound.ConnectionError -> throw RealtimeServerError(
+                is MultiContextInbound.ConnectionError -> throw ElevenLabsException.RealtimeServer(
                     message = message.message,
-                    rawResponseBody = raw,
+                    responseBody = raw,
                     errorCode = message.errorCode,
                 )
             }
@@ -398,7 +394,7 @@ internal class MultiContextEngine<E : Any>(
         }
         record.keepAliveJob?.cancel()
         record.channel.close(
-            TimeoutError(
+            ElevenLabsException.Timeout(
                 message = "${config.label} context '${record.id}' did not finish within " +
                     "${config.finishTimeoutMillis} ms.",
             ),
@@ -437,14 +433,13 @@ internal class MultiContextEngine<E : Any>(
             SessionState.Finishing, SessionState.Closed ->
                 throw IllegalStateException("The ${config.label} session is finishing or closed.")
 
-            is SessionState.Failed -> throw IllegalStateException(
-                "The ${config.label} session failed: ${current.cause.message}",
-                current.cause,
-            )
+            // The caller could not have prevented this, so it is not a state error.
+            is SessionState.Failed -> throw current.cause
         }
     }
 
     private fun openContextLocked(contextId: String): ContextRecord {
+        failedContexts[contextId]?.let { throw it }
         val record = contexts[contextId]
         check(record != null && record.state == ContextState.Open) {
             "The ${config.label} context '$contextId' is finishing or closed."
@@ -480,7 +475,7 @@ internal class MultiContextEngine<E : Any>(
                 withTimeout(config.sendTimeoutMillis.milliseconds) { connection.send(message) }
             } catch (timeout: TimeoutCancellationException) {
                 throw SendFailure(
-                    TimeoutError(
+                    ElevenLabsException.Timeout(
                         message = "${config.label} send timed out after ${config.sendTimeoutMillis} ms.",
                         cause = timeout,
                     ),

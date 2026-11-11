@@ -1,9 +1,12 @@
 package dev.yveskalume.elevenlabs.tts
 
+import dev.yveskalume.elevenlabs.models.ModelId
+import dev.yveskalume.elevenlabs.realtime.KeepAlive
+
 /** Configuration applied when opening a realtime text-to-speech connection. */
-public data class RealtimeTtsOptions(
+public data class RealtimeTtsOptions @Throws(IllegalArgumentException::class) constructor(
     /** Model identifier, or `null` to use the service default. */
-    val modelId: String? = null,
+    val modelId: ModelId? = null,
     /** Language code, or `null` to let the selected model infer it. */
     val languageCode: String? = null,
     /** Encoding and sample rate of emitted audio. */
@@ -21,12 +24,11 @@ public data class RealtimeTtsOptions(
     /** Client and server timeout configuration. */
     val timeouts: RealtimeTtsTimeouts = RealtimeTtsTimeouts(),
     /** Keepalive behavior for otherwise idle connections. */
-    val keepAlive: RealtimeTtsKeepAlive = RealtimeTtsKeepAlive(),
+    val keepAlive: KeepAlive = KeepAlive(),
     /** Reconnection behavior after a transient connection failure. */
     val reconnectPolicy: RealtimeTtsReconnectPolicy = RealtimeTtsReconnectPolicy.Never,
 ) {
     init {
-        require(modelId == null || modelId.isNotBlank()) { "modelId cannot be blank." }
         require(languageCode == null || languageCode.isNotBlank()) { "languageCode cannot be blank." }
         require(
             !keepAlive.enabled ||

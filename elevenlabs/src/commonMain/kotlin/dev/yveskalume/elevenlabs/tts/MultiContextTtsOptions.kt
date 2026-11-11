@@ -1,14 +1,17 @@
 package dev.yveskalume.elevenlabs.tts
 
+import dev.yveskalume.elevenlabs.models.ModelId
+import dev.yveskalume.elevenlabs.realtime.KeepAlive
+
 /**
  * Connection-level configuration for a [MultiContextTtsSession].
  *
  * These values are fixed when the WebSocket is opened and apply to every context. Settings that
  * can differ per context live in [MultiContextTtsContextOptions].
  */
-public data class MultiContextTtsOptions(
+public data class MultiContextTtsOptions @Throws(IllegalArgumentException::class) constructor(
     /** Model identifier, or `null` to use the service default. */
-    val modelId: String? = null,
+    val modelId: ModelId? = null,
     /** Language code, or `null` to let the selected model infer it. */
     val languageCode: String? = null,
     /** Encoding and sample rate of emitted audio. */
@@ -31,10 +34,9 @@ public data class MultiContextTtsOptions(
     /** Client and server timeout configuration. [RealtimeTtsTimeouts.inactivityTimeoutSeconds] applies per context. */
     val timeouts: RealtimeTtsTimeouts = RealtimeTtsTimeouts(),
     /** Automatic keepalive applied to every open context. */
-    val keepAlive: RealtimeTtsKeepAlive = RealtimeTtsKeepAlive(),
+    val keepAlive: KeepAlive = KeepAlive(),
 ) {
     init {
-        require(modelId == null || modelId.isNotBlank()) { "modelId cannot be blank." }
         require(languageCode == null || languageCode.isNotBlank()) { "languageCode cannot be blank." }
         require(seed == null || seed in 0..MAX_SEED) { "seed must be between 0 and $MAX_SEED." }
         require(
@@ -51,7 +53,7 @@ public data class MultiContextTtsOptions(
 }
 
 /** Configuration of a single context in a [MultiContextTtsSession]. */
-public data class MultiContextTtsContextOptions(
+public data class MultiContextTtsContextOptions @Throws(IllegalArgumentException::class) constructor(
     /** Voice tuning for this context, or `null` to use the voice defaults. */
     val voiceSettings: VoiceSettings? = null,
     /** Server-side text chunking for this context, or `null` to use the service default. */
@@ -71,7 +73,7 @@ public data class MultiContextTtsContextOptions(
 }
 
 /** Reference to a specific version of a pronunciation dictionary stored in ElevenLabs. */
-public data class PronunciationDictionaryLocator(
+public data class PronunciationDictionaryLocator @Throws(IllegalArgumentException::class) constructor(
     /** Identifier of the pronunciation dictionary. */
     val dictionaryId: String,
     /** Version of the dictionary to apply. */

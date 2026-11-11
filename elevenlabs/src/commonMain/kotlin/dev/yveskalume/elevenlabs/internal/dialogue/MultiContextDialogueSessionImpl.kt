@@ -6,7 +6,7 @@ import dev.yveskalume.elevenlabs.dialogue.MultiContextDialogueContext
 import dev.yveskalume.elevenlabs.dialogue.MultiContextDialogueContextOptions
 import dev.yveskalume.elevenlabs.dialogue.MultiContextDialogueOptions
 import dev.yveskalume.elevenlabs.dialogue.MultiContextDialogueSession
-import dev.yveskalume.elevenlabs.error.TimeoutError
+import dev.yveskalume.elevenlabs.error.ElevenLabsException
 import dev.yveskalume.elevenlabs.internal.realtime.MultiContextEngine
 import dev.yveskalume.elevenlabs.internal.realtime.MultiContextEngineConfig
 import dev.yveskalume.elevenlabs.internal.tts.RealtimeTtsConnection
@@ -40,8 +40,8 @@ internal class MultiContextDialogueSessionImpl private constructor(
         require(voiceIds.toSet().size == voiceIds.size) { "Voice IDs must be distinct." }
         require(voiceIds.size <= maxVoicesPerContext) {
             if (maxVoicesPerContext == 1) {
-                "eleven_v3_conversational supports one voice per context. Use another Eleven v3 model " +
-                    "in MultiContextDialogueOptions.modelId for multi-speaker contexts."
+                "This model supports one voice per context. Use ModelId.ElevenV3 in " +
+                    "MultiContextDialogueOptions.modelId for multi-speaker contexts."
             } else {
                 "A dialogue context supports at most $maxVoicesPerContext voices."
             }
@@ -133,7 +133,7 @@ internal class MultiContextDialogueSessionImpl private constructor(
             val connection = try {
                 withTimeout(options.timeouts.connectTimeoutMillis.milliseconds) { openConnection() }
             } catch (timeout: TimeoutCancellationException) {
-                throw TimeoutError(
+                throw ElevenLabsException.Timeout(
                     message = "Multi-context dialogue connection timed out after " +
                         "${options.timeouts.connectTimeoutMillis} ms.",
                     cause = timeout,
