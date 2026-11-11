@@ -215,6 +215,30 @@ class ElevenLabsHttpContractTest {
     }
 
     @Test
+    fun `listing calls keep a base URL path and ignore its trailing slash`() = runTest {
+        val paths = mutableListOf<String>()
+        val engine = MockEngine { request ->
+            paths += request.url.encodedPath
+            val body = if (request.url.encodedPath.endsWith("models")) "[]" else """{"voices":[]}"""
+            respond(content = body, headers = jsonHeaders)
+        }
+        val http = ElevenLabsHttpClient(
+            baseUrl = "https://proxy.example.com/elevenlabs/",
+            apiKeyProvider = { "secret" },
+            client = HttpClient(engine) {
+                install(ContentNegotiation) { json(JSON) }
+                httpResponseValidator()
+            },
+            ownsClient = true,
+        )
+
+        ModelsApiImpl(http).list()
+        VoicesApiImpl(http).list(ListVoicesRequest())
+
+        assertEquals(listOf("/elevenlabs/v1/models", "/elevenlabs/v2/voices"), paths)
+    }
+
+    @Test
     fun `a blank model id in a response becomes sdk serialization error`() = runTest {
         val engine = MockEngine {
             respond(content = """[{"model_id":" ","name":"Broken"}]""", headers = jsonHeaders)
