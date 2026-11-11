@@ -148,8 +148,9 @@ private data class RealtimeTtsAlignmentDto(
     @SerialName("charStartTimesMs")
     @JsonNames("char_start_times_ms")
     val characterStartTimesMs: List<Int> = emptyList(),
+    // Same spellings as multi-context messages, where ElevenLabs has also sent "charsDurationsMs".
     @SerialName("charDurationsMs")
-    @JsonNames("char_durations_ms")
+    @JsonNames("charsDurationsMs", "char_durations_ms")
     val characterDurationsMs: List<Int> = emptyList(),
 ) {
     fun toPublic() = Alignment(

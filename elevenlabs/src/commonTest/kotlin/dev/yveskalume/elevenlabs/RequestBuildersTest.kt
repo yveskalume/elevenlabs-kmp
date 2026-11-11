@@ -89,4 +89,21 @@ class RequestBuildersTest {
             }
         }
     }
+
+    @Test
+    fun `an in-memory speech to text request always uploads the array's length`() {
+        val request = SpeechToTextRequest(audio = byteArrayOf(1, 2, 3), fileName = "a.mp3", contentType = "audio/mpeg") {
+            audioSize = 99
+        }
+
+        assertEquals(3L, request.audioSize)
+    }
+
+    @Test
+    fun `a single-use token is hidden from toString`() {
+        val authorization = Authorization.SingleUseToken("secret-token")
+
+        assertTrue("secret-token" !in authorization.toString())
+        assertEquals(Authorization.SingleUseToken("secret-token"), authorization)
+    }
 }

@@ -5,6 +5,7 @@ import dev.yveskalume.elevenlabs.Authorization
 import dev.yveskalume.elevenlabs.error.ApiException
 import dev.yveskalume.elevenlabs.error.ElevenLabsErrorKind
 import dev.yveskalume.elevenlabs.error.ElevenLabsException
+import dev.yveskalume.elevenlabs.internal.models.ModelsApiImpl
 import dev.yveskalume.elevenlabs.internal.stt.SpeechToTextApiImpl
 import dev.yveskalume.elevenlabs.internal.tts.TextToSpeechApiImpl
 import dev.yveskalume.elevenlabs.internal.voices.VoicesApiImpl
@@ -210,6 +211,18 @@ class ElevenLabsHttpContractTest {
         val exception = assertFailsWith<ElevenLabsException.Serialization> { api.list() }
 
         assertIs<ContentConvertException>(exception.cause)
+        assertEquals(ElevenLabsErrorKind.Serialization, exception.kind)
+    }
+
+    @Test
+    fun `a blank model id in a response becomes sdk serialization error`() = runTest {
+        val engine = MockEngine {
+            respond(content = """[{"model_id":" ","name":"Broken"}]""", headers = jsonHeaders)
+        }
+        val api = ModelsApiImpl(http(engine) { "secret" })
+
+        val exception = assertFailsWith<ElevenLabsException.Serialization> { api.list() }
+
         assertEquals(ElevenLabsErrorKind.Serialization, exception.kind)
     }
 
