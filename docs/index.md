@@ -30,8 +30,8 @@ One-shot calls are `suspend` functions. Streaming calls are named `stream…()` 
 
 Byte arrays the SDK returns, such as `Audio.bytes` or an audio event's `bytes`, belong to you. The
 SDK never reads or changes them again, so you can keep, change, or pass them on without copying.
-Arrays you pass in, such as `SpeechToTextRequest.audio`, are used as they are, so don't change them
-while the call is running.
+Arrays you pass in, such as the `audio` array given to `SpeechToTextRequest`, are used as they are,
+so don't change them while the call is running.
 
 Requests and options are built with a trailing lambda, where you set only the values you need,
 such as `RealtimeTtsOptions { syncAlignment = true }`. Required values, such as a voice ID, go in
