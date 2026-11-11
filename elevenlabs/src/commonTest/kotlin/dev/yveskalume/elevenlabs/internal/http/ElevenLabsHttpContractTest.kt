@@ -28,7 +28,9 @@ import io.ktor.serialization.ContentConvertException
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.runTest
+import kotlinx.io.Buffer
 import kotlinx.io.IOException
+import kotlinx.io.RawSource
 import kotlin.test.Test
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
@@ -69,12 +71,12 @@ class ElevenLabsHttpContractTest {
         val api = VoicesApiImpl(http(engine) { "key-${++keyResolutionCount}" })
 
         val page = api.list(
-            ListVoicesRequest(
-                pageSize = 25,
-                nextPageToken = "next-1",
-                search = "narrator",
-                includeTotalCount = true,
-            ),
+            ListVoicesRequest {
+                pageSize = 25
+                nextPageToken = "next-1"
+                search = "narrator"
+                includeTotalCount = true
+            },
         )
 
         assertEquals(1, keyResolutionCount)
@@ -113,14 +115,12 @@ class ElevenLabsHttpContractTest {
         val api = TextToSpeechApiImpl(http(engine) { "secret" })
 
         val audio = api.generate(
-            TextToSpeechRequest(
-                voiceId = "voice-1",
-                text = "Hello",
-                modelId = ModelId.ElevenFlashV2_5,
-                languageCode = "en",
-                outputFormat = OutputFormat.Pcm_24000,
-                enableLogging = false,
-            ),
+            TextToSpeechRequest(voiceId = "voice-1", text = "Hello") {
+                modelId = ModelId.ElevenFlashV2_5
+                languageCode = "en"
+                outputFormat = OutputFormat.Pcm_24000
+                enableLogging = false
+            },
         )
 
         assertContentEquals(expectedAudio, audio.bytes)
@@ -285,7 +285,11 @@ class ElevenLabsHttpContractTest {
     @Test
     fun `speech to text token provider failures become missing credentials`() = runTest {
         val api = SpeechToTextApiImpl(httpWithProvider(apiKeyProvider = null))
-        val request = SpeechToTextRequest(audio = byteArrayOf(1))
+        val request = SpeechToTextRequest(
+            audio = byteArrayOf(1),
+            fileName = "audio.mp3",
+            contentType = "audio/mpeg",
+        )
 
         assertFailsWith<ElevenLabsException.MissingCredentials> { api.transcribe(request) }
         assertFailsWith<ElevenLabsException.MissingCredentials> {
@@ -295,6 +299,43 @@ class ElevenLabsHttpContractTest {
             api.transcribe(request, Authorization.TokenProvider { error("backend down") })
         }
         assertIs<IllegalStateException>(exception.cause)
+    }
+
+    @Test
+    fun `speech to text streams the upload and closes every source it opens`() = runTest {
+        val bodies = mutableListOf<String>()
+        val engine = MockEngine { request ->
+            bodies += request.body.toByteArray().decodeToString()
+            respond(content = """{"text":"hi"}""", headers = jsonHeaders)
+        }
+        var opened = 0
+        var closed = 0
+        val request = SpeechToTextRequest(
+            fileName = "meeting.wav",
+            contentType = "audio/wav",
+            openAudio = {
+                opened++
+                val audio = Buffer().apply { write("RIFF-audio".encodeToByteArray()) }
+                object : RawSource by audio {
+                    override fun close() {
+                        closed++
+                        audio.close()
+                    }
+                }
+            },
+        ) { audioSize = 10 }
+        val api = SpeechToTextApiImpl(http(engine) { "secret" })
+
+        assertEquals("hi", api.transcribe(request).text)
+        api.transcribe(request) // A request can be sent again, for example on retry.
+
+        assertEquals(2, opened)
+        assertEquals(2, closed)
+        val body = bodies.first()
+        assertTrue("RIFF-audio" in body)
+        assertTrue("filename=\"meeting.wav\"" in body)
+        assertTrue("Content-Type: audio/wav" in body)
+        assertTrue("Content-Length: 10" in body)
     }
 
     @Test

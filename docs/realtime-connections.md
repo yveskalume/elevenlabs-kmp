@@ -46,12 +46,12 @@ Realtime text-to-speech sessions take their limits from `RealtimeTtsOptions.time
 A local timeout fails the session with `ElevenLabsException.Timeout`.
 
 ```kotlin
-val options = RealtimeTtsOptions(
-    timeouts = RealtimeTtsTimeouts(
-        connectTimeoutMillis = 5_000,
-        inactivityTimeoutSeconds = 180,
-    ),
-)
+val options = RealtimeTtsOptions {
+    timeouts = RealtimeTtsTimeouts {
+        connectTimeoutMillis = 5_000
+        inactivityTimeoutSeconds = 180
+    }
+}
 ```
 
 ## Keepalive
@@ -64,7 +64,7 @@ The interval must be shorter than `inactivityTimeoutSeconds`, otherwise the opti
 throws `IllegalArgumentException`. Turn it off if you'd rather let idle sessions close:
 
 ```kotlin
-RealtimeTtsOptions(keepAlive = KeepAlive(enabled = false))
+RealtimeTtsOptions { keepAlive = KeepAlive { enabled = false } }
 ```
 
 ## Reconnecting
@@ -73,13 +73,13 @@ By default a dropped connection fails the session. You can opt into automatic re
 restriction: the SDK only reconnects before the first audio chunk has arrived.
 
 ```kotlin
-RealtimeTtsOptions(
-    reconnectPolicy = RealtimeTtsReconnectPolicy.BeforeFirstAudio(
-        maxAttempts = 3,
-        initialDelayMillis = 500,
-        maxDelayMillis = 5_000,
-    ),
-)
+RealtimeTtsOptions {
+    reconnectPolicy = RealtimeTtsReconnectPolicy.BeforeFirstAudio {
+        maxAttempts = 3
+        initialDelayMillis = 500
+        maxDelayMillis = 5_000
+    }
+}
 ```
 
 The restriction exists because a reconnect replays every message you've sent on the new connection.

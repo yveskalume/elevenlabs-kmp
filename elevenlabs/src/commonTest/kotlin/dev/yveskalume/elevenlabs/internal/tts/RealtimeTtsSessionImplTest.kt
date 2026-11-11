@@ -36,7 +36,7 @@ class RealtimeTtsSessionImplTest {
         }
         val session = RealtimeTtsSessionImpl.open(
             openConnection = { connection },
-            options = RealtimeTtsOptions(keepAlive = KeepAlive(enabled = false)),
+            options = RealtimeTtsOptions { keepAlive = KeepAlive { enabled = false } },
             dispatcher = StandardTestDispatcher(testScheduler),
         )
 
@@ -60,9 +60,7 @@ class RealtimeTtsSessionImplTest {
         }
         val session = RealtimeTtsSessionImpl.open(
             openConnection = { connection },
-            options = RealtimeTtsOptions(
-                keepAlive = KeepAlive(intervalMillis = 1),
-            ),
+            options = RealtimeTtsOptions { keepAlive = KeepAlive { intervalMillis = 1 } },
             dispatcher = StandardTestDispatcher(testScheduler),
         )
         val eventsFailure = async {
@@ -89,10 +87,10 @@ class RealtimeTtsSessionImplTest {
         }
         val session = RealtimeTtsSessionImpl.open(
             openConnection = { connection },
-            options = RealtimeTtsOptions(
-                timeouts = RealtimeTtsTimeouts(sendTimeoutMillis = 10),
-                keepAlive = KeepAlive(intervalMillis = 1),
-            ),
+            options = RealtimeTtsOptions {
+                timeouts = RealtimeTtsTimeouts { sendTimeoutMillis = 10 }
+                keepAlive = KeepAlive { intervalMillis = 1 }
+            },
             dispatcher = StandardTestDispatcher(testScheduler),
         )
         val eventsFailure = async {
@@ -119,7 +117,7 @@ class RealtimeTtsSessionImplTest {
         }
         val session = RealtimeTtsSessionImpl.open(
             openConnection = { connection },
-            options = RealtimeTtsOptions(keepAlive = KeepAlive(enabled = false)),
+            options = RealtimeTtsOptions { keepAlive = KeepAlive { enabled = false } },
             dispatcher = StandardTestDispatcher(testScheduler),
         )
         val events = async { session.events.toList() }
@@ -142,7 +140,7 @@ class RealtimeTtsSessionImplTest {
         }
         val session = RealtimeTtsSessionImpl.open(
             openConnection = { connection },
-            options = RealtimeTtsOptions(keepAlive = KeepAlive(enabled = false)),
+            options = RealtimeTtsOptions { keepAlive = KeepAlive { enabled = false } },
             dispatcher = StandardTestDispatcher(testScheduler),
         )
 
@@ -163,7 +161,7 @@ class RealtimeTtsSessionImplTest {
         }
         val session = RealtimeTtsSessionImpl.open(
             openConnection = { connection },
-            options = RealtimeTtsOptions(keepAlive = KeepAlive(enabled = false)),
+            options = RealtimeTtsOptions { keepAlive = KeepAlive { enabled = false } },
             dispatcher = StandardTestDispatcher(testScheduler),
         )
         runCurrent()
@@ -187,7 +185,7 @@ class RealtimeTtsSessionImplTest {
         }
         val session = RealtimeTtsSessionImpl.open(
             openConnection = { connection },
-            options = RealtimeTtsOptions(keepAlive = KeepAlive(enabled = false)),
+            options = RealtimeTtsOptions { keepAlive = KeepAlive { enabled = false } },
             dispatcher = StandardTestDispatcher(testScheduler),
         )
         runCurrent()
@@ -213,7 +211,7 @@ class RealtimeTtsSessionImplTest {
         }
         val session = RealtimeTtsSessionImpl.open(
             openConnection = { connection },
-            options = RealtimeTtsOptions(keepAlive = KeepAlive(enabled = false)),
+            options = RealtimeTtsOptions { keepAlive = KeepAlive { enabled = false } },
             dispatcher = StandardTestDispatcher(testScheduler),
         )
 
@@ -251,13 +249,13 @@ class RealtimeTtsSessionImplTest {
                 if (opens++ > 0) throw IOException("still offline")
                 connection
             },
-            options = RealtimeTtsOptions(
-                keepAlive = KeepAlive(enabled = false),
-                reconnectPolicy = RealtimeTtsReconnectPolicy.BeforeFirstAudio(
-                    maxAttempts = 2,
-                    initialDelayMillis = 0,
-                ),
-            ),
+            options = RealtimeTtsOptions {
+                keepAlive = KeepAlive { enabled = false }
+                reconnectPolicy = RealtimeTtsReconnectPolicy.BeforeFirstAudio {
+                    maxAttempts = 2
+                    initialDelayMillis = 0
+                }
+            },
             dispatcher = StandardTestDispatcher(testScheduler),
         )
 
@@ -284,7 +282,7 @@ class RealtimeTtsSessionImplTest {
         }
         val session = RealtimeTtsSessionImpl.open(
             openConnection = { connection },
-            options = RealtimeTtsOptions(keepAlive = KeepAlive(enabled = false)),
+            options = RealtimeTtsOptions { keepAlive = KeepAlive { enabled = false } },
             dispatcher = StandardTestDispatcher(testScheduler),
         )
 
@@ -303,7 +301,7 @@ class RealtimeTtsSessionImplTest {
         }
         val session = RealtimeTtsSessionImpl.open(
             openConnection = { connection },
-            options = RealtimeTtsOptions(keepAlive = KeepAlive(enabled = false)),
+            options = RealtimeTtsOptions { keepAlive = KeepAlive { enabled = false } },
             dispatcher = StandardTestDispatcher(testScheduler),
         )
 
@@ -327,10 +325,10 @@ class RealtimeTtsSessionImplTest {
                 }
                 connection
             },
-            options = RealtimeTtsOptions(
-                keepAlive = KeepAlive(enabled = false),
-                reconnectPolicy = RealtimeTtsReconnectPolicy.BeforeFirstAudio(initialDelayMillis = 0),
-            ),
+            options = RealtimeTtsOptions {
+                keepAlive = KeepAlive { enabled = false }
+                reconnectPolicy = RealtimeTtsReconnectPolicy.BeforeFirstAudio { initialDelayMillis = 0 }
+            },
             dispatcher = StandardTestDispatcher(testScheduler),
         )
 
@@ -348,9 +346,9 @@ class RealtimeTtsSessionImplTest {
                     attempts++
                     throw ElevenLabsException.MissingCredentials("No key is configured.")
                 },
-                options = RealtimeTtsOptions(
-                    reconnectPolicy = RealtimeTtsReconnectPolicy.BeforeFirstAudio(initialDelayMillis = 0),
-                ),
+                options = RealtimeTtsOptions {
+                    reconnectPolicy = RealtimeTtsReconnectPolicy.BeforeFirstAudio { initialDelayMillis = 0 }
+                },
                 dispatcher = StandardTestDispatcher(testScheduler),
             )
         }

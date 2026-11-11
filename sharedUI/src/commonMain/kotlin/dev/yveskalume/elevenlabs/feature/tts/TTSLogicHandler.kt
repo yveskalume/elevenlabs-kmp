@@ -98,7 +98,7 @@ internal class TTSLogicHandler(
 
     private suspend fun loadVoices() {
         val result = try {
-            LoadingState.Idle(client.voices.list(ListVoicesRequest(pageSize = 100)).voices)
+            LoadingState.Idle(client.voices.list(ListVoicesRequest { pageSize = 100 }).voices)
         } catch (cancellation: CancellationException) {
             throw cancellation
         } catch (throwable: Throwable) {
@@ -151,10 +151,10 @@ internal class TTSLogicHandler(
         client.textToSpeech.streamRealtime(
             voiceId = voice.id,
             text = text.asRealtimeInput(),
-            options = RealtimeTtsOptions(
-                modelId = ModelId.ElevenFlashV2_5,
-                outputFormat = OutputFormat.Pcm_24000,
-            ),
+            options = RealtimeTtsOptions {
+                modelId = ModelId.ElevenFlashV2_5
+                outputFormat = OutputFormat.Pcm_24000
+            },
         ).audioOnly().collect { chunk -> audioPlayer.writeStream(chunk.bytes) }
         audioPlayer.finishStream()
     }

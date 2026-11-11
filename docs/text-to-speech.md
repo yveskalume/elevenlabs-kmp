@@ -14,11 +14,9 @@ Choose an API based on how the input text becomes available.
 
 ```kotlin
 val audio = elevenLabs.textToSpeech.generate(
-    TextToSpeechRequest(
-        voiceId = voiceId,
-        text = "A complete passage to synthesize.",
-        outputFormat = OutputFormat.Mp3_44100_128,
-    ),
+    TextToSpeechRequest(voiceId = voiceId, text = "A complete passage to synthesize.") {
+        outputFormat = OutputFormat.Mp3_44100_128
+    },
 )
 ```
 
@@ -26,10 +24,7 @@ val audio = elevenLabs.textToSpeech.generate(
 
 ```kotlin
 elevenLabs.textToSpeech.stream(
-    TextToSpeechRequest(
-        voiceId = voiceId,
-        text = "A longer passage to synthesize.",
-    ),
+    TextToSpeechRequest(voiceId = voiceId, text = "A longer passage to synthesize."),
 ).collect { chunk ->
     audioPipeline.write(chunk.bytes)
 }
@@ -46,10 +41,10 @@ val llmText: Flow<String> = languageModel.responses()
 elevenLabs.textToSpeech.streamRealtime(
     voiceId = voiceId,
     text = llmText,
-    options = RealtimeTtsOptions(
-        modelId = ModelId.ElevenFlashV2_5,
-        outputFormat = OutputFormat.Pcm_24000,
-    ),
+    options = RealtimeTtsOptions {
+        modelId = ModelId.ElevenFlashV2_5
+        outputFormat = OutputFormat.Pcm_24000
+    },
 ).audioOnly().collect { chunk ->
     audioPipeline.write(chunk.bytes)
 }
@@ -59,14 +54,14 @@ The returned flow is cold. Every collection opens a new session, resolves fresh 
 each non-empty input value, and closes the session on completion, cancellation, or failure.
 
 It emits the session's events, ending with `Finished`. `audioOnly()` keeps just the audio. Collect
-the events themselves when you need the alignment from `RealtimeTtsOptions(syncAlignment = true)`.
+the events themselves when you need the alignment from `RealtimeTtsOptions { syncAlignment = true }`.
 
 ## Controllable realtime session
 
 ```kotlin
 val session = elevenLabs.textToSpeech.openRealtimeSession(
     voiceId = voiceId,
-    options = RealtimeTtsOptions(syncAlignment = true),
+    options = RealtimeTtsOptions { syncAlignment = true },
 )
 
 coroutineScope {
@@ -102,10 +97,10 @@ voice but need different settings.
 ```kotlin
 val session = elevenLabs.textToSpeech.openMultiContextSession(
     voiceId = voiceId,
-    options = MultiContextTtsOptions(
-        modelId = ModelId.ElevenFlashV2_5,
-        outputFormat = OutputFormat.Pcm_24000,
-    ),
+    options = MultiContextTtsOptions {
+        modelId = ModelId.ElevenFlashV2_5
+        outputFormat = OutputFormat.Pcm_24000
+    },
 )
 ```
 
@@ -136,10 +131,15 @@ gracefully, and `close()` stops it immediately.
 
 ```kotlin
 val narrator = session.openContext(
-    MultiContextTtsContextOptions(voiceSettings = VoiceSettings(stability = 0.7)),
+    MultiContextTtsContextOptions { voiceSettings = VoiceSettings { stability = 0.7 } },
 )
 val aside = session.openContext(
-    MultiContextTtsContextOptions(voiceSettings = VoiceSettings(stability = 0.2, speed = 1.1)),
+    MultiContextTtsContextOptions {
+        voiceSettings = VoiceSettings {
+            stability = 0.2
+            speed = 1.1
+        }
+    },
 )
 
 coroutineScope {
