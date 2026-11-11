@@ -80,6 +80,7 @@ class MultiContextDialogueSessionTest {
             MultiContextDialogueOptions { keepAlive = KeepAlive { intervalMillis = 20_000 } }
         }
         assertFailsWith<IllegalArgumentException> { MultiContextDialogueContextOptions { stability = 1.5 } }
+        assertFailsWith<IllegalArgumentException> { MultiContextDialogueContextOptions { cloneStrength = -0.1 } }
         assertFailsWith<IllegalArgumentException> { DialogueLine("alice", "") }
     }
 
@@ -107,6 +108,7 @@ class MultiContextDialogueSessionTest {
         sent.forEach { assertEquals("scene-1", it.string("context_id")) }
         assertEquals("""["alice","bob"]""", sent[0]["voices"].toString())
         assertEquals("0.3", sent[0].getValue("voice_settings").jsonObject.string("stability"))
+        assertEquals(setOf("stability"), sent[0].getValue("voice_settings").jsonObject.keys)
         assertEquals(
             """[{"pronunciation_dictionary_id":"dict","version_id":"v1"}]""",
             sent[0]["pronunciation_dictionary_locators"].toString(),
@@ -122,6 +124,28 @@ class MultiContextDialogueSessionTest {
         // close_context flushes in the dialogue protocol, so finish() sends only that.
         assertEquals(setOf("context_id", "close_context"), sent[5].keys)
         session.close()
+    }
+
+    @Test
+    fun `clone strength is sent for v4 models and rejected before sending for others`() = runTest {
+        val v4Connection = FakeConnection()
+        val v4 = openSession(v4Connection, modelId = ModelId.ElevenV4)
+
+        v4.openContext(listOf("clone"), MultiContextDialogueContextOptions { cloneStrength = 0.2 })
+
+        val settings = v4Connection.sentJson()[0].getValue("voice_settings").jsonObject
+        assertEquals(setOf("clone_strength"), settings.keys)
+        assertEquals("0.2", settings.string("clone_strength"))
+        v4.close()
+
+        val v3Connection = FakeConnection()
+        val v3 = openSession(v3Connection, modelId = ModelId.ElevenV3)
+
+        assertFailsWith<IllegalArgumentException> {
+            v3.openContext(listOf("clone"), MultiContextDialogueContextOptions { cloneStrength = 0.2 })
+        }
+        assertTrue(v3Connection.sent.isEmpty())
+        v3.close()
     }
 
     @Test

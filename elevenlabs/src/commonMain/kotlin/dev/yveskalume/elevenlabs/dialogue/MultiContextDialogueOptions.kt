@@ -146,6 +146,11 @@ public class MultiContextDialogueOptions private constructor(
             "syncAlignment=$syncAlignment, textNormalization=$textNormalization, seed=$seed, " +
             "timeouts=$timeouts, keepAlive=$keepAlive)"
 
+    // clone_strength only applies to v4 models; ElevenLabs closes the whole connection on an
+    // invalid registration, so a context checks this before it is opened.
+    internal val supportsCloneStrength: Boolean
+        get() = modelId?.value?.startsWith("eleven_v4") == true
+
     // ElevenLabs allows several voices per context only for eleven_v3. The conversational v3
     // model, which is the default, and every v4 model allow one.
     internal val maxVoicesPerContext: Int
@@ -176,19 +181,29 @@ public fun MultiContextDialogueOptions(
 public class MultiContextDialogueContextOptions private constructor(
     /**
      * Voice stability from 0 to 1, or `null` for the default. Lower values give a broader emotional
-     * range. It is the only voice setting Eleven v3 dialogue supports.
+     * range. Every dialogue model supports it.
      */
     public val stability: Double?,
+    /**
+     * How closely a professional voice clone matches its samples, from 0 to 1, or `null` for the
+     * default. ElevenLabs recommends 0 for most uses. It only applies to professional voice clones
+     * fine-tuned for an Eleven v4 model, and other models reject it.
+     */
+    public val cloneStrength: Double?,
     /** Pronunciation dictionaries applied to this context, in priority order. */
     public val pronunciationDictionaries: List<PronunciationDictionaryLocator>,
 ) {
     init {
         require(stability == null || stability in 0.0..1.0) { "stability must be between 0 and 1." }
+        require(cloneStrength == null || cloneStrength in 0.0..1.0) {
+            "cloneStrength must be between 0 and 1."
+        }
     }
 
     /** Returns a builder with these values, to create a changed copy. */
     public fun toBuilder(): Builder = Builder().also {
         it.stability = stability
+        it.cloneStrength = cloneStrength
         it.pronunciationDictionaries = pronunciationDictionaries
     }
 
@@ -196,10 +211,15 @@ public class MultiContextDialogueContextOptions private constructor(
     public class Builder {
         /**
          * Voice stability from 0 to 1, or `null` for the default. Lower values give a broader
-         * emotional
-         * range. It is the only voice setting Eleven v3 dialogue supports.
+         * emotional range. Every dialogue model supports it.
          */
         public var stability: Double? = null
+        /**
+         * How closely a professional voice clone matches its samples, from 0 to 1, or `null` for
+         * the default. ElevenLabs recommends 0 for most uses. It only applies to professional voice
+         * clones fine-tuned for an Eleven v4 model, and other models reject it.
+         */
+        public var cloneStrength: Double? = null
         /** Pronunciation dictionaries applied to this context, in priority order. */
         public var pronunciationDictionaries: List<PronunciationDictionaryLocator> = emptyList()
 
@@ -211,6 +231,7 @@ public class MultiContextDialogueContextOptions private constructor(
         @Throws(IllegalArgumentException::class)
         public fun build(): MultiContextDialogueContextOptions = MultiContextDialogueContextOptions(
             stability,
+            cloneStrength,
             pronunciationDictionaries.toList(),
         )
     }
@@ -218,16 +239,18 @@ public class MultiContextDialogueContextOptions private constructor(
     override fun equals(other: Any?): Boolean =
         other is MultiContextDialogueContextOptions &&
             stability == other.stability &&
+            cloneStrength == other.cloneStrength &&
             pronunciationDictionaries == other.pronunciationDictionaries
 
     override fun hashCode(): Int {
         var result = stability.hashCode()
+        result = 31 * result + cloneStrength.hashCode()
         result = 31 * result + pronunciationDictionaries.hashCode()
         return result
     }
 
     override fun toString(): String =
-        "MultiContextDialogueContextOptions(stability=$stability, " +
+        "MultiContextDialogueContextOptions(stability=$stability, cloneStrength=$cloneStrength, " +
             "pronunciationDictionaries=$pronunciationDictionaries)"
 }
 

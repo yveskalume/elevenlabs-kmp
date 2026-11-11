@@ -418,6 +418,8 @@ final class dev.yveskalume.elevenlabs.dialogue/DialogueLine { // dev.yveskalume.
 }
 
 final class dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueContextOptions { // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueContextOptions|null[0]
+    final val cloneStrength // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueContextOptions.cloneStrength|{}cloneStrength[0]
+        final fun <get-cloneStrength>(): kotlin/Double? // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueContextOptions.cloneStrength.<get-cloneStrength>|<get-cloneStrength>(){}[0]
     final val pronunciationDictionaries // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueContextOptions.pronunciationDictionaries|{}pronunciationDictionaries[0]
         final fun <get-pronunciationDictionaries>(): kotlin.collections/List<dev.yveskalume.elevenlabs.tts/PronunciationDictionaryLocator> // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueContextOptions.pronunciationDictionaries.<get-pronunciationDictionaries>|<get-pronunciationDictionaries>(){}[0]
     final val stability // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueContextOptions.stability|{}stability[0]
@@ -431,6 +433,9 @@ final class dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueContextOption
     final class Builder { // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueContextOptions.Builder|null[0]
         constructor <init>() // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueContextOptions.Builder.<init>|<init>(){}[0]
 
+        final var cloneStrength // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueContextOptions.Builder.cloneStrength|{}cloneStrength[0]
+            final fun <get-cloneStrength>(): kotlin/Double? // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueContextOptions.Builder.cloneStrength.<get-cloneStrength>|<get-cloneStrength>(){}[0]
+            final fun <set-cloneStrength>(kotlin/Double?) // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueContextOptions.Builder.cloneStrength.<set-cloneStrength>|<set-cloneStrength>(kotlin.Double?){}[0]
         final var pronunciationDictionaries // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueContextOptions.Builder.pronunciationDictionaries|{}pronunciationDictionaries[0]
             final fun <get-pronunciationDictionaries>(): kotlin.collections/List<dev.yveskalume.elevenlabs.tts/PronunciationDictionaryLocator> // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueContextOptions.Builder.pronunciationDictionaries.<get-pronunciationDictionaries>|<get-pronunciationDictionaries>(){}[0]
             final fun <set-pronunciationDictionaries>(kotlin.collections/List<dev.yveskalume.elevenlabs.tts/PronunciationDictionaryLocator>) // dev.yveskalume.elevenlabs.dialogue/MultiContextDialogueContextOptions.Builder.pronunciationDictionaries.<set-pronunciationDictionaries>|<set-pronunciationDictionaries>(kotlin.collections.List<dev.yveskalume.elevenlabs.tts.PronunciationDictionaryLocator>){}[0]

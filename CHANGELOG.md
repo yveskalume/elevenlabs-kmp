@@ -22,6 +22,7 @@ The project follows [Semantic Versioning](https://semver.org/).
 - `RealtimeSttCommitStrategy.TurnPrediction`.
 - `RealtimeTtsEvent.Unknown` and `DialogueEvent.Unknown` carry server messages this SDK version doesn't recognize, like `RealtimeSttEvent.Unknown`.
 - `Flow<RealtimeTtsEvent>.audioOnly()` keeps only the audio of realtime events.
+- `MultiContextDialogueContextOptions.cloneStrength` sets how closely a professional voice clone fine-tuned for an Eleven v4 model matches its samples. `openContext()` rejects it with other models.
 - `SpeechToTextRequest` can stream a file from disk through `openAudio`, a function that returns a kotlinx-io `RawSource`, so the file no longer has to fit in memory. The SDK opens a fresh source per upload and closes it.
 
 ### Changed
