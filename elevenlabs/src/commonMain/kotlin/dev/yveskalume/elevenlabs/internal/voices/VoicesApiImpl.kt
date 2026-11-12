@@ -13,7 +13,7 @@ internal class VoicesApiImpl(
     private val http: ElevenLabsHttpClient,
 ) : VoicesApi {
     override suspend fun list(request: ListVoicesRequest): VoicePage {
-        val response = http.client.get("${http.baseUrl}/v2/voices") {
+        val response = http.client.get(http.url("v2", "voices")) {
             http.run { authenticate() }
             parameter("page_size", request.pageSize)
             parameter("next_page_token", request.nextPageToken)

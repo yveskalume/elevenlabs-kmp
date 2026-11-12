@@ -6,6 +6,8 @@ The project follows [Semantic Versioning](https://semver.org/).
 
 ## Unreleased
 
+## 0.2.0 - 2026-11-11
+
 ### Added
 
 - Multi-context realtime text-to-speech with `TextToSpeechApi.openMultiContextSession()`: up to five independent contexts share one WebSocket, each with its own voice settings, generation config, pronunciation dictionaries, and audio stream.
@@ -20,6 +22,7 @@ The project follows [Semantic Versioning](https://semver.org/).
 - `RealtimeSttCommitStrategy.TurnPrediction`.
 - `RealtimeTtsEvent.Unknown` and `DialogueEvent.Unknown` carry server messages this SDK version doesn't recognize, like `RealtimeSttEvent.Unknown`.
 - `Flow<RealtimeTtsEvent>.audioOnly()` keeps only the audio of realtime events.
+- `MultiContextDialogueContextOptions.cloneStrength` sets how closely a professional voice clone fine-tuned for an Eleven v4 model matches its samples. `openContext()` rejects it with other models.
 - `SpeechToTextRequest` can stream a file from disk through `openAudio`, a function that returns a kotlinx-io `RawSource`, so the file no longer has to fit in memory. The SDK opens a fresh source per upload and closes it.
 
 ### Changed
@@ -48,6 +51,11 @@ The project follows [Semantic Versioning](https://semver.org/).
 - Realtime TTS sessions read the camelCase fields ElevenLabs sends (`isFinal`, `normalizedAlignment`, `charStartTimesMs`). Alignment was always `null` with `syncAlignment = true`, and the final message was ignored. Multi-context sessions were not affected.
 - Text-to-dialogue accepts Eleven v4 models, and allows one voice per context with them. It previously rejected any model that didn't start with `eleven_v3`, and would have allowed ten voices for a v4 model.
 - On iOS, `IllegalArgumentException` and `IllegalStateException` no longer crash the app. Public suspend functions and validating constructors now report them as Swift errors, and Swift implementations of `ApiKeyProvider` and the token providers can throw. Two cases still crash because the functions can't declare the exception: collecting a failing `Flow` directly from Swift, and calling `doCopy` with an invalid value.
+- `Authorization.SingleUseToken.toString()` hides the token, so logging it doesn't leak a credential.
+- `RealtimeTtsReconnectPolicy.BeforeFirstAudio.maxAttempts` allows that many reconnects, as documented. The first connection used to count toward it, so a session got one reconnect fewer.
+- Options keep their own copies of `keyterms`, `secondaryLanguages`, `pronunciationDictionaries`, and `chunkLengthSchedule`. Changing the list you passed in can no longer bypass validation or change an existing options object.
+- `ModelsApi.list()` and `VoicesApi.list()` build their URLs like every other call. A `baseUrl` ending in `/` used to produce a double slash in their paths.
+- `RealtimeTtsEvent.Audio.toString()` shows the byte count instead of an array reference, like `DialogueEvent.Audio`.
 
 ### Removed
 

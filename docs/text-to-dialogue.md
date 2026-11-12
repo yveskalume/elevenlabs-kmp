@@ -52,8 +52,21 @@ session.finish()
 `newTurn = true` tells ElevenLabs that a new speaker turn starts, so it finalizes the previous
 turn's delivery. The end of each turn's audio is reported by `DialogueEvent.TurnFinished`.
 
-`stability` is the only voice setting Eleven v3 dialogue supports. Lower values give a broader
-emotional range.
+Each context takes two voice settings. `stability` works with every dialogue model; lower values
+give a broader emotional range. `cloneStrength` sets how closely a professional voice clone matches
+its samples, from 0 to 1. It only applies to professional voice clones fine-tuned for an Eleven v4
+model, so `openContext()` rejects it with any other model. ElevenLabs recommends leaving it at 0
+unless the default settings give you trouble.
+
+```kotlin
+val narrator = session.openContext(
+    voiceIds = listOf(narratorCloneId),
+    options = MultiContextDialogueContextOptions {
+        stability = 0.5
+        cloneStrength = 0.2
+    },
+)
+```
 
 ## Streaming lines
 
@@ -66,6 +79,9 @@ session.stream(
     lines = scriptWriter.lines(), // Flow<DialogueLine>, e.g. from a language model
 ).collect { chunk -> player.write(chunk.bytes) }
 ```
+
+`stream()` emits only audio. It drops `DialogueEvent.TurnFinished` and alignment, so when you need
+turn boundaries or timing, open the context yourself and collect its `events` as shown above.
 
 ## Lifecycle and errors
 

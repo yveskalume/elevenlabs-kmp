@@ -26,6 +26,7 @@ import kotlin.time.Duration.Companion.milliseconds
 internal class MultiContextDialogueSessionImpl private constructor(
     private val engine: MultiContextEngine<DialogueEvent>,
     private val maxVoicesPerContext: Int,
+    private val supportsCloneStrength: Boolean,
 ) : MultiContextDialogueSession {
 
     override suspend fun openContext(
@@ -45,6 +46,10 @@ internal class MultiContextDialogueSessionImpl private constructor(
             } else {
                 "A dialogue context supports at most $maxVoicesPerContext voices."
             }
+        }
+        require(options.cloneStrength == null || supportsCloneStrength) {
+            "cloneStrength only applies to Eleven v4 models. Set an Eleven v4 model in " +
+                "MultiContextDialogueOptions.modelId, or leave cloneStrength unset."
         }
         val voices = voiceIds.toList()
         val (id, events) = engine.openContext(contextId) { newId ->
@@ -153,7 +158,11 @@ internal class MultiContextDialogueSessionImpl private constructor(
                 dispatcher = dispatcher,
             )
             engine.start()
-            return MultiContextDialogueSessionImpl(engine, options.maxVoicesPerContext)
+            return MultiContextDialogueSessionImpl(
+                engine = engine,
+                maxVoicesPerContext = options.maxVoicesPerContext,
+                supportsCloneStrength = options.supportsCloneStrength,
+            )
         }
     }
 }

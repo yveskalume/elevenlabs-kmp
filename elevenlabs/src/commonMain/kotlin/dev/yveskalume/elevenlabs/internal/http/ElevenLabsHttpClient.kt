@@ -47,7 +47,8 @@ internal class ElevenLabsHttpClient(
 
     suspend fun resolveApiKey(): String {
         val provider = apiKeyProvider ?: throw ElevenLabsException.MissingCredentials(
-            "No ElevenLabs API key is configured. Configure one on the client or use a single-use token for realtime TTS.",
+            "No ElevenLabs API key is configured. Configure one on the client, or pass a " +
+                "single-use token where the operation accepts an Authorization.",
         )
         return resolveCredential("ElevenLabs API key provider") { provider.getApiKey() }
     }

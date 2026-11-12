@@ -4,7 +4,7 @@ import dev.yveskalume.elevenlabs.Authorization
 import dev.yveskalume.elevenlabs.error.ElevenLabsException
 import kotlin.coroutines.cancellation.CancellationException
 
-/** Generates multi-speaker dialogue with Eleven v3 models. */
+/** Generates multi-speaker dialogue with Eleven v3 and v4 models. */
 public interface TextToDialogueApi {
     /**
      * Opens one realtime WebSocket that can host up to [MultiContextDialogueSession.MAX_CONTEXTS]

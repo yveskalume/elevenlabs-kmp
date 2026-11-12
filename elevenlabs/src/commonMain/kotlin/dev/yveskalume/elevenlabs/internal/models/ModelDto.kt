@@ -4,6 +4,7 @@ import dev.yveskalume.elevenlabs.models.Model
 import dev.yveskalume.elevenlabs.models.ModelId
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerializationException
 
 @Serializable
 internal data class ModelDto(
@@ -25,6 +26,12 @@ internal data class ModelDto(
     @SerialName("languages")
     val languages: List<ModelLanguageDto> = emptyList(),
 ) {
+    init {
+        // Checked while decoding, so a bad payload becomes a serialization failure instead of the
+        // IllegalArgumentException that ModelId(id) would throw from toPublic().
+        if (id.isBlank()) throw SerializationException("model_id cannot be blank.")
+    }
+
     fun toPublic() = Model(
         id = ModelId(id),
         name = name,

@@ -35,7 +35,7 @@ public class ElevenLabs private constructor(
     /** Batch, HTTP-streamed, and realtime text-to-speech APIs. */
     public val textToSpeech: TextToSpeechApi = TextToSpeechApiImpl(http)
 
-    /** Realtime multi-speaker dialogue with Eleven v3 models. */
+    /** Realtime multi-speaker dialogue with Eleven v3 and v4 models. */
     public val textToDialogue: TextToDialogueApi = TextToDialogueApiImpl(http)
 
     /** Batch and realtime speech-to-text APIs. */

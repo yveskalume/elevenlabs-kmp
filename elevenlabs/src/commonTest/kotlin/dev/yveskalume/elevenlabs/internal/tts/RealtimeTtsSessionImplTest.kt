@@ -337,6 +337,29 @@ class RealtimeTtsSessionImplTest {
     }
 
     @Test
+    fun `maxAttempts counts reconnects and not the first connection`() = runTest {
+        var opens = 0
+
+        assertFailsWith<IOException> {
+            RealtimeTtsSessionImpl.open(
+                openConnection = {
+                    opens++
+                    throw IOException("offline")
+                },
+                options = RealtimeTtsOptions {
+                    reconnectPolicy = RealtimeTtsReconnectPolicy.BeforeFirstAudio {
+                        maxAttempts = 2
+                        initialDelayMillis = 0
+                    }
+                },
+                dispatcher = StandardTestDispatcher(testScheduler),
+            )
+        }
+
+        assertEquals(3, opens)
+    }
+
+    @Test
     fun `other credential failures are not retried by the reconnect policy`() = runTest {
         var attempts = 0
 
