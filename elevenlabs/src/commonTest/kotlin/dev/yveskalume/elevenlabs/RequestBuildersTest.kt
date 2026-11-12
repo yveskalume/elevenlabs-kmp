@@ -2,7 +2,9 @@ package dev.yveskalume.elevenlabs
 
 import dev.yveskalume.elevenlabs.models.ModelId
 import dev.yveskalume.elevenlabs.realtime.KeepAlive
+import dev.yveskalume.elevenlabs.stt.RealtimeSttOptions
 import dev.yveskalume.elevenlabs.stt.SpeechToTextRequest
+import dev.yveskalume.elevenlabs.tts.RealtimeTtsGenerationConfig
 import dev.yveskalume.elevenlabs.tts.RealtimeTtsOptions
 import dev.yveskalume.elevenlabs.tts.RealtimeTtsReconnectPolicy
 import dev.yveskalume.elevenlabs.tts.RealtimeTtsTimeouts
@@ -88,5 +90,36 @@ class RequestBuildersTest {
                 audioSize = 0
             }
         }
+    }
+
+    @Test
+    fun `an in-memory speech to text request always uploads the array's length`() {
+        val request = SpeechToTextRequest(audio = byteArrayOf(1, 2, 3), fileName = "a.mp3", contentType = "audio/mpeg") {
+            audioSize = 99
+        }
+
+        assertEquals(3L, request.audioSize)
+    }
+
+    @Test
+    fun `options keep their own copy of the lists they validate`() {
+        val keyterms = mutableListOf("kotlin")
+        val schedule = mutableListOf(50)
+        val options = RealtimeSttOptions { this.keyterms = keyterms }
+        val config = RealtimeTtsGenerationConfig(schedule)
+
+        repeat(60) { keyterms += "term-$it" }
+        schedule += -1
+
+        assertEquals(listOf("kotlin"), options.keyterms)
+        assertEquals(listOf(50), config.chunkLengthSchedule)
+    }
+
+    @Test
+    fun `a single-use token is hidden from toString`() {
+        val authorization = Authorization.SingleUseToken("secret-token")
+
+        assertTrue("secret-token" !in authorization.toString())
+        assertEquals(Authorization.SingleUseToken("secret-token"), authorization)
     }
 }

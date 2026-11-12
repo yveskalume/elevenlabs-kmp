@@ -79,11 +79,11 @@ public class RealtimeSttOptions private constructor(
             modelId,
             audioFormat,
             languageCode,
-            secondaryLanguages,
+            secondaryLanguages.toList(),
             commitStrategy,
             includeTimestamps,
             includeLanguageDetection,
-            keyterms,
+            keyterms.toList(),
             noVerbatim,
             enableLogging,
         )

@@ -18,6 +18,9 @@ public sealed interface Authorization {
         init {
             require(token.isNotBlank()) { "The ElevenLabs single-use token cannot be blank." }
         }
+
+        /** Hides the token, so logging an [Authorization] doesn't leak a credential. */
+        override fun toString(): String = "SingleUseToken(token=***)"
     }
 
     /** Resolves a new token for every request or connection. Tokens are never cached by the SDK. */

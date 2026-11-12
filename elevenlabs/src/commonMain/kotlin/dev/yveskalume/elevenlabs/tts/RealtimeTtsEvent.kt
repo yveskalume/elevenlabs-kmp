@@ -38,6 +38,9 @@ public sealed interface RealtimeTtsEvent {
             result = 31 * result + (normalizedAlignment?.hashCode() ?: 0)
             return result
         }
+
+        override fun toString(): String =
+            "Audio(bytes=${bytes.size}, alignment=$alignment, normalizedAlignment=$normalizedAlignment)"
     }
 
     /** The server has completed generation and no more events will be emitted. */

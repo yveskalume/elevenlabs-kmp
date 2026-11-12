@@ -24,7 +24,8 @@ public interface MultiContextDialogueSession {
      * context. The default model, `eleven_v3_conversational`, and the Eleven v4 models support one.
      *
      * @throws IllegalArgumentException if [voiceIds] is empty, has blank or duplicate IDs, or has
-     * more voices than the model allows, or if [contextId] is blank or was already used.
+     * more voices than the model allows, if [MultiContextDialogueContextOptions.cloneStrength] is set
+     * for a model other than Eleven v4, or if [contextId] is blank or was already used.
      * @throws IllegalStateException if [MultiContextDialogueSession.MAX_CONTEXTS] contexts are already open, or if you
      * already called [finish] or [close].
      * @throws ElevenLabsException with the original failure if the session has failed.
@@ -47,6 +48,9 @@ public interface MultiContextDialogueSession {
      * The returned flow is cold. Each collection opens a context, sends every line, finishes the
      * context when [lines] completes, and completes after the final audio chunk. Cancelling
      * collection closes the context without affecting the session or other contexts.
+     *
+     * Only the audio is emitted: [DialogueEvent.TurnFinished] and alignment are dropped. Use
+     * [openContext] and collect [MultiContextDialogueContext.events] when you need them.
      */
     public fun stream(
         voiceIds: List<String>,

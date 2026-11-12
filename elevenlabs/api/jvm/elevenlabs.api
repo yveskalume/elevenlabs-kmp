@@ -127,6 +127,7 @@ public abstract interface class dev/yveskalume/elevenlabs/dialogue/MultiContextD
 
 public final class dev/yveskalume/elevenlabs/dialogue/MultiContextDialogueContextOptions {
 	public fun equals (Ljava/lang/Object;)Z
+	public final fun getCloneStrength ()Ljava/lang/Double;
 	public final fun getPronunciationDictionaries ()Ljava/util/List;
 	public final fun getStability ()Ljava/lang/Double;
 	public fun hashCode ()I
@@ -137,8 +138,10 @@ public final class dev/yveskalume/elevenlabs/dialogue/MultiContextDialogueContex
 public final class dev/yveskalume/elevenlabs/dialogue/MultiContextDialogueContextOptions$Builder {
 	public fun <init> ()V
 	public final fun build ()Ldev/yveskalume/elevenlabs/dialogue/MultiContextDialogueContextOptions;
+	public final fun getCloneStrength ()Ljava/lang/Double;
 	public final fun getPronunciationDictionaries ()Ljava/util/List;
 	public final fun getStability ()Ljava/lang/Double;
+	public final fun setCloneStrength (Ljava/lang/Double;)V
 	public final fun setPronunciationDictionaries (Ljava/util/List;)V
 	public final fun setStability (Ljava/lang/Double;)V
 }

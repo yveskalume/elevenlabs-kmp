@@ -11,7 +11,7 @@ internal class ModelsApiImpl(
 ) : ModelsApi {
 
     override suspend fun list(): List<Model> {
-        val response = http.client.get("${http.baseUrl}/v1/models") {
+        val response = http.client.get(http.url("v1", "models")) {
             http.run { authenticate() }
         }
         return response.body<List<ModelDto>>().map(ModelDto::toPublic)

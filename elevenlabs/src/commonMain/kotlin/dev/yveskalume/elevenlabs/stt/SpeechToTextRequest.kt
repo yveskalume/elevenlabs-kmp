@@ -197,7 +197,8 @@ public fun SpeechToTextRequest(
         contentType = contentType,
         openAudio = { Buffer().apply { write(audio) } },
     ) {
-        audioSize = audio.size.toLong()
         configure()
+        // Set last: the upload length must match the array, whatever configure() set.
+        audioSize = audio.size.toLong()
     }
 }

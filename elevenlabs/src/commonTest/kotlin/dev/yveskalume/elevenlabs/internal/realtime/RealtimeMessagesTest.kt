@@ -53,6 +53,17 @@ class RealtimeMessagesTest {
     }
 
     @Test
+    fun `realtime TTS accepts the same duration spellings as multi-context TTS`() {
+        val audio = RealtimeTtsMessages.decode(
+            """{"audio":"${b64(1)}","alignment":{"chars":["A"],"charStartTimesMs":[0],"charsDurationsMs":[7]}}""",
+        )
+
+        val event = assertIs<RealtimeTtsEvent.Audio>(assertIs<DecodedRealtimeTtsMessage.Event>(audio).value)
+        assertEquals(listOf(7), event.alignment?.characterDurationsMs)
+        assertTrue(event.toString().startsWith("Audio(bytes=1,"))
+    }
+
+    @Test
     fun `realtime TTS reports unrecognized messages and ignores recognized empty ones`() {
         val raw = """{"usage":{"characters":12}}"""
 

@@ -34,7 +34,11 @@ internal object MultiContextDialogueProtocol : MultiContextProtocol<DialogueEven
         DialogueClientDto(
             contextId = contextId,
             voices = voiceIds,
-            voiceSettings = options.stability?.let { DialogueVoiceSettingsDto(stability = it) },
+            voiceSettings = if (options.stability != null || options.cloneStrength != null) {
+                DialogueVoiceSettingsDto(stability = options.stability, cloneStrength = options.cloneStrength)
+            } else {
+                null
+            },
             pronunciationDictionaryLocators = options.pronunciationDictionaries
                 .takeIf { it.isNotEmpty() }
                 ?.map { DialoguePronunciationDictionaryDto(it.dictionaryId, it.versionId) },
@@ -131,7 +135,9 @@ private data class DialogueClientDto(
 @Serializable
 private data class DialogueVoiceSettingsDto(
     @SerialName("stability")
-    val stability: Double,
+    val stability: Double? = null,
+    @SerialName("clone_strength")
+    val cloneStrength: Double? = null,
 )
 
 @Serializable
