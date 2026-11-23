@@ -4,7 +4,7 @@
 [![CI](https://github.com/yveskalume/elevenlabs-kmp/actions/workflows/ci.yml/badge.svg)](https://github.com/yveskalume/elevenlabs-kmp/actions/workflows/ci.yml)
 [![Documentation](https://github.com/yveskalume/elevenlabs-kmp/actions/workflows/docs.yml/badge.svg)](https://github.com/yveskalume/elevenlabs-kmp/actions/workflows/docs.yml)
 
-A Kotlin-first Multiplatform SDK for the [ElevenLabs](https://elevenlabs.io/) API, with coroutine and `Flow`-based APIs for Android, iOS and JVM.
+A Kotlin-first Multiplatform SDK for the [ElevenLabs](https://elevenlabs.io/) API, with coroutine and `Flow`-based APIs for Android, iOS, and JVM.
 
 > Community-maintained SDK. Not affiliated with or endorsed by ElevenLabs.
 
@@ -76,7 +76,7 @@ as described in the [authentication guide](https://yveskalume.github.io/elevenla
 
 - Text to speech: complete files, HTTP streaming, and realtime WebSocket sessions that accept text as
   it's generated, including multi-context sessions that host several streams on one connection
-- Text to dialogue: realtime multi-speaker conversations with Eleven v3
+- Text to dialogue: realtime multi-speaker conversations with the Eleven v3 and v4 models
 - Speech to text: file transcription with diarization, and live transcription from raw PCM
 - Voice and model discovery, with pagination
 - API keys, rotating key providers, and single-use tokens

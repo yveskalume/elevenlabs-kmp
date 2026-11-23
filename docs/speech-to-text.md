@@ -25,8 +25,9 @@ transcript.words.forEach { word ->
 ```
 
 `fileName` and `contentType` are required and sent with the upload, so set them to match the
-file. Most audio and video containers work as-is. If you're uploading raw 16 kHz 16-bit PCM with no header, set
-`fileFormat = SpeechToTextFileFormat.PcmS16Le16` so ElevenLabs doesn't try to detect a container.
+file. Most audio and video containers work as-is. If you're uploading raw 16 kHz 16-bit PCM with no
+header, set `fileFormat = SpeechToTextFileFormat.PcmS16Le16` so ElevenLabs doesn't try to detect a
+container.
 
 A recording on disk doesn't have to fit in memory. Pass a function that opens it instead, and
 the SDK streams the file while it uploads. It calls the function once per upload and closes
@@ -107,7 +108,7 @@ transcript you keep.
 
 `FinalTranscript` is a finalized segment that hasn't necessarily been committed yet. Most apps can
 ignore it and wait for the commit. `Unknown` carries server messages this version of the SDK doesn't
-recognize, so a newer server never breaks an older app.
+recognize, so new server message types don't break the SDK.
 
 ### When audio gets committed
 

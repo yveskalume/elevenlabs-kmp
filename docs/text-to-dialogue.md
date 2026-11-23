@@ -1,7 +1,7 @@
 # Text to dialogue
 
-Text-to-dialogue generates conversations between several speakers with Eleven v3 and v4 models, with
-delivery that follows the flow of the conversation. The realtime API hosts up to five independent
+Text to dialogue voices a conversation between several speakers, using the Eleven v3 and v4
+models. The realtime API hosts up to five independent
 dialogue contexts on one WebSocket (`MultiContextDialogueSession.MAX_CONTEXTS`), for example to
 prepare the next scene while the current one plays.
 
@@ -15,7 +15,7 @@ val session = elevenLabs.textToDialogue.openMultiContextSession(
 ```
 
 Connection-level settings, such as the model and output format, are fixed when the session opens.
-Unlike text-to-speech, the voices are chosen per context.
+Unlike text to speech, the voices are chosen per context.
 
 ## Voices per context
 
@@ -95,8 +95,8 @@ turn boundaries or timing, open the context yourself and collect its `events` as
 ElevenLabs closes the whole connection on any protocol error, such as a line for a voice that was
 not registered on its context. The SDK checks voices and lines before sending, so these mistakes
 throw `IllegalArgumentException` and the session stays open. Any remaining server error fails the
-session and every open context with an `ElevenLabsException.RealtimeServer`, whose `errorCode` (for example
-`authentication_required`) and `kind` identify the cause.
+session and every open context with an `ElevenLabsException.RealtimeServer`, whose `errorCode`
+(for example `authentication_required`) and `kind` identify the cause.
 
 Contexts are closed by ElevenLabs after 20 seconds without input. Automatic keepalive
 (`MultiContextDialogueOptions.keepAlive`) prevents that while a context is open.

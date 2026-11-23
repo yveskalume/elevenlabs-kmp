@@ -1,6 +1,6 @@
 # Voices and models
 
-Every text-to-speech call needs a voice ID, and most accept a model ID. You can hard-code both, but
+Every text to speech call needs a voice ID, and most accept a model ID. You can hard-code both, but
 listing them at runtime lets users pick a voice and keeps you from sending a model a setting it
 doesn't support.
 

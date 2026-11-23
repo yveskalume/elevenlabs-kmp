@@ -1,8 +1,7 @@
 # Realtime connections
 
-Realtime text to speech and speech to text both run over a WebSocket. This page covers what the
-guides skip: who owns the connection, how long the SDK waits, and what happens when the network
-drops.
+Realtime text to speech, text to dialogue, and speech to text run over a WebSocket. This page
+covers who closes the connection, timeouts, and reconnects.
 
 ## Flows close themselves, sessions don't
 
@@ -34,7 +33,7 @@ SDK stops reading from the socket until someone collects. A session nobody colle
 
 ## Timeouts
 
-Realtime text-to-speech sessions take their limits from `RealtimeTtsOptions.timeouts`:
+Realtime text to speech sessions take their limits from `RealtimeTtsOptions.timeouts`:
 
 | Setting | Default | What it limits |
 | --- | --- | --- |
@@ -89,8 +88,9 @@ you.
 
 A reconnect is attempted for network errors, timeouts, and server closes with the "going away",
 "internal error", "service restart", or "try again later" close codes, or with no code.
-`maxAttempts` counts reconnects, so `maxAttempts = 3` allows up to four connections in all. Decoding failures and errors that came with a
-server response body are not retried, because a new connection would fail the same way. Delays grow
+`maxAttempts` counts reconnects, so `maxAttempts = 3` allows up to four connections in all.
+Decoding failures and errors that came with a server response body are not retried, because a new
+connection would fail the same way. Delays grow
 exponentially from `initialDelayMillis` up to `maxDelayMillis`, with `jitterFactor` (default 0.2)
 spreading out retries from many clients.
 

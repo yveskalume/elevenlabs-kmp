@@ -8,7 +8,7 @@ Android, iOS, and the JVM.
 
 !!! note
 
-    This is an unofficial community SDK. It is not affiliated with or endorsed by ElevenLabs.
+    This is an unofficial community SDK. It isn't affiliated with or endorsed by ElevenLabs.
 
 ## What it covers
 
@@ -26,22 +26,17 @@ Android, iOS, and the JVM.
 ## How the API is shaped
 
 One-shot calls are `suspend` functions. Streaming calls are named `stream…()` and return cold
-`Flow`s, so nothing is sent until you collect, and cancelling the collector cancels the request.
+`Flow`s. Nothing is sent until you collect, and cancelling the collector cancels the request.
 
-Byte arrays the SDK returns, such as `Audio.bytes` or an audio event's `bytes`, belong to you. The
-SDK never reads or changes them again, so you can keep, change, or pass them on without copying.
-Arrays you pass in, such as the `audio` array given to `SpeechToTextRequest`, are used as they are,
-so don't change them while the call is running.
+Requests and options take a trailing lambda where you set only what you need:
+`RealtimeTtsOptions { syncAlignment = true }`. Required values, like the voice ID, go in the
+parentheses. Call `toBuilder()` to make a changed copy.
 
-Requests and options are built with a trailing lambda, where you set only the values you need,
-such as `RealtimeTtsOptions { syncAlignment = true }`. Required values, such as a voice ID, go in
-the parentheses. `toBuilder()` gives you a builder to create a changed copy.
+Later SDK versions can add new events and error kinds, so give every `when` over events or
+`ElevenLabsErrorKind` an `else` branch.
 
-Event types can grow: later SDK versions can add events and error kinds. Give every `when` over
-events or `ElevenLabsErrorKind` an `else` branch.
-
-When you need to drive a WebSocket yourself, for example to flush text at sentence boundaries or
-commit audio at the end of an utterance, you open a session. Sessions are yours to close. See
+To control a WebSocket yourself, for example to flush text at sentence boundaries or commit audio
+at the end of an utterance, open a session. You have to close sessions yourself. See
 [Realtime connections](realtime-connections.md).
 
 ## Supported targets

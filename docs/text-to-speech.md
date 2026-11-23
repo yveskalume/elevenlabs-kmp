@@ -1,6 +1,6 @@
 # Text to speech
 
-Choose an API based on how the input text becomes available.
+Which API to use depends on when your text is ready.
 
 | API | Use it when |
 | --- | --- |
@@ -30,8 +30,11 @@ elevenLabs.textToSpeech.stream(
 }
 ```
 
-An `AudioChunk` is an arbitrary transport chunk. It is not guaranteed to contain a complete codec
+An `AudioChunk` is an arbitrary transport chunk. It isn't guaranteed to contain a complete codec
 frame or audio container.
+
+The SDK doesn't reuse the byte arrays it returns, such as `AudioChunk.bytes` or `Audio.bytes`, so you
+can keep or modify them without copying.
 
 ## Realtime text input
 
@@ -90,9 +93,9 @@ cancel immediately.
 
 A multi-context session keeps one WebSocket open and hosts up to five independent generation
 contexts on it (`MultiContextTtsSession.MAX_CONTEXTS`). Each context has its own text buffer,
-voice settings, and audio stream. Use it when speech must be interrupted and restarted quickly, when
-the next utterance should be prepared while the current one plays, or when several streams share a
-voice but need different settings.
+voice settings, and audio stream. It's useful for an agent that gets interrupted mid-sentence. It
+also lets you prepare the next utterance while the current one plays, or run several streams of the
+same voice with different settings.
 
 ```kotlin
 val session = elevenLabs.textToSpeech.openMultiContextSession(
@@ -126,8 +129,8 @@ fun onAgentReply(reply: Flow<String>) {
 ### Explicit contexts
 
 For alignment data or finer control, open contexts yourself. A context works like a
-`RealtimeTtsSession`: `events` emits `RealtimeTtsEvent`s for that context only, `finish()` completes it
-gracefully, and `close()` stops it immediately.
+`RealtimeTtsSession`: `events` emits `RealtimeTtsEvent`s for that context only, `finish()` completes
+it gracefully, and `close()` stops it immediately.
 
 ```kotlin
 val narrator = session.openContext(
@@ -164,8 +167,8 @@ session.finish()
 | `session.finish()` | Lets ElevenLabs complete every context, then suspends until the connection closes. |
 | `session.close()` | Closes the connection now. Open context flows complete without an error. |
 
-Failures are scoped to what they affect. An error ElevenLabs reports for one context, or a context
-that does not finish within `RealtimeTtsTimeouts.finishTimeoutMillis`, fails only that context's
+An error ElevenLabs reports for one context, or a context
+that doesn't finish within `RealtimeTtsTimeouts.finishTimeoutMillis`, fails only that context's
 `events`. A connection failure fails every open context with the same error, and later calls throw
 that error too.
 
@@ -177,5 +180,5 @@ Automatic keepalive (`MultiContextTtsOptions.keepAlive`) keeps idle contexts fro
 ElevenLabs inactivity timeout. A context that the server closes anyway completes with `Finished`,
 and further `sendText()` calls throw `ElevenLabsException.RealtimeServer`.
 
-Multi-context sessions do not reconnect automatically. Replaying text on a new connection could
+Multi-context sessions don't reconnect automatically. Replaying text on a new connection could
 duplicate audio across several contexts, so reconnecting is left to the application.

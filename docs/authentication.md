@@ -1,7 +1,6 @@
 # Authentication
 
-The client takes one API key, and every API on it (voices, models, text to speech, speech to text)
-sends that key:
+The client takes one API key, and every API on it sends that key:
 
 ```kotlin
 val elevenLabs = ElevenLabs {
@@ -43,7 +42,7 @@ xi-api-key: <your key>
 
 | Token type | Use it for |
 | --- | --- |
-| `tts_websocket` | `textToSpeech.streamRealtime()` and `textToSpeech.openRealtimeSession()` |
+| `tts_websocket` | `textToSpeech.streamRealtime()`, `textToSpeech.openRealtimeSession()`, `textToSpeech.openMultiContextSession()`, and `textToDialogue.openMultiContextSession()` |
 | `realtime_scribe` | `speechToText.openRealtimeSession()` |
 | `batch_scribe` | `speechToText.transcribe()` |
 
@@ -72,8 +71,8 @@ elevenLabs.textToSpeech.streamRealtime(
 `backend.fetchElevenLabsToken` stands for your own call to your server. The SDK doesn't talk to your
 backend.
 
-Speech to text and text to dialogue take the same `Authorization`, with a token issued for their
-endpoint. `Authorization.SingleUseToken` also works if you've already fetched one, but it can only
+Speech to text and text to dialogue take the same `Authorization`, with a token of the type listed
+above. `Authorization.SingleUseToken` also works if you've already fetched one, but it can only
 be used for one connection.
 
 An app that only uses tokens can create the client without calling `apiKey()`:
