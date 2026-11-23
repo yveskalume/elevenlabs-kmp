@@ -72,7 +72,7 @@ The SDK doesn't retry HTTP requests on its own, so a helper like this is up to y
 
 !!! warning "Retries can use credits twice"
 
-    `isRetryable` means a retry may succeed, not that it's free. A `generate()` that timed out may
+    A retryable error can still cost credits if you retry it. A `generate()` that timed out may
     already have run on the server, so retrying it can bill the same text again. Decide whether
     that's acceptable before you retry generation on `Timeout`.
 
@@ -174,7 +174,7 @@ It also reads the common object form, such as
 
 ## Flows and realtime sessions
 
-HTTP and realtime flows are cold, so they fail while you collect them, not when you create them.
+HTTP and realtime flows are cold, so their errors are thrown when you collect them.
 
 When a realtime WebSocket fails at the protocol level, the SDK throws
 `ElevenLabsException.RealtimeServer`. The SDK maps the codes it knows to a `kind`, so realtime

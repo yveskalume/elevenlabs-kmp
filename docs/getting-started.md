@@ -1,5 +1,9 @@
 # Getting started
 
+The examples on this page use JVM APIs like `System.getenv` and `File` to keep them short. If you're
+building an Android or iOS app, read [Authentication](authentication.md) as well: mobile apps
+shouldn't hold an API key.
+
 ## Installation
 
 The SDK is published to
@@ -28,26 +32,6 @@ kotlin {
 }
 ```
 
-### Snapshots
-
-Development snapshots go to the Central Portal snapshots repository. Add it before Maven Central and
-use `0.2.1-SNAPSHOT` as the version:
-
-```kotlin
-// settings.gradle.kts
-dependencyResolutionManagement {
-    repositories {
-        maven {
-            url = uri("https://central.sonatype.com/repository/maven-snapshots/")
-            content {
-                includeModule("io.github.yveskalume", "elevenlabs-kmp")
-            }
-        }
-        mavenCentral()
-    }
-}
-```
-
 ## Create a client
 
 You'll need an API key from your
@@ -59,12 +43,8 @@ val elevenLabs = ElevenLabs {
 }
 ```
 
-The examples on this page use JVM APIs such as `System.getenv` and `File` to stay short, so they fit
-a server or a desktop tool. Mobile apps shouldn't hold an API key at all;
-[Authentication](authentication.md) covers what to do instead.
-
-Create one client and share it. It wraps a single HTTP client, and it's safe to use
-from several coroutines at once. Close it when your app or service shuts down:
+Create one client and share it. It wraps a single HTTP client, and it's safe to use from several
+coroutines at once. Close it when your app or service shuts down:
 
 ```kotlin
 elevenLabs.close()
@@ -82,7 +62,7 @@ val audio = elevenLabs.textToSpeech.generate(
     },
 )
 
-// MP3 by default. Write audio.bytes to a file or pass it to a player.
+// MP3 by default.
 File("hello.mp3").writeBytes(audio.bytes)
 ```
 
